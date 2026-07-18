@@ -33,6 +33,7 @@ Each deck owns its own theme in `css/theme.css`:
 - switch default mode by changing `data-theme="dark"` to `data-theme="light"` on the `<html>` tag
 - adjust light colors under `:root[data-theme="light"]`
 - adjust dark colors under `:root[data-theme="dark"]`
-- press **T** or click the theme button during the presentation to toggle light/dark mode
+- use `<h2>` for slide headings and `<p class="slide-subtitle">...</p>` for blue subheadings
+- press **T** or click the subtle sun/moon icon during the presentation to toggle light/dark mode
 
 Keeping dependencies and theme files inside each presentation makes decks easier to copy, archive, or publish independently.

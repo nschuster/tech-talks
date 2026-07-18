@@ -33,6 +33,10 @@ for (const deck of decks) {
     throw new Error(`${deck.name} should define an easy default data-theme`);
   }
 
+  if (!html.includes('class="slide-subtitle"') && !html.includes("class='slide-subtitle'")) {
+    throw new Error(`${deck.name} should include blue slide subheadings with class=\"slide-subtitle\"`);
+  }
+
   if (!html.includes('node_modules/reveal.js/dist/reveal.css')) {
     throw new Error(`${deck.name} should load its own reveal.js dependency from the presentation folder`);
   }

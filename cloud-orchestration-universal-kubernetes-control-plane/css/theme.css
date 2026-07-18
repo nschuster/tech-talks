@@ -59,10 +59,18 @@ body {
 .reveal h1,
 .reveal h2,
 .reveal h3 {
-  color: var(--color-text);
   font-family: var(--font-display);
   letter-spacing: -0.045em;
   text-transform: none;
+}
+
+.reveal h1,
+.reveal h2 {
+  color: #ffffff;
+}
+
+.reveal h3 {
+  color: var(--color-primary);
 }
 
 .reveal h1 {
@@ -92,7 +100,56 @@ body {
 }
 
 .title-slide {
+  position: relative;
+  overflow: hidden;
   text-align: left;
+  isolation: isolate;
+}
+
+.title-slide > * {
+  position: relative;
+  z-index: 1;
+}
+
+.title-slide--animated::before {
+  position: absolute;
+  inset: -28%;
+  z-index: 0;
+  content: "";
+  background:
+    radial-gradient(circle at 18% 28%, color-mix(in srgb, var(--color-secondary) 44%, transparent), transparent 30%),
+    radial-gradient(circle at 78% 18%, color-mix(in srgb, var(--color-accent) 38%, transparent), transparent 34%),
+    radial-gradient(circle at 52% 86%, color-mix(in srgb, var(--color-primary) 42%, transparent), transparent 32%),
+    linear-gradient(135deg, var(--color-bg), var(--color-surface-strong), var(--color-bg));
+  background-size: 180% 180%;
+  filter: saturate(1.18) blur(0.2px);
+  opacity: 0.88;
+  animation: harmonic-gradient-drift 28s ease-in-out infinite alternate;
+}
+
+.title-slide--animated::after {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  content: "";
+  background: radial-gradient(circle at 48% 48%, transparent, color-mix(in srgb, var(--color-bg) 62%, transparent) 72%);
+}
+
+@keyframes harmonic-gradient-drift {
+  0% {
+    transform: translate3d(-2%, -1%, 0) scale(1);
+    background-position: 0% 50%;
+  }
+
+  50% {
+    transform: translate3d(2%, 1.5%, 0) scale(1.04);
+    background-position: 80% 42%;
+  }
+
+  100% {
+    transform: translate3d(-1%, 2%, 0) scale(1.02);
+    background-position: 100% 60%;
+  }
 }
 
 .title-slide h1 {
@@ -119,6 +176,15 @@ body {
   max-width: 860px;
   font-size: 0.72em;
   line-height: 1.45;
+}
+
+.slide-subtitle {
+  max-width: 920px;
+  margin: 0.4rem 0 1.8rem !important;
+  color: var(--color-primary) !important;
+  font-size: 0.62em;
+  font-weight: 650;
+  line-height: 1.35;
 }
 
 .title-meta {
@@ -201,6 +267,12 @@ body {
 .theme-toggle:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .title-slide--animated::before {
+    animation: none;
+  }
 }
 
 @media (max-width: 800px) {

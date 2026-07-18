@@ -12,7 +12,7 @@
 
     <div class="reveal">
       <div class="slides">
-        <section class="title-slide" data-background-gradient="linear-gradient(135deg, var(--color-bg), var(--color-surface-strong))">
+        <section class="title-slide title-slide--animated" data-background-gradient="linear-gradient(135deg, var(--color-bg), var(--color-surface-strong))">
           <p class="eyebrow">Tech Talks</p>
           <h1>Cloud Orchestration</h1>
           <h2>with a Universal Kubernetes Control Plane</h2>
@@ -26,6 +26,7 @@
         <section>
           <p class="eyebrow">Problem space</p>
           <h2>Cloud orchestration is fragmented</h2>
+          <p class="slide-subtitle">Teams need one declarative intent layer across applications, clusters, policy, and cloud resources.</p>
           <div class="split-grid">
             <div class="card">
               <h3>Many control planes</h3>
@@ -41,6 +42,7 @@
         <section>
           <p class="eyebrow">Direction</p>
           <h2>Universal control plane primitives</h2>
+          <p class="slide-subtitle">Composable Kubernetes APIs become the product interface for platform orchestration.</p>
           <ul class="pill-list">
             <li>Declarative APIs for apps, environments, and cloud resources</li>
             <li>GitOps reconciliation as the operational backbone</li>
