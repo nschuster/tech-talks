@@ -115,7 +115,9 @@ body {
   overflow: hidden;
   display: flex !important;
   flex-direction: column;
-  justify-content: center;
+  align-items: flex-start;
+  justify-content: flex-start;
+  text-align: left;
 }
 
 .title-slide > *,
@@ -140,24 +142,6 @@ body {
   background-size: 170% 170%;
   filter: saturate(1.13);
   animation: harmonic-gradient-drift 28s ease-in-out infinite alternate;
-}
-
-.section-divider::before,
-.timeline-slide::before,
-.team-slide::before {
-  position: absolute;
-  inset: auto -10% -45% 38%;
-  z-index: 0;
-  width: 64rem;
-  height: 64rem;
-  content: "";
-  border-radius: 50%;
-  background: radial-gradient(circle, color-mix(in srgb, var(--color-primary) 16%, transparent), transparent 62%);
-}
-
-.archive::before {
-  inset: -35% 42% auto -18%;
-  background: radial-gradient(circle, color-mix(in srgb, var(--color-secondary) 16%, transparent), transparent 62%);
 }
 
 @keyframes harmonic-gradient-drift {
