@@ -20,7 +20,7 @@ Open the deck:
 http://localhost:5173/
 ```
 
-The deck currently recreates the uploaded PowerPoint from `ppt/Revolutionizing Cloud Orchestration.pptx` using high-fidelity rendered slide backgrounds in `assets/slides/`, with extracted text kept in the DOM for accessibility/search.
+The deck currently recreates the uploaded PowerPoint from `ppt/Revolutionizing Cloud Orchestration.pptx` as editable Reveal.js markup and CSS-driven layouts. The PowerPoint stays in `ppt/` as the source reference.
 
 ## Validate all decks from the repository root
 

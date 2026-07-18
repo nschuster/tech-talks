@@ -12,487 +12,319 @@
 
     <div class="reveal">
       <div class="slides">
-        <section class="ppt-slide" data-background-image="assets/slides/slide-01.webp" data-background-size="contain" data-background-color="#071025" aria-label="Cloud Orchestration — With a Universal Kubernetes Control Plane — Niklas Schuster | XX.XX.2026">
-          <div class="sr-only">
-            <h2>Cloud Orchestration</h2>
-            <ul>
-            <li>Cloud Orchestration</li>
-            <li>With a Universal Kubernetes Control Plane</li>
-            <li>Niklas Schuster | XX.XX.2026</li>
-            </ul>
+        <section class="title-slide title-slide--animated">
+          <p class="eyebrow">Cloud Orchestration</p>
+          <h1>Cloud Orchestration</h1>
+          <p class="title-kicker">With a Universal Kubernetes Control Plane</p>
+          <p class="speaker-line">Niklas Schuster | XX.XX.2026</p>
+        </section>
+
+        <section class="benefits-slide">
+          <p class="eyebrow">Universal Kubernetes Control Plane</p>
+          <h2>Key Benefits of Adopting a Universal Control Plane</h2>
+          <p class="slide-subtitle">One declarative API surface for applications, infrastructure, policy, and cloud services.</p>
+          <div class="benefit-grid">
+            <article class="benefit-card">
+              <span class="card-icon">↭</span>
+              <h3>Complete GitOps Coverage</h3>
+              <p>Achieve full lifecycle management of both applications and infrastructure through Git, enhancing consistency, traceability, and auditability.</p>
+            </article>
+            <article class="benefit-card benefit-card--featured">
+              <span class="card-icon">⎈</span>
+              <h3>Universal Kubernetes Control Plane</h3>
+              <p>Expose platform capabilities through familiar Kubernetes APIs and keep every resource continuously reconciled.</p>
+            </article>
+            <article class="benefit-card">
+              <span class="card-icon">⚙</span>
+              <h3>Operational Efficiency</h3>
+              <p>Automate orchestration and management of microservices and infrastructure, reducing operational overhead.</p>
+            </article>
+            <article class="benefit-card">
+              <span class="card-icon">⌁</span>
+              <h3>Enhanced Dev Experience</h3>
+              <p>Developers provision infrastructure and deploy applications over a unified API using familiar Kubernetes tooling.</p>
+            </article>
           </div>
         </section>
-        <section class="ppt-slide" data-background-image="assets/slides/slide-02.webp" data-background-size="contain" data-background-color="#071025" aria-label="COMPLETE GITOPS COVERAGE — Achieve full lifecycle management of both applications and infrastructure through Git, enhancing consistency, traceability, and auditability. — OPERATIONAL EFFICIENCY">
-          <div class="sr-only">
-            <h2>COMPLETE GITOPS COVERAGE</h2>
-            <ul>
-            <li>COMPLETE GITOPS COVERAGE</li>
-            <li>Achieve full lifecycle management of both applications and infrastructure through Git, enhancing consistency, traceability, and auditability.</li>
-            <li>OPERATIONAL EFFICIENCY</li>
-            <li>Automate orchestration and management of microservices and infrastructure, reduce operational overhead, freeing up time and resources to focus on value-adding activities.</li>
-            <li>Universal Kubernetes Control Plane</li>
-            <li>Key Benefits of Adopting a Universal Control Plane</li>
-            <li>....</li>
-            <li>ENHANCED DEV EXPERIENCE</li>
-            <li>Developers can provision infrastructure and deploy applications over a unified API using familiar Kubernetes tooling, reducing the learning curve and operational overhead.</li>
-            <li>2</li>
-            </ul>
+
+        <section>
+          <h2>The CI/CD Anti-Pattern: Pipelines Running The World</h2>
+          <p class="slide-subtitle">A single pipeline tries to build, deploy, provision, and operate everything.</p>
+          <div class="system-map system-map--anti">
+            <div class="domain left">
+              <span>Source Code</span><span>Infra Code</span><span>Deployment Files</span><span>Test Suites</span>
+            </div>
+            <div class="pipeline-core">GIT<br /><strong>CI/CD</strong></div>
+            <div class="domain right">
+              <span>Container Registry</span><span>Kubernetes Clusters</span><span>Cloud Infrastructure</span><span>3rd Party / On-Prem Resources</span>
+            </div>
           </div>
         </section>
-        <section class="ppt-slide" data-background-image="assets/slides/slide-03.webp" data-background-size="contain" data-background-color="#071025" aria-label="GIT — CLOUD PROVIDER — The CI/CD Anti-Pattern: Pipelines Running The World">
-          <div class="sr-only">
-            <h2>GIT</h2>
-            <ul>
-            <li>GIT</li>
-            <li>CLOUD PROVIDER</li>
-            <li>The CI/CD Anti-Pattern: Pipelines Running The World</li>
-            <li>3rd PARTY SYSTEMS</li>
-            <li>SOURCE CODE</li>
-            <li>INFRA CODE</li>
-            <li>DEPLOYMENT FILES</li>
-            <li>TEST SUITES</li>
-            <li>CONTAINER REGISTRY</li>
-            <li>KUBERNETES CLUSTERS</li>
-            <li>CLOUD INFRASTRUCTURE</li>
-            <li>ADDITIONAL INFRA AND/OR</li>
-            <li>ON-PREM RESSOPURCES</li>
-            </ul>
+
+        <section>
+          <h2>The CI/CD Anti-Pattern: Pipelines Are Not Platforms</h2>
+          <p class="slide-subtitle">Pipelines produce artifacts. Platforms continuously manage desired state.</p>
+          <div class="two-column">
+            <div class="system-map compact">
+              <div class="domain left"><span>Source Code</span><span>Infra Code</span><span>Deployment Files</span><span>Test Suites</span></div>
+              <div class="pipeline-core small">CI/CD</div>
+              <div class="domain right"><span>Registry</span><span>K8s Clusters</span><span>Cloud Infra</span><span>External Systems</span></div>
+            </div>
+            <div class="text-panel">
+              <p>Pipelines are excellent for compiling code and producing deployable artifacts. They are designed for deterministic, one-time execution where a defined sequence of steps produces a predictable output.</p>
+              <p>Infrastructure and platform resources are fundamentally different: they require continuous reconciliation, lifecycle management, and drift correction.</p>
+              <p><strong>Keep pipelines focused on build and packaging tasks.</strong></p>
+            </div>
           </div>
         </section>
-        <section class="ppt-slide" data-background-image="assets/slides/slide-04.webp" data-background-size="contain" data-background-color="#071025" aria-label="The CI/CD Anti-Pattern: Pipelines Are Not Platforms — SOURCE CODE — INFRA CODE">
-          <div class="sr-only">
-            <h2>The CI/CD Anti-Pattern: Pipelines Are Not Platforms</h2>
-            <ul>
-            <li>The CI/CD Anti-Pattern: Pipelines Are Not Platforms</li>
-            <li>SOURCE CODE</li>
-            <li>INFRA CODE</li>
-            <li>DEPLOYMENT FILES</li>
-            <li>TEST SUITES</li>
-            <li>CONTAINER REGISTRY</li>
-            <li>KUBERNETES CLUSTERS</li>
-            <li>CLOUD INFRASTRUCTURE</li>
-            <li>ADDITIONAL INFRA AND/OR</li>
-            <li>ON-PREM RESSOPURCES</li>
-            <li>GIT</li>
-            <li>CLOUD PROVIDER</li>
-            <li>3rd PARTY SYSTEMS</li>
-            <li>Pipelines are excellent for compiling code and producing deployable artefacts. They are designed for deterministic, one-time execution where a defined sequence of steps produces a predictable output.</li>
-            <li>However infrastructure and platform resources are fundamentally different: they require continuous reconciliation, lifecycle management, and drift correction.</li>
-            <li>For this reason, pipelines should remain focused on build and packaging tasks.</li>
-            </ul>
+
+        <section class="timeline-slide">
+          <h2>The Control Plane Evolution</h2>
+          <p class="slide-subtitle">From Primitive Beginnings to Orchestration Mastery</p>
+          <div class="timeline one">
+            <article><strong>1990s</strong><h3>Scripting</h3><p>Manual setup required running commands step by step. Early automation with scripts reduced effort but lacked scalability.</p></article>
           </div>
         </section>
-        <section class="ppt-slide" data-background-image="assets/slides/slide-05.webp" data-background-size="contain" data-background-color="#071025" aria-label="The Control Plane EvolutionFrom Primitive Beginnings to Orchestration Mastery — 1990s — SCRIPTINGManual setup required running commands step by step. Early automation with scripts reduced effort but lacked scalability.">
-          <div class="sr-only">
-            <h2>The Control Plane EvolutionFrom Primitive Beginnings to Orchestration Mastery</h2>
-            <ul>
-            <li>The Control Plane EvolutionFrom Primitive Beginnings to Orchestration Mastery</li>
-            <li>1990s</li>
-            <li>SCRIPTINGManual setup required running commands step by step. Early automation with scripts reduced effort but lacked scalability.</li>
-            </ul>
+
+        <section class="timeline-slide">
+          <h2>The Control Plane Evolution</h2>
+          <p class="slide-subtitle">From Primitive Beginnings to Orchestration Mastery</p>
+          <div class="timeline two">
+            <article><strong>1990s</strong><h3>Scripting</h3><p>Manual commands became repeatable scripts.</p></article>
+            <article><strong>2000s</strong><h3>Configuration Management</h3><p>Automation streamlined server configuration and remote management via SSH.</p></article>
           </div>
         </section>
-        <section class="ppt-slide" data-background-image="assets/slides/slide-06.webp" data-background-size="contain" data-background-color="#071025" aria-label="The Control Plane EvolutionFrom Primitive Beginnings to Orchestration Mastery — 1990s — SCRIPTINGManual setup required running commands step by step. Early automation with scripts reduced effort but lacked scalability.">
-          <div class="sr-only">
-            <h2>The Control Plane EvolutionFrom Primitive Beginnings to Orchestration Mastery</h2>
-            <ul>
-            <li>The Control Plane EvolutionFrom Primitive Beginnings to Orchestration Mastery</li>
-            <li>1990s</li>
-            <li>SCRIPTINGManual setup required running commands step by step. Early automation with scripts reduced effort but lacked scalability.</li>
-            <li>1990s</li>
-            <li>CONFIGURATION MANAGEMENTAutomation streamlined system configuration across servers, enabling scalability and remote management via SSH.</li>
-            <li>2000s</li>
-            </ul>
+
+        <section class="timeline-slide">
+          <h2>The Control Plane Evolution</h2>
+          <p class="slide-subtitle">From Primitive Beginnings to Orchestration Mastery</p>
+          <div class="timeline three">
+            <article><strong>1990s</strong><h3>Scripting</h3><p>Manual commands became repeatable scripts.</p></article>
+            <article><strong>2000s</strong><h3>Configuration Management</h3><p>Remote system configuration became scalable.</p></article>
+            <article><strong>2010s</strong><h3>Infrastructure as Code</h3><p>APIs were wrapped as code-to-request translators, but active management and drift correction were still limited.</p></article>
           </div>
         </section>
-        <section class="ppt-slide" data-background-image="assets/slides/slide-07.webp" data-background-size="contain" data-background-color="#071025" aria-label="1990s — 1990s — 1990s">
-          <div class="sr-only">
-            <h2>1990s</h2>
-            <ul>
-            <li>1990s</li>
-            <li>1990s</li>
-            <li>1990s</li>
-            <li>The Control Plane EvolutionFrom Primitive Beginnings to Orchestration Mastery</li>
-            <li>SCRIPTINGManual setup required running commands step by step. Early automation with scripts reduced effort but lacked scalability.</li>
-            <li>CONFIGURATION MANAGEMENTAutomation streamlined system configuration across servers, enabling scalability and remote management via SSH.</li>
-            <li>2000s</li>
-            <li>INFRASTRUCTURE AS CODEBuild to work around APIs servimg as Code-to-Requests translator. No active management of ressources leading to a potential risk of drift.</li>
-            <li>2010s</li>
-            </ul>
+
+        <section class="timeline-slide">
+          <h2>The Control Plane Evolution</h2>
+          <p class="slide-subtitle">From Primitive Beginnings to Orchestration Mastery</p>
+          <div class="timeline four">
+            <article><strong>1990s</strong><h3>Scripting</h3><p>Repeatable setup.</p></article>
+            <article><strong>2000s</strong><h3>Configuration Management</h3><p>Server state automation.</p></article>
+            <article><strong>2010s</strong><h3>Infrastructure as Code</h3><p>Declarative definitions and API requests.</p></article>
+            <article class="active"><strong>2020s</strong><h3>Control Planes</h3><p>Continuous reconciliation prevents drift and enables self-service multi-cloud APIs.</p></article>
           </div>
         </section>
-        <section class="ppt-slide" data-background-image="assets/slides/slide-08.webp" data-background-size="contain" data-background-color="#071025" aria-label="1990s — The Control Plane EvolutionFrom Primitive Beginnings to Orchestration Mastery — SCRIPTINGManual setup required running commands step by step. Early automation with scripts reduced effort but lacked scalability.">
-          <div class="sr-only">
-            <h2>1990s</h2>
-            <ul>
-            <li>1990s</li>
-            <li>The Control Plane EvolutionFrom Primitive Beginnings to Orchestration Mastery</li>
-            <li>SCRIPTINGManual setup required running commands step by step. Early automation with scripts reduced effort but lacked scalability.</li>
-            <li>CONFIGURATION MANAGEMENTAutomation streamlined system configuration across servers, enabling scalability and remote management via SSH.</li>
-            <li>2000s</li>
-            <li>INFRASTRUCTURE AS CODEBuild to work around APIs servimg as Code-to-Requests translator. No active management of ressources leading to a potential risk of drift.</li>
-            <li>2010s</li>
-            <li>CONTROL PLANES</li>
-            <li>Continuous reconciliation prevents drift, leveraging the Kubernetes ecosystem for automation and scalability while enabling self-service APIs for seamless multi-cloud management.</li>
-            <li>2020s</li>
-            </ul>
+
+        <section>
+          <h2>“Simplifying Cross And Multi-cloud Services With Cloud Agnostic Custom Kubernetes Resources”</h2>
+          <p class="slide-subtitle">Crossplane introduces composite resources, XRDs, and Compositions.</p>
+          <div class="quote-panel">
+            <p>Crossplane provides Composite Resource Definitions (XRDs) and Compositions to provision and manage custom Kubernetes resources with a self-defined abstraction layer.</p>
+            <p>An XRD describes the API spec of an XR. A Composition describes what is created in the underlying provider when a new XR reaches the control plane.</p>
           </div>
         </section>
-        <section class="ppt-slide" data-background-image="assets/slides/slide-09.webp" data-background-size="contain" data-background-color="#071025" aria-label="“Simplifying Cross And Multi-cloud Services With Cloud Agnostic Custom Kubernetes Resources” — 9 — Crossplane provides new concepts of Composite Ressorces Definitions (XRD) and Compositions to enable the provisioning and management of custom Kubernetes resources, Crossplane Composite Resources (XR), with a self defined layer of abstraction.">
-          <div class="sr-only">
-            <h2>“Simplifying Cross And Multi-cloud Services With Cloud Agnostic Custom Kubernetes Resources”</h2>
-            <ul>
-            <li>“Simplifying Cross And Multi-cloud Services With Cloud Agnostic Custom Kubernetes Resources”</li>
-            <li>9</li>
-            <li>Crossplane provides new concepts of Composite Ressorces Definitions (XRD) and Compositions to enable the provisioning and management of custom Kubernetes resources, Crossplane Composite Resources (XR), with a self defined layer of abstraction.</li>
-            <li>Where a XRD describes the API Spec of an XR and a Composition is a blueprint and describes what is created in the underlying cloud provider when a new XR is transferred to the control plane. Each XRD can be backed and filled by multiple compositions.</li>
-            </ul>
+
+        <section>
+          <h2>Simplify, Abstract, Deliver</h2>
+          <p class="slide-subtitle">Compose Your Own Custom Cloud API</p>
+          <div class="three-pill-flow">
+            <span>Simplify</span><span>Abstract</span><span>Deliver</span>
+          </div>
+          <div class="text-columns">
+            <p>Crossplane allows a platform team to create custom infrastructure abstractions, defining reusable components and exposing them via a custom API.</p>
+            <p>This hides complexity for developers through self-service APIs and abstracts the challenges of working across cloud environments.</p>
+            <p>Standardized building blocks let teams operate across multiple clouds without requiring deep infrastructure knowledge.</p>
           </div>
         </section>
-        <section class="ppt-slide" data-background-image="assets/slides/slide-10.webp" data-background-size="contain" data-background-color="#071025" aria-label="Simplify, Abstract, Deliver — Compose Your Own Custom Cloud API — 10">
-          <div class="sr-only">
-            <h2>Simplify, Abstract, Deliver</h2>
-            <ul>
-            <li>Simplify, Abstract, Deliver</li>
-            <li>Compose Your Own Custom Cloud API</li>
-            <li>10</li>
-            <li>Crossplane allows a platform team to create custom infrastructure abstractions, defining reusable components and exposing them via a custom API.</li>
-            <li>This hides complexity, not only simplifying resource management for developers through self-service APIs but also abstracting away the challenges of working across different contexts and cloud environments.</li>
-            <li>By using standardized building blocks, teams can seamlessly operate across multiple clouds, maintaining flexibility and scalability without needing deep infrastructure knowledge, all while streamlining operations.</li>
-            </ul>
+
+        <section>
+          <h2>Fusion of K8s and Crossplane</h2>
+          <p class="slide-subtitle">Standardization and Abstraction — Managed Resources</p>
+          <div class="two-column code-layout">
+            <div class="layer-stack">
+              <span>Abstraction</span><span>Exposure</span><span>Orchestration</span><strong>Managed Resources (MR)</strong>
+            </div>
+            <pre><code>---
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: VPC
+metadata:
+  name: example-vpc
+spec:
+  forProvider:
+    region: eu-central-1
+    enableDnsHostNames: true
+    enableDnsSupport: true
+    cidrBlock: 10.40.0.0/16</code></pre>
           </div>
         </section>
-        <section class="ppt-slide" data-background-image="assets/slides/slide-11.webp" data-background-size="contain" data-background-color="#071025" aria-label="Fusion of K8s and CrossplaneStandardization and Abstraction — ABSTRACTION — EXPOSURE">
-          <div class="sr-only">
-            <h2>Fusion of K8s and CrossplaneStandardization and Abstraction</h2>
-            <ul>
-            <li>Fusion of K8s and CrossplaneStandardization and Abstraction</li>
-            <li>ABSTRACTION</li>
-            <li>EXPOSURE</li>
-            <li>ORCHESTRATION</li>
-            <li>MANAGED RESOURCES (MR)</li>
-            <li>Crossplane extends Kubernetes management capabilities through providers that offer a controller and a set of Custom Resource Definitions (CRDs), mapping each API object of an external system as a Kubernetes resource.</li>
-            <li>---</li>
-            <li>apiVersion: ec2.aws.upbound.io/v1beta1</li>
-            <li>kind: VPC</li>
-            <li>metadata:</li>
-            <li>name: example-vpc</li>
-            <li>spec:</li>
-            <li>forProvider:</li>
-            <li>region: eu-central-1</li>
-            <li>enableDnsHostNames: true</li>
-            <li>enableDnsSupport: true</li>
-            <li>cidrBlock: 10.40.0.0/16</li>
-            </ul>
+
+        <section>
+          <h2>Fusion of K8s and Crossplane</h2>
+          <p class="slide-subtitle">Standardization and Abstraction — Composite Resources</p>
+          <div class="two-column">
+            <div class="layer-stack highlight-xr">
+              <span>Abstraction</span><span>Exposure</span><span>Orchestration</span><strong>Composite Resources (XR)</strong>
+            </div>
+            <div class="text-panel large-copy">
+              <p>Crossplane's composite resources enable the management of complex infrastructure by combining multiple resources into a single cohesive unit with a chosen level of abstraction.</p>
+            </div>
           </div>
         </section>
-        <section class="ppt-slide" data-background-image="assets/slides/slide-12.webp" data-background-size="contain" data-background-color="#071025" aria-label="ABSTRACTION — Fusion of K8s and CrossplaneStandardization and Abstraction — EXPOSURE">
-          <div class="sr-only">
-            <h2>ABSTRACTION</h2>
-            <ul>
-            <li>ABSTRACTION</li>
-            <li>Fusion of K8s and CrossplaneStandardization and Abstraction</li>
-            <li>EXPOSURE</li>
-            <li>ORCHESTRATION</li>
-            <li>COMPOSITE RESOURCES (XR)</li>
-            <li>Crossplane&#x27;s composite resources enable the management of complex infrastructure by combining multiple resources into a single, cohesive unit with any choosen level of abstraction.</li>
-            </ul>
+
+        <section>
+          <h2>The Anatomy of Crossplane</h2>
+          <p class="slide-subtitle">XRs, Compositions &amp; Managed Resources</p>
+          <div class="anatomy">
+            <div class="api-box">Custom K8s Resources<br /><small>NodePools · Monitoring · Logging · GitOps</small></div>
+            <div class="api-box">XRs</div>
+            <div class="api-box">XRDs &amp; Compositions</div>
+            <div class="api-box">Managed Resources</div>
+            <div class="cloud-row"><span>GKE Cluster</span><span>EKS Cluster</span><span>NoSQL Database</span></div>
+            <aside class="package-card"><strong>Crossplane XPKG</strong><p>Configuration packages bundle Compositions, XRDs, Providers, and Functions as portable OCI images.</p></aside>
           </div>
         </section>
-        <section class="ppt-slide" data-background-image="assets/slides/slide-13.webp" data-background-size="contain" data-background-color="#071025" aria-label="The Anatomy of CrossplaneXRs, Compositions &amp; Managed Resources — CUSTOM K8S RESSOURCES — NodePools">
-          <div class="sr-only">
-            <h2>The Anatomy of CrossplaneXRs, Compositions &amp; Managed Resources</h2>
-            <ul>
-            <li>The Anatomy of CrossplaneXRs, Compositions &amp; Managed Resources</li>
-            <li>CUSTOM K8S RESSOURCES</li>
-            <li>NodePools</li>
-            <li>Monitoring</li>
-            <li>GKE Cluster</li>
-            <li>Logging</li>
-            <li>GitOps</li>
-            <li>GKE KUBERNETES CLUSTER</li>
-            <li>EKS KUBERNETES CLUSTER</li>
-            <li>NoSQL DATABASE</li>
-            <li>XRs</li>
-            <li>XRDs, COMPOSITIONS</li>
-            <li>MANAGED RESOURCES</li>
-            <li>*CROSSPLANE XPKG</li>
-            <li>A Configuration package is an OCI container image containing Compositions, Composite Resource Definitions and any required Providers or Functions.</li>
-            <li>Configuration packages make your Crossplane configuration fully portable.</li>
-            <li>CONFIGURATION PACKAGE*</li>
-            </ul>
+
+        <section>
+          <h2>Crossplane Packages XPKG</h2>
+          <p class="slide-subtitle">Package XRDs, Compositions, Providers, and Functions as portable OCI artifacts.</p>
+          <div class="two-column code-layout wide-code">
+            <pre><code>$ cat crossplane.yaml
+---
+apiVersion: meta.pkg.crossplane.io/v1alpha1
+kind: Configuration
+metadata:
+  name: example-configuration
+spec:
+  crossplane:
+    version: ">=v1.19.0"
+  dependsOn:
+  - provider: xpkg.upbound.io/upbound/provider-aws-eks
+    version: '>=v1.0.0'
+  - provider: xpkg.upbound.io/upbound/provider-azure-containerservice
+    version: '>=v1.0.0'
+  - provider: xpkg.upbound.io/upbound/provider-gcp-container
+    version: '>=v1.0.0'</code></pre>
+            <div class="provider-grid">
+              <span>provider-aws <strong>1008 CRDs</strong></span><span>provider-gcp <strong>403 CRDs</strong></span><span>provider-azure <strong>754 CRDs</strong></span><span>provider-kubernetes <strong>9 CRDs</strong></span><span>provider-helm <strong>7 CRDs</strong></span><span>provider-github <strong>77 CRDs</strong></span><span>provider-gitlab <strong>17 CRDs</strong></span>
+            </div>
           </div>
         </section>
-        <section class="ppt-slide" data-background-image="assets/slides/slide-14.webp" data-background-size="contain" data-background-color="#071025" aria-label="Crossplane Packages XPKG — Example YAML file for packaging and building Crossplane XPKG containing XRDs and Compositions relying on Managed Ressources from Amazon EKS(AWS), Azure AKS (Azure) and GKE (GCP) Crossplane Providers. — 14">
-          <div class="sr-only">
-            <h2>Crossplane Packages XPKG</h2>
-            <ul>
-            <li>Crossplane Packages XPKG</li>
-            <li>Example YAML file for packaging and building Crossplane XPKG containing XRDs and Compositions relying on Managed Ressources from Amazon EKS(AWS), Azure AKS (Azure) and GKE (GCP) Crossplane Providers.</li>
-            <li>14</li>
-            <li>$ cat crossplane.yaml</li>
-            <li>---</li>
-            <li>apiVersion: meta.pkg.crossplane.io/v1alpha1</li>
-            <li>kind: Configuration</li>
-            <li>metadata:</li>
-            <li>name: example-configuration</li>
-            <li>spec:</li>
-            <li>crossplane:</li>
-            <li>version: &quot;&gt;=v1.19.0&quot;</li>
-            <li>dependsOn:</li>
-            <li>- provider: xpkg.upbound.io/upbound/provider-aws-eks</li>
-            <li>version: &#x27;&gt;=v1.0.0&#x27;</li>
-            <li>- provider: xpkg.upbound.io/upbound/provider-azure-containerservice</li>
-            <li>version: &#x27;&gt;=v1.0.0&#x27;</li>
-            <li>- provider: xpkg.upbound.io/upbound/provider-gcp-container</li>
-            <li>version: &#x27;&gt;=v1.0.0&#x27;</li>
-            <li>provider-aws</li>
-            <li>1008 CRDs</li>
-            <li>official</li>
-            <li>provider-gcp</li>
-            <li>403 CRDs</li>
-            <li>official</li>
-            <li>provider-azure</li>
-            <li>754 CRDs</li>
-            <li>official</li>
-            <li>provider-kubernetes</li>
-            <li>9 CRDs</li>
-            <li>official</li>
-            <li>provider-helm</li>
-            <li>7 CRDs</li>
-            <li>official</li>
-            <li>provider-github</li>
-            <li>77 CRDs</li>
-            <li>provider-gitlab</li>
-            <li>17 CRDs</li>
-            </ul>
+
+        <section>
+          <h2>The CI/CD Anti-Pattern: Pipelines Running The World</h2>
+          <p class="slide-subtitle">Under construction marker from the source deck.</p>
+          <div class="under-construction">UNDER CONSTRUCTION</div>
+          <div class="system-map compact faded">
+            <div class="domain left"><span>Source Code</span><span>Infra Code</span><span>Deployment Files</span><span>Test Suites</span></div>
+            <div class="pipeline-core small">CI/CD</div>
+            <div class="domain right"><span>Registry</span><span>K8s</span><span>Cloud</span><span>3rd Party</span></div>
           </div>
         </section>
-        <section class="ppt-slide" data-background-image="assets/slides/slide-15.webp" data-background-size="contain" data-background-color="#071025" aria-label="GIT — The CI/CD Anti-Pattern: Pipelines Running The World — CLOUD PROVIDER">
-          <div class="sr-only">
-            <h2>GIT</h2>
-            <ul>
-            <li>GIT</li>
-            <li>The CI/CD Anti-Pattern: Pipelines Running The World</li>
-            <li>CLOUD PROVIDER</li>
-            <li>3rd PARTY SYSTEMS</li>
-            <li>SOURCE CODE</li>
-            <li>INFRA CODE</li>
-            <li>DEPLOYMENT FILES</li>
-            <li>TEST SUITES</li>
-            <li>CONTAINER REGISTRY</li>
-            <li>KUBERNETES CLUSTERS</li>
-            <li>CLOUD INFRASTRUCTURE</li>
-            <li>ADDITIONAL INFRA AND/OR</li>
-            <li>ON-PREM RESSOPURCES</li>
-            <li>UNDER CONSTRUCTION</li>
-            </ul>
+
+        <section>
+          <h2>The CI/CD Anti-Pattern: Pipelines Running The World</h2>
+          <p class="slide-subtitle">Separate build from manage.</p>
+          <div class="split-flow">
+            <div><strong>Build</strong><span>Source Code</span><span>Container Registry</span></div>
+            <div><strong>Manage</strong><span>Infra Definitions</span><span>Desired State</span><span>K8s / Cloud / External Resources</span></div>
+            <div class="control-plane-badge">Universal Control Plane</div>
           </div>
         </section>
-        <section class="ppt-slide" data-background-image="assets/slides/slide-16.webp" data-background-size="contain" data-background-color="#071025" aria-label="The CI/CD Anti-Pattern: Pipelines Running The World — BUILD — MANAGE">
-          <div class="sr-only">
-            <h2>The CI/CD Anti-Pattern: Pipelines Running The World</h2>
-            <ul>
-            <li>The CI/CD Anti-Pattern: Pipelines Running The World</li>
-            <li>BUILD</li>
-            <li>MANAGE</li>
-            <li>SOURCE CODE</li>
-            <li>INFRA DEFINITIONS</li>
-            <li>DESIRED STATE</li>
-            <li>CONTAINER REGISTRY</li>
-            <li>KUBERNETES CLUSTERS</li>
-            <li>CLOUD INFRASTRUCTURE</li>
-            <li>ADDITIONAL INFRA AND/OR</li>
-            <li>ON-PREM RESSOPURCES</li>
-            <li>GIT</li>
-            <li>CLOUD PROVIDER</li>
-            <li>3rd PARTY SYSTEMS</li>
-            <li>Universal Control Plane</li>
-            <li>...</li>
-            </ul>
+
+        <section>
+          <h2>The CI/CD Anti-Pattern: Pipelines Running The World</h2>
+          <p class="slide-subtitle">A universal control plane owns management and reconciliation.</p>
+          <div class="split-flow emphasized">
+            <div><strong>Build</strong><span>Source Code</span><span>Artifacts</span></div>
+            <div><strong>Manage</strong><span>Desired State</span><span>Provision</span><span>Reconcile</span><span>Repair Drift</span></div>
+            <div class="control-plane-badge">Universal Control Plane</div>
           </div>
         </section>
-        <section class="ppt-slide" data-background-image="assets/slides/slide-17.webp" data-background-size="contain" data-background-color="#071025" aria-label="The CI/CD Anti-Pattern: Pipelines Running The World — BUILD — MANAGE">
-          <div class="sr-only">
-            <h2>The CI/CD Anti-Pattern: Pipelines Running The World</h2>
-            <ul>
-            <li>The CI/CD Anti-Pattern: Pipelines Running The World</li>
-            <li>BUILD</li>
-            <li>MANAGE</li>
-            <li>SOURCE CODE</li>
-            <li>INFRA DEFINITIONS</li>
-            <li>DESIRED STATE</li>
-            <li>CONTAINER REGISTRY</li>
-            <li>KUBERNETES CLUSTERS</li>
-            <li>CLOUD INFRASTRUCTURE</li>
-            <li>ADDITIONAL INFRA AND/OR</li>
-            <li>ON-PREM RESSOPURCES</li>
-            <li>GIT</li>
-            <li>CLOUD PROVIDER</li>
-            <li>3rd PARTY SYSTEMS</li>
-            <li>Universal Control Plane</li>
-            <li>...</li>
-            </ul>
+
+        <section>
+          <h2>Unlocking Limitless Potential</h2>
+          <p class="slide-subtitle">Kubernetes and the Ever-Expanding Ecosystem</p>
+          <div class="ecosystem-layout">
+            <p>Kubernetes provides a programmable control plane for modern infrastructure and platforms. The CNCF ecosystem continuously extends its capabilities and unlocks new possibilities for flexible, scalable platforms.</p>
+            <div class="ecosystem-grid"><span>Application Definition</span><span>Secrets &amp; Certificates</span><span>Observability &amp; Networking</span><span>Deployment &amp; Delivery</span><span>Scaling &amp; Scheduling</span><span>Security &amp; Compliance</span></div>
           </div>
         </section>
-        <section class="ppt-slide" data-background-image="assets/slides/slide-18.webp" data-background-size="contain" data-background-color="#071025" aria-label="Unlocking Limitless Potential — Kubernetes and the Ever-Expanding Ecosystem — Kubernetes provides a programmable control plane for modern infrastructure and platforms. The vast ecosystem captured in the CNCF Landscape demonstrates how the community continuously extends its capabilities. This growth unlocks new possibilities for building flexible and scalable platforms.">
-          <div class="sr-only">
-            <h2>Unlocking Limitless Potential</h2>
-            <ul>
-            <li>Unlocking Limitless Potential</li>
-            <li>Kubernetes and the Ever-Expanding Ecosystem</li>
-            <li>Kubernetes provides a programmable control plane for modern infrastructure and platforms. The vast ecosystem captured in the CNCF Landscape demonstrates how the community continuously extends its capabilities. This growth unlocks new possibilities for building flexible and scalable platforms.</li>
-            <li>18</li>
-            <li>APPLICATION DEFINITION</li>
-            <li>SECRETS &amp; CERTIFICATES</li>
-            <li>OBSERVABILITY &amp; NETW.</li>
-            <li>DEPLOYMENT &amp; DELIVERY</li>
-            <li>SCALING &amp; SCHEDULING</li>
-            <li>SECURITY &amp; COMPLIANCE</li>
-            </ul>
+
+        <section>
+          <h2>Kubernetes Control Plane Bootstrapping The Self-Repairing Frontier</h2>
+          <p class="slide-subtitle">Universal Control Plane — Step 1</p>
+          <div class="bootstrap-flow"><span>Git</span><span>Workflows</span><span>Bootstrapping Scripts</span><span>Bootstrapping Cluster</span><strong>Universal Control Plane</strong><em>Provision / Manage</em></div>
+        </section>
+
+        <section>
+          <h2>Kubernetes Control Plane Bootstrapping The Self-Repairing Frontier</h2>
+          <p class="slide-subtitle">Universal Control Plane — Step 2</p>
+          <div class="bootstrap-flow migrate"><span>Git</span><span>Workflows</span><span>Backup / Restore</span><span>Shift / Migrate Cluster State</span><strong>Universal Control Plane</strong><em>Manage</em></div>
+        </section>
+
+        <section>
+          <h2>Kubernetes Control Plane Bootstrapping The Self-Repairing Frontier</h2>
+          <p class="slide-subtitle">Universal Control Plane — Step 3</p>
+          <div class="bootstrap-flow deprovision"><span>Git</span><span>Workflows</span><span>Bootstrapping Scripts</span><span>Deprovision</span><strong>Universal Control Plane</strong><em>Manage</em></div>
+        </section>
+
+        <section class="section-divider">
+          <p class="section-number">01</p>
+          <h2>Backup Slides</h2>
+          <p class="slide-subtitle">Multi-Cloud</p>
+        </section>
+
+        <section class="section-divider">
+          <p class="section-number">02</p>
+          <h2>Backup Slides</h2>
+          <p class="slide-subtitle">IDP</p>
+        </section>
+
+        <section>
+          <h2>Bridging Autonomy and Standardization</h2>
+          <p class="slide-subtitle">Internal Developer Platform (IDP)</p>
+          <div class="balance-layout">
+            <div class="axis"><span>Autonomy</span><span>Complexity</span></div>
+            <div class="axis"><span>Restriction</span><span>Standardization</span></div>
+            <div class="text-panel"><p>An IDP maintains team autonomy by offering self-service tools, allowing developers to manage environments, deploy code, and configure resources independently.</p><p>An IDP enables standardization through a service catalog with pre-approved, reusable tools and environments.</p></div>
           </div>
         </section>
-        <section class="ppt-slide" data-background-image="assets/slides/slide-19.webp" data-background-size="contain" data-background-color="#071025" aria-label="Universal Control Plane — Kubernetes Control Plane Bootstrapping The Self-Repairing Frontier «STEP 1» — UNIVERSAL CONTROL PLANE">
-          <div class="sr-only">
-            <h2>Universal Control Plane</h2>
-            <ul>
-            <li>Universal Control Plane</li>
-            <li>Kubernetes Control Plane Bootstrapping The Self-Repairing Frontier «STEP 1»</li>
-            <li>UNIVERSAL CONTROL PLANE</li>
-            <li>BOOTSTAPPING CLUSTER</li>
-            <li>BOOTSTAPPING SCRIPTS</li>
-            <li>GIT</li>
-            <li>WORKFLOWS</li>
-            <li>PROVISION</li>
-            <li>MANAGE</li>
-            </ul>
+
+        <section>
+          <h2>Simplify, Abstract, Deliver</h2>
+          <p class="slide-subtitle">Compose Your Own Custom Cloud API</p>
+          <div class="text-columns">
+            <p>An IDP allows a platform team to create custom infrastructure abstractions, defining reusable components and exposing them via a custom API.</p>
+            <p>This hides complexity for developers through self-service APIs and abstracts working across contexts and cloud environments.</p>
+            <p>Standardized building blocks let teams operate across multiple clouds while streamlining operations.</p>
           </div>
         </section>
-        <section class="ppt-slide" data-background-image="assets/slides/slide-20.webp" data-background-size="contain" data-background-color="#071025" aria-label="Universal Control Plane — Kubernetes Control Plane Bootstrapping The Self-Repairing Frontier «STEP 2» — UNIVERSAL CONTROL PLANE">
-          <div class="sr-only">
-            <h2>Universal Control Plane</h2>
-            <ul>
-            <li>Universal Control Plane</li>
-            <li>Kubernetes Control Plane Bootstrapping The Self-Repairing Frontier «STEP 2»</li>
-            <li>UNIVERSAL CONTROL PLANE</li>
-            <li>BOOTSTAPPING CLUSTER</li>
-            <li>BOOTSTAPPING SCRIPTS</li>
-            <li>GIT</li>
-            <li>WORKFLOWS</li>
-            <li>SHIFT/MIGRATE CLUSTER STATE</li>
-            <li>BACKUP/RESTORE</li>
-            <li>MANAGE</li>
-            </ul>
+
+        <section>
+          <h2>IDP Powered by Kubernetes Control Plane</h2>
+          <p class="slide-subtitle">GitLab, developers, accounts, and infrastructure resources through one platform API.</p>
+          <div class="idp-map">
+            <span>User / Developer</span><span>GitLab</span><strong>Universal Control Plane</strong><span>AWS Accounts</span><span>Azure Accounts</span><span>GCP Accounts</span><span>Infrastructure Resources</span><span>Infrastructure Resources</span><span>Infrastructure Resources</span>
           </div>
         </section>
-        <section class="ppt-slide" data-background-image="assets/slides/slide-21.webp" data-background-size="contain" data-background-color="#071025" aria-label="Universal Control Plane — Kubernetes Control Plane Bootstrapping The Self-Repairing Frontier «STEP 3» — UNIVERSAL CONTROL PLANE">
-          <div class="sr-only">
-            <h2>Universal Control Plane</h2>
-            <ul>
-            <li>Universal Control Plane</li>
-            <li>Kubernetes Control Plane Bootstrapping The Self-Repairing Frontier «STEP 3»</li>
-            <li>UNIVERSAL CONTROL PLANE</li>
-            <li>BOOTSTAPPING CLUSTER</li>
-            <li>BOOTSTAPPING SCRIPTS</li>
-            <li>GIT</li>
-            <li>WORKFLOWS</li>
-            <li>DEPROVISION</li>
-            <li>MANAGE</li>
-            </ul>
-          </div>
+
+        <section>
+          <h2>Internal Developer Platform</h2>
+          <p class="slide-subtitle">Self-service product interface for platform capabilities.</p>
+          <div class="portal-wireframe"><span>Catalog</span><span>Golden Paths</span><span>Templates</span><span>Environments</span><span>Observability</span><span>Governance</span></div>
         </section>
-        <section class="ppt-slide section-divider" data-background-image="assets/slides/slide-22.webp" data-background-size="contain" data-background-color="#071025" aria-label="01 — Backup Slides — Multi-Cloud">
-          <div class="sr-only">
-            <h2>01</h2>
-            <ul>
-            <li>01</li>
-            <li>Backup Slides</li>
-            <li>Multi-Cloud</li>
-            </ul>
-          </div>
+
+        <section class="section-divider archive">
+          <p class="section-number">03</p>
+          <h2>Archive</h2>
         </section>
-        <section class="ppt-slide section-divider" data-background-image="assets/slides/slide-23.webp" data-background-size="contain" data-background-color="#071025" aria-label="02 — Backup Slides — IDP">
-          <div class="sr-only">
-            <h2>02</h2>
-            <ul>
-            <li>02</li>
-            <li>Backup Slides</li>
-            <li>IDP</li>
-            </ul>
-          </div>
-        </section>
-        <section class="ppt-slide" data-background-image="assets/slides/slide-24.webp" data-background-size="contain" data-background-color="#071025" aria-label="Bridging Autonomy and StandardizationInternal Developer Platform (IDP) — AUTONOMY — COMPLEXITY">
-          <div class="sr-only">
-            <h2>Bridging Autonomy and StandardizationInternal Developer Platform (IDP)</h2>
-            <ul>
-            <li>Bridging Autonomy and StandardizationInternal Developer Platform (IDP)</li>
-            <li>AUTONOMY</li>
-            <li>COMPLEXITY</li>
-            <li>RESTRICTION</li>
-            <li>STANDARDIZATION</li>
-            <li>An IDP maintains team autonomy by offering self-service tools, allowing developers to manage their environments, deploy code, and configure resources independently, speeding up workflows while reducing reliance on other teams.</li>
-            <li>An IDP enables standardization through a service catalog by providing teams with pre-approved, reusable tools and environments. This ensures consistent, secure practices while allowing teams to choose from standardized options.</li>
-            </ul>
-          </div>
-        </section>
-        <section class="ppt-slide" data-background-image="assets/slides/slide-25.webp" data-background-size="contain" data-background-color="#071025" aria-label="Simplify, Abstract, Deliver — Compose Your Own Custom Cloud API — 25">
-          <div class="sr-only">
-            <h2>Simplify, Abstract, Deliver</h2>
-            <ul>
-            <li>Simplify, Abstract, Deliver</li>
-            <li>Compose Your Own Custom Cloud API</li>
-            <li>25</li>
-            <li>An IDP allows a platform team to create custom infrastructure abstractions, defining reusable components and exposing them via a custom API. ​</li>
-            <li>​</li>
-            <li>This hides complexity, not only simplifying resource management for developers through self-service APIs but also abstracting away the challenges of working across different contexts and cloud environments.​</li>
-            <li>​</li>
-            <li>By using standardized building blocks, teams can seamlessly operate across multiple clouds, maintaining flexibility and scalability without needing deep infrastructure knowledge, all while streamlining operations.</li>
-            </ul>
-          </div>
-        </section>
-        <section class="ppt-slide" data-background-image="assets/slides/slide-26.webp" data-background-size="contain" data-background-color="#071025" aria-label="IDP Powered by Kubernetes Control Plane — GitLab — Universal Control Plane">
-          <div class="sr-only">
-            <h2>IDP Powered by Kubernetes Control Plane</h2>
-            <ul>
-            <li>IDP Powered by Kubernetes Control Plane</li>
-            <li>GitLab</li>
-            <li>Universal Control Plane</li>
-            <li>USER, DEVELOPER</li>
-            <li>INFRASTRUCTURE RESOURCES</li>
-            <li>AWS ACCOUNTS</li>
-            <li>AZURE ACCOUNTS</li>
-            <li>GCP ACCOUNTS</li>
-            <li>INFRASTRUCTURE RESOURCES</li>
-            <li>INFRASTRUCTURE RESOURCES</li>
-            </ul>
-          </div>
-        </section>
-        <section class="ppt-slide" data-background-image="assets/slides/slide-27.webp" data-background-size="contain" data-background-color="#071025" aria-label="Internal Developer Platform">
-          <div class="sr-only">
-            <h2>Internal Developer Platform</h2>
-            <ul>
-            <li>Internal Developer Platform</li>
-            </ul>
-          </div>
-        </section>
-        <section class="ppt-slide section-divider" data-background-image="assets/slides/slide-28.webp" data-background-size="contain" data-background-color="#071025" aria-label="03 — Archive">
-          <div class="sr-only">
-            <h2>03</h2>
-            <ul>
-            <li>03</li>
-            <li>Archive</li>
-            </ul>
-          </div>
-        </section>
-        <section class="ppt-slide team-slide" data-background-image="assets/slides/slide-29.webp" data-background-size="contain" data-background-color="#071025" aria-label="Team — Nikal Schuster — Senior Cloud Solution Architect">
-          <div class="sr-only">
-            <h2>Team</h2>
-            <ul>
-            <li>Team</li>
-            <li>Nikal Schuster</li>
-            <li>Senior Cloud Solution Architect</li>
-            </ul>
-          </div>
+
+        <section class="team-slide">
+          <p class="eyebrow">Team</p>
+          <h2>Niklas Schuster</h2>
+          <p class="slide-subtitle">Senior Cloud Solution Architect</p>
+          <div class="team-card"><span>⎈</span><strong>Cloud Orchestration</strong><small>Universal Kubernetes Control Plane</small></div>
         </section>
       </div>
     </div>
