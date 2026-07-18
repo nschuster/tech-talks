@@ -48,6 +48,8 @@ body {
 
 .reveal section {
   box-sizing: border-box;
+  width: 100%;
+  height: 100%;
   min-height: 100%;
   padding: 5rem 5.8rem 4rem;
 }
@@ -129,25 +131,8 @@ body {
   z-index: 1;
 }
 
-.title-slide--animated::before {
-  position: absolute;
-  inset: -28%;
-  z-index: 0;
-  content: "";
-  background:
-    radial-gradient(circle at 20% 28%, rgba(30, 199, 230, 0.52), transparent 23%),
-    radial-gradient(circle at 76% 18%, rgba(45, 125, 255, 0.45), transparent 26%),
-    radial-gradient(circle at 58% 78%, rgba(89, 230, 169, 0.18), transparent 24%),
-    linear-gradient(130deg, #040b18 0%, #081c3f 46%, #04101f 100%);
-  background-size: 170% 170%;
-  filter: saturate(1.13);
-  animation: harmonic-gradient-drift 28s ease-in-out infinite alternate;
-}
-
-@keyframes harmonic-gradient-drift {
-  0% { transform: translate3d(-2%, -1%, 0) scale(1) rotate(0deg); background-position: 0% 48%; }
-  50% { transform: translate3d(2%, 1.5%, 0) scale(1.05) rotate(4deg); background-position: 72% 40%; }
-  100% { transform: translate3d(-1%, 2%, 0) scale(1.08) rotate(-3deg); background-position: 100% 58%; }
+.title-slide--animated {
+  background: transparent;
 }
 
 .reveal .controls {
@@ -162,45 +147,6 @@ body {
 .reveal .progress {
   color: var(--color-primary);
   height: 4px;
-}
-
-.theme-toggle {
-  position: fixed;
-  z-index: 20;
-  top: 1rem;
-  right: 1rem;
-  width: 2.25rem;
-  height: 2.25rem;
-  display: grid;
-  place-items: center;
-  border: 1px solid var(--color-border);
-  border-radius: 999px;
-  background: var(--color-card);
-  color: var(--color-text);
-  cursor: pointer;
-  font: 700 1.05rem/1 var(--font-body);
-  opacity: 0.3;
-  padding: 0;
-  backdrop-filter: blur(16px);
-  transition: opacity 160ms ease, transform 160ms ease, border-color 160ms ease;
-}
-
-.theme-toggle:hover,
-.theme-toggle:focus-visible {
-  border-color: var(--color-primary);
-  opacity: 0.82;
-  transform: translateY(-1px);
-}
-
-.theme-toggle:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 3px;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .title-slide--animated::before {
-    animation: none;
-  }
 }
 
 @media (max-width: 900px) {

@@ -4,7 +4,12 @@ const deck = new Reveal({
   hash: true,
   controls: true,
   progress: true,
-  center: true,
+  center: false,
+  width: 1280,
+  height: 720,
+  margin: 0,
+  minScale: 1,
+  maxScale: 1,
   transition: 'slide',
   backgroundTransition: 'fade'
 });
