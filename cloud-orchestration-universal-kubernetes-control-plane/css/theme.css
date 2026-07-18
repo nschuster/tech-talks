@@ -11,6 +11,11 @@
   --color-secondary: #2d7dff;
   --color-border: rgba(255, 255, 255, 0.16);
   --color-card: rgba(255, 255, 255, 0.075);
+  --title-gradient-1: #35f2ff;
+  --title-gradient-2: #7c5cff;
+  --title-gradient-3: #ff4fd8;
+  --title-gradient-4: #58ffb3;
+  --title-gradient-speed: 5.5s;
 }
 
 :root[data-theme="light"] {
@@ -68,6 +73,31 @@ body {
 .reveal h1 {
   max-width: 1050px;
   font-size: 3.25em;
+}
+
+.title-slide h1 {
+  color: transparent;
+  background:
+    linear-gradient(
+      105deg,
+      var(--title-gradient-1) 0%,
+      var(--title-gradient-2) 22%,
+      var(--title-gradient-3) 48%,
+      var(--title-gradient-4) 72%,
+      var(--title-gradient-1) 100%
+    );
+  background-size: 260% 100%;
+  background-position: 0% 50%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 22px color-mix(in srgb, var(--title-gradient-2) 34%, transparent));
+  animation: title-heading-gradient-flow var(--title-gradient-speed) linear infinite;
+}
+
+@keyframes title-heading-gradient-flow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 260% 50%; }
 }
 
 .reveal h2 {
@@ -147,6 +177,12 @@ body {
 .reveal .progress {
   color: var(--color-primary);
   height: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .title-slide h1 {
+    animation: none;
+  }
 }
 
 @media (max-width: 900px) {
