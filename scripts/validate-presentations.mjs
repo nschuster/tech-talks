@@ -1,16 +1,20 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-const presentationsDir = 'presentations';
+const presentationsDir = '.';
 const requiredFiles = ['index.html', 'css/theme.css', 'js/deck.js'];
 
 if (!existsSync(presentationsDir)) {
   throw new Error('Missing presentations/ directory');
 }
 
-const decks = readdirSync(presentationsDir, { withFileTypes: true }).filter((entry) => entry.isDirectory());
+const ignoredDirectories = new Set(['.git', 'node_modules', 'scripts', 'dist']);
+const decks = readdirSync(presentationsDir, { withFileTypes: true })
+  .filter((entry) => entry.isDirectory())
+  .filter((entry) => !ignoredDirectories.has(entry.name))
+  .filter((entry) => existsSync(join(presentationsDir, entry.name, 'index.html')));
 if (decks.length === 0) {
-  throw new Error('No presentation folders found');
+  throw new Error('No top-level presentation folders found');
 }
 
 for (const deck of decks) {

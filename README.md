@@ -1,10 +1,10 @@
-# Web Tech Talks
+# Tech Talks
 
-Reveal.js-based presentation workspace. Each folder under `presentations/` is a standalone deck.
+Reveal.js-based presentation workspace. Each top-level folder is a standalone deck.
 
 ## Presentations
 
-- [`presentations/cloud-orchestration-universal-kubernetes-control-plane`](presentations/cloud-orchestration-universal-kubernetes-control-plane/) — **Cloud Orchestration: with a Universal Kubernetes Control Plane**
+- [`cloud-orchestration-universal-kubernetes-control-plane`](cloud-orchestration-universal-kubernetes-control-plane/) — **Cloud Orchestration: with a Universal Kubernetes Control Plane**
 
 ## Quick start
 
@@ -16,7 +16,7 @@ npm run dev
 Open the deck:
 
 ```text
-http://localhost:5173/presentations/cloud-orchestration-universal-kubernetes-control-plane/
+http://localhost:5173/cloud-orchestration-universal-kubernetes-control-plane/
 ```
 
 ## Theme model

@@ -1,4 +1,4 @@
-import Reveal from '../../../node_modules/reveal.js/dist/reveal.esm.js';
+import Reveal from '../../node_modules/reveal.js/dist/reveal.mjs';
 
 const deck = new Reveal({
   hash: true,

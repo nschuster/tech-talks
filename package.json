@@ -1,5 +1,5 @@
 {
-  "name": "web-tech-talks",
+  "name": "tech-talks",
   "version": "0.1.0",
   "private": true,
   "description": "Reveal.js web technology talk decks. Each presentation lives in its own folder.",
