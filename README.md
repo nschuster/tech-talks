@@ -20,6 +20,8 @@ Open the deck:
 http://localhost:5173/
 ```
 
+The deck currently recreates the uploaded PowerPoint from `ppt/Revolutionizing Cloud Orchestration.pptx` using high-fidelity rendered slide backgrounds in `assets/slides/`, with extracted text kept in the DOM for accessibility/search.
+
 ## Validate all decks from the repository root
 
 ```bash

@@ -33,8 +33,15 @@ for (const deck of decks) {
     throw new Error(`${deck.name} should define an easy default data-theme`);
   }
 
-  if (!html.includes('class="slide-subtitle"') && !html.includes("class='slide-subtitle'")) {
-    throw new Error(`${deck.name} should include blue slide subheadings with class=\"slide-subtitle\"`);
+  if (!html.includes('class="slide-subtitle"') && !html.includes("class='slide-subtitle'") && !html.includes('class="ppt-slide"')) {
+    throw new Error(`${deck.name} should include semantic slide subheadings or high-fidelity PowerPoint slide backgrounds`);
+  }
+
+  if (html.includes('class="ppt-slide"')) {
+    const backgroundCount = (html.match(/data-background-image="assets\/slides\/slide-\d+\.webp"/g) ?? []).length;
+    if (backgroundCount !== slideCount) {
+      throw new Error(`${deck.name} should have one rendered slide background per section; found ${backgroundCount} backgrounds for ${slideCount} sections`);
+    }
   }
 
   if (!html.includes('node_modules/reveal.js/dist/reveal.css')) {
