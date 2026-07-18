@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cloud Orchestration — Universal Kubernetes Control Plane</title>
+    <link rel="stylesheet" href="../../node_modules/reveal.js/dist/reveal.css" />
+    <link rel="stylesheet" href="css/theme.css" />
+  </head>
+  <body>
+    <button class="theme-toggle" type="button" aria-label="Toggle light or dark theme">Toggle theme</button>
+
+    <div class="reveal">
+      <div class="slides">
+        <section class="title-slide" data-background-gradient="linear-gradient(135deg, var(--color-bg), var(--color-surface-strong))">
+          <p class="eyebrow">Web Tech Talks</p>
+          <h1>Cloud Orchestration</h1>
+          <h2>with a Universal Kubernetes Control Plane</h2>
+          <p class="subtitle">A clean starting point for platform teams aligning apps, clusters, policies, and infrastructure.</p>
+          <div class="title-meta">
+            <span>Niklas Schuster</span>
+            <span>Reveal.js deck skeleton</span>
+          </div>
+        </section>
+
+        <section>
+          <p class="eyebrow">Problem space</p>
+          <h2>Cloud orchestration is fragmented</h2>
+          <div class="split-grid">
+            <div class="card">
+              <h3>Many control planes</h3>
+              <p>Cloud APIs, CI/CD, GitOps, cluster lifecycle tooling, policy engines, and app platforms all compete for ownership.</p>
+            </div>
+            <div class="card">
+              <h3>Platform teams need one intent layer</h3>
+              <p>A universal Kubernetes control plane can expose consistent APIs while delegating execution to specialized controllers.</p>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <p class="eyebrow">Direction</p>
+          <h2>Universal control plane primitives</h2>
+          <ul class="pill-list">
+            <li>Declarative APIs for apps, environments, and cloud resources</li>
+            <li>GitOps reconciliation as the operational backbone</li>
+            <li>Policy, identity, and observability built into the platform contract</li>
+            <li>Composable controllers instead of one monolithic orchestrator</li>
+          </ul>
+          <p class="callout">Next: expand this skeleton into architecture, implementation patterns, and a live demo narrative.</p>
+        </section>
+      </div>
+    </div>
+
+    <script type="module" src="js/deck.js"></script>
+  </body>
+</html>
