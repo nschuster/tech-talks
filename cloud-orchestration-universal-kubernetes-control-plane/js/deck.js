@@ -16,9 +16,12 @@ const toggle = document.querySelector('.theme-toggle');
 
 function setTheme(theme) {
   root.dataset.theme = theme;
-  localStorage.setItem('web-tech-talks-theme', theme);
+  localStorage.setItem('tech-talks-theme', theme);
   if (toggle) {
-    toggle.textContent = theme === 'dark' ? 'Light mode' : 'Dark mode';
+    const nextTheme = theme === 'dark' ? 'light' : 'dark';
+    toggle.textContent = theme === 'dark' ? '☀' : '☾';
+    toggle.setAttribute('aria-label', `Switch to ${nextTheme} theme`);
+    toggle.setAttribute('title', `Switch to ${nextTheme} theme`);
   }
 }
 
@@ -26,7 +29,7 @@ function toggleTheme() {
   setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark');
 }
 
-setTheme(localStorage.getItem('web-tech-talks-theme') || root.dataset.theme || 'dark');
+setTheme(localStorage.getItem('tech-talks-theme') || root.dataset.theme || 'dark');
 
 toggle?.addEventListener('click', toggleTheme);
 window.addEventListener('keydown', (event) => {

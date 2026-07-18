@@ -179,13 +179,28 @@ body {
   z-index: 20;
   top: 1rem;
   right: 1rem;
+  width: 2.25rem;
+  height: 2.25rem;
+  display: grid;
+  place-items: center;
   cursor: pointer;
-  font: 700 0.85rem var(--font-body);
+  font: 700 1.05rem/1 var(--font-body);
+  opacity: 0.34;
+  padding: 0;
   backdrop-filter: blur(16px);
+  transition: opacity 160ms ease, transform 160ms ease, border-color 160ms ease;
 }
 
-.theme-toggle:hover {
+.theme-toggle:hover,
+.theme-toggle:focus-visible {
   border-color: var(--color-primary);
+  opacity: 0.82;
+  transform: translateY(-1px);
+}
+
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
 }
 
 @media (max-width: 800px) {
