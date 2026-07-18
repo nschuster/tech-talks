@@ -1,0 +1,15 @@
+{
+  "name": "cloud-orchestration-universal-kubernetes-control-plane",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Reveal.js deck: Cloud Orchestration with a Universal Kubernetes Control Plane.",
+  "scripts": {
+    "start": "vite --host 0.0.0.0",
+    "dev": "vite --host 0.0.0.0"
+  },
+  "dependencies": {
+    "@vitejs/plugin-basic-ssl": "latest",
+    "vite": "latest",
+    "reveal.js": "latest"
+  }
+}
