@@ -5,11 +5,11 @@ const deck = new Reveal({
   controls: true,
   progress: true,
   center: false,
-  width: 1280,
-  height: 720,
-  margin: 0,
-  minScale: 1,
-  maxScale: 1,
+  width: 1920,
+  height: 1080,
+  margin: 0.04,
+  minScale: 0.2,
+  maxScale: 2.5,
   transition: 'slide',
   backgroundTransition: 'fade'
 });
