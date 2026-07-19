@@ -15,7 +15,7 @@
   --title-gradient-2: #7c5cff;
   --title-gradient-3: #ff4fd8;
   --title-gradient-4: #58ffb3;
-  --title-gradient-speed: 5.5s;
+  --title-gradient-speed: 18s;
 }
 
 :root[data-theme="light"] {
@@ -81,13 +81,18 @@ body {
     linear-gradient(
       105deg,
       var(--title-gradient-1) 0%,
-      var(--title-gradient-2) 22%,
-      var(--title-gradient-3) 48%,
-      var(--title-gradient-4) 72%,
+      var(--title-gradient-2) 12.5%,
+      var(--title-gradient-3) 25%,
+      var(--title-gradient-4) 37.5%,
+      var(--title-gradient-1) 50%,
+      var(--title-gradient-2) 62.5%,
+      var(--title-gradient-3) 75%,
+      var(--title-gradient-4) 87.5%,
       var(--title-gradient-1) 100%
     );
-  background-size: 260% 100%;
+  background-size: 200% 100%;
   background-position: 0% 50%;
+  background-repeat: repeat-x;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -97,7 +102,7 @@ body {
 
 @keyframes title-heading-gradient-flow {
   0% { background-position: 0% 50%; }
-  100% { background-position: 260% 50%; }
+  100% { background-position: -200% 50%; }
 }
 
 .reveal h2 {
