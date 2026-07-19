@@ -130,6 +130,10 @@ body {
   line-height: 1.28;
 }
 
+.title-kicker {
+  color: #ffffff !important;
+}
+
 .speaker-line {
   margin: 2.4rem 0 0 !important;
   color: var(--color-muted) !important;
