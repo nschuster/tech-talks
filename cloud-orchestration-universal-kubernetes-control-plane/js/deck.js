@@ -7,7 +7,7 @@ const deck = new Reveal({
   center: false,
   width: 1920,
   height: 1080,
-  margin: 0.04,
+  margin: 0.015,
   minScale: 0.2,
   maxScale: 2.5,
   transition: 'slide',
