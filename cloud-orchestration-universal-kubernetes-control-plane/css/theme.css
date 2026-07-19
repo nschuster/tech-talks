@@ -27,28 +27,42 @@
 :root {
   --font-display: Ubuntu, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-body: Ubuntu, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --color-bg: #071025;
-  --color-bg-alt: #0b1e3f;
-  --color-text: #ffffff;
-  --color-muted: #abc2d8;
-  --color-primary: #1ec7e6;
-  --color-secondary: #2d7dff;
+
+  /* Capgemini core palette */
+  --capgemini-blue: #0058ab;
+  --capgemini-light-blue: #1db8f2;
+  --capgemini-dark-blue: #121a38;
+  --capgemini-white: #ffffff;
+
+  /* Capgemini accent palette */
+  --capgemini-turquoise: #00d5d0;
+  --capgemini-yellow: #feb100;
+  --capgemini-orange: #ff816e;
+  --capgemini-lilac: #d4d3f1;
+  --capgemini-teal: #00828e;
+  --capgemini-terracotta: #be4d00;
+  --capgemini-deep-red: #8f3237;
+  --capgemini-purple: #71609e;
+
+  --color-bg: var(--capgemini-dark-blue);
+  --color-text: var(--capgemini-white);
+  --color-heading-primary: var(--capgemini-white);
+  --color-heading-secondary: var(--capgemini-light-blue);
+  --color-muted: color-mix(in srgb, var(--capgemini-white) 70%, var(--capgemini-light-blue));
+  --color-primary: var(--capgemini-light-blue);
+  --color-secondary: var(--capgemini-blue);
   --color-border: rgba(255, 255, 255, 0.16);
   --color-card: rgba(255, 255, 255, 0.075);
-  --title-gradient-1: #35f2ff;
-  --title-gradient-2: #7c5cff;
-  --title-gradient-3: #ff4fd8;
-  --title-gradient-4: #58ffb3;
-  --title-gradient-speed: 18s;
 }
 
 :root[data-theme="light"] {
-  --color-bg: #eaf7ff;
-  --color-bg-alt: #ffffff;
-  --color-text: #071025;
+  --color-bg: var(--capgemini-white);
+  --color-text: #000000;
+  --color-heading-primary: #000000;
+  --color-heading-secondary: var(--capgemini-light-blue);
   --color-muted: #3d556b;
-  --color-primary: #007da3;
-  --color-secondary: #2459d6;
+  --color-primary: var(--capgemini-light-blue);
+  --color-secondary: var(--capgemini-blue);
   --color-border: rgba(7, 16, 37, 0.16);
   --color-card: rgba(255, 255, 255, 0.72);
 }
@@ -58,11 +72,14 @@ body {
   width: 100%;
   height: 100%;
   margin: 0;
-  background:
-    radial-gradient(circle at 14% 18%, color-mix(in srgb, var(--color-primary) 20%, transparent), transparent 26rem),
-    radial-gradient(circle at 84% 24%, color-mix(in srgb, var(--color-secondary) 18%, transparent), transparent 31rem),
-    linear-gradient(135deg, var(--color-bg), var(--color-bg-alt));
+  background: var(--color-bg);
   color: var(--color-text);
+}
+
+.reveal-viewport,
+.reveal .backgrounds,
+.reveal .slide-background {
+  background: var(--color-bg);
 }
 
 .reveal {
@@ -86,7 +103,7 @@ body {
 .reveal h1,
 .reveal h2 {
   margin: 0;
-  color: #ffffff;
+  color: var(--color-heading-primary);
   font-family: var(--font-display);
   font-weight: 700;
   letter-spacing: -0.048em;
@@ -99,36 +116,6 @@ body {
   font-size: 2.35em;
 }
 
-.title-slide h1 {
-  color: transparent;
-  background:
-    linear-gradient(
-      105deg,
-      var(--title-gradient-1) 0%,
-      var(--title-gradient-2) 12.5%,
-      var(--title-gradient-3) 25%,
-      var(--title-gradient-4) 37.5%,
-      var(--title-gradient-1) 50%,
-      var(--title-gradient-2) 62.5%,
-      var(--title-gradient-3) 75%,
-      var(--title-gradient-4) 87.5%,
-      var(--title-gradient-1) 100%
-    );
-  background-size: 200% 100%;
-  background-position: 0% 50%;
-  background-repeat: repeat-x;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 0 22px color-mix(in srgb, var(--title-gradient-2) 34%, transparent));
-  animation: title-heading-gradient-flow var(--title-gradient-speed) linear infinite;
-}
-
-@keyframes title-heading-gradient-flow {
-  0% { background-position: 0% 50%; }
-  100% { background-position: -200% 50%; }
-}
-
 .reveal h2 {
   max-width: 1680px;
   font-size: 1.48em;
@@ -137,7 +124,7 @@ body {
 .eyebrow,
 .section-number {
   margin: 0 0 0.65rem !important;
-  color: var(--color-primary) !important;
+  color: var(--color-heading-secondary) !important;
   font-size: 0.66em;
   font-weight: 700;
   letter-spacing: 0.17em;
@@ -153,14 +140,14 @@ body {
 .title-kicker {
   max-width: 1470px;
   margin: 0.75rem 0 0 !important;
-  color: var(--color-primary) !important;
+  color: var(--color-heading-secondary) !important;
   font-size: 0.74em;
   font-weight: 700;
   line-height: 1.28;
 }
 
 .title-kicker {
-  color: #ffffff !important;
+  color: var(--color-heading-secondary) !important;
 }
 
 .speaker-line {
@@ -288,12 +275,6 @@ body {
 .reveal .progress {
   color: var(--color-primary);
   height: 4px;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .title-slide h1 {
-    animation: none;
-  }
 }
 
 @media (max-width: 900px) {
