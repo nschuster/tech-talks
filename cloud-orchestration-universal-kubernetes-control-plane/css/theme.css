@@ -16,6 +16,8 @@
   --title-gradient-3: #ff4fd8;
   --title-gradient-4: #58ffb3;
   --title-gradient-speed: 18s;
+  --capgemini-full-logo: url("../assets/logos/Capgemini_Primary_Logo_White.svg");
+  --capgemini-spade-logo: url("../assets/logos/Capgemini_Primary_Spade_White.svg");
 }
 
 :root[data-theme="light"] {
@@ -27,6 +29,8 @@
   --color-secondary: #2459d6;
   --color-border: rgba(7, 16, 37, 0.16);
   --color-card: rgba(255, 255, 255, 0.72);
+  --capgemini-full-logo: url("../assets/logos/Capgemini_Primary_Logo_Blue.svg");
+  --capgemini-spade-logo: url("../assets/logos/Capgemini_Primary_Spade_Blue.svg");
 }
 
 html,
@@ -172,6 +176,33 @@ body {
 
 .title-slide--animated {
   background: transparent;
+}
+
+.title-slide::after,
+.reveal section:not(.title-slide)::after {
+  position: absolute;
+  content: "";
+  z-index: 2;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  pointer-events: none;
+}
+
+.title-slide::after {
+  right: 3.5rem;
+  bottom: 3rem;
+  width: 280px;
+  height: 88px;
+  background-image: var(--capgemini-full-logo);
+}
+
+.reveal section:not(.title-slide)::after {
+  top: 3rem;
+  right: 3.5rem;
+  width: 72px;
+  height: 72px;
+  background-image: var(--capgemini-spade-logo);
 }
 
 .reveal .controls {
