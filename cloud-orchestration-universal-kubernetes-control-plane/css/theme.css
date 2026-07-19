@@ -174,26 +174,82 @@ body {
   background: transparent;
 }
 
-.reveal section > .capgemini-slide-logo {
+.slide-background-branding {
   position: absolute;
-  z-index: 2;
+  inset: 0;
+  z-index: 20;
   pointer-events: none;
   user-select: none;
+}
+
+.background-branding-logo,
+.background-confidentiality-patch {
+  position: absolute;
+  display: block;
   object-fit: contain;
 }
 
-.capgemini-slide-logo--full {
-  right: 3.5rem;
-  bottom: 3rem;
-  width: 260px;
+.background-branding-logo--full {
+  right: 3.2rem;
+  bottom: 2.65rem;
+  width: 310px;
   height: auto;
 }
 
-.capgemini-slide-logo--spade {
-  top: 2rem;
-  right: 2.2rem;
-  width: 52px;
-  height: 52px;
+.background-branding-logo--spade {
+  top: 1.55rem;
+  right: 1.65rem;
+  width: 58px;
+  height: 58px;
+}
+
+.background-confidentiality-patch--compact {
+  top: 5.6rem;
+  right: 1.65rem;
+  width: 58px;
+  height: 58px;
+}
+
+.background-confidentiality-patch--full {
+  top: 1.55rem;
+  right: 1.65rem;
+  width: 92px;
+  height: auto;
+}
+
+.menu-theme-panel {
+  padding: 1rem;
+  color: #ffffff;
+  font-family: var(--font-body);
+}
+
+.menu-theme-panel p {
+  margin: 0 0 0.85rem;
+  font-size: 0.95rem;
+}
+
+.menu-theme-toggle {
+  width: 100%;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 48%, transparent);
+  border-radius: 0.65rem;
+  padding: 0.75rem 0.9rem;
+  background: color-mix(in srgb, var(--color-primary) 18%, transparent);
+  color: #ffffff;
+  font: inherit;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.menu-theme-toggle:hover,
+.menu-theme-toggle:focus-visible {
+  background: color-mix(in srgb, var(--color-primary) 30%, transparent);
+  outline: none;
+}
+
+.menu-theme-hint {
+  margin-top: 0.85rem !important;
+  opacity: 0.68;
+  font-size: 0.78rem !important;
 }
 
 .reveal .controls {
