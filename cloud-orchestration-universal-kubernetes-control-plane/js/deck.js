@@ -51,6 +51,8 @@ const deck = new Reveal({
   maxScale: 2.5,
   transition: 'slide',
   backgroundTransition: 'fade',
+  autoAnimate: true,
+  autoAnimateDuration: 0.85,
   menu: {
     side: 'left',
     width: 'normal',
