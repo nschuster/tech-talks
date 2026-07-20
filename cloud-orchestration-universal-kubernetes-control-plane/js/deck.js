@@ -188,12 +188,30 @@ function renderCicdLeaderLines() {
     y: (y - gridRect.top) / scaleY
   });
   const laneY = Number.parseFloat(getComputedStyle(currentSlide).getPropertyValue('--cicd-pipeline-lane-y')) || 150;
-  const columnRightEdge = (element) => {
+  const rightEdgePointAtY = (element, y) => {
     const rect = element.getBoundingClientRect();
-    return toGridPoint(rect.right, gridRect.top + laneY * scaleY);
+    return toGridPoint(rect.right, gridRect.top + y * scaleY);
+  };
+  const centerYInGrid = (element) => {
+    const rect = element.getBoundingClientRect();
+    return toGridPoint(gridRect.left, rect.top + rect.height / 2).y;
   };
 
-  const points = columns.slice(0, -1).map(columnRightEdge);
+  const sourceToRegistryPoints = columns.slice(0, -1).map((column) => rightEdgePointAtY(column, laneY));
+  const pipelines = [sourceToRegistryPoints];
+  const infraCodeItem = currentSlide.querySelector('.cicd-file-item--infra-code');
+  const kubernetesGroup = currentSlide.querySelector('.cicd-target-group--kubernetes');
+  if (infraCodeItem && kubernetesGroup) {
+    const startY = centerYInGrid(infraCodeItem);
+    const endY = centerYInGrid(kubernetesGroup);
+    const infraToKubernetesPoints = columns.slice(0, -1).map((column, index, edgeColumns) => {
+      const progress = edgeColumns.length === 1 ? 0 : index / (edgeColumns.length - 1);
+      const y = startY + (endY - startY) * progress;
+      const rect = column.getBoundingClientRect();
+      return toGridPoint(rect.right, gridRect.top + y * scaleY);
+    });
+    pipelines.push(infraToKubernetesPoints);
+  }
 
   cicdLeaderLineLayer = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   cicdLeaderLineLayer.classList.add('cicd-pipeline-lines-layer');
@@ -208,27 +226,29 @@ function renderCicdLeaderLines() {
     </defs>
   `;
 
-  const segments = points.slice(0, -1).map((point, index) => [point, points[index + 1]]);
+  pipelines.forEach((points) => {
+    const segments = points.slice(0, -1).map((point, index) => [point, points[index + 1]]);
 
-  segments.forEach(([start, end]) => {
-    const outline = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    outline.classList.add('cicd-pipeline-line-outline');
-    outline.setAttribute('x1', start.x);
-    outline.setAttribute('y1', start.y);
-    outline.setAttribute('x2', end.x);
-    outline.setAttribute('y2', end.y);
-    outline.setAttribute('stroke', outlineColor);
+    segments.forEach(([start, end]) => {
+      const outline = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      outline.classList.add('cicd-pipeline-line-outline');
+      outline.setAttribute('x1', start.x);
+      outline.setAttribute('y1', start.y);
+      outline.setAttribute('x2', end.x);
+      outline.setAttribute('y2', end.y);
+      outline.setAttribute('stroke', outlineColor);
 
-    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    line.classList.add('cicd-pipeline-line');
-    line.setAttribute('x1', start.x);
-    line.setAttribute('y1', start.y);
-    line.setAttribute('x2', end.x);
-    line.setAttribute('y2', end.y);
-    line.setAttribute('stroke', color);
-    line.setAttribute('marker-end', 'url(#cicd-pipeline-arrowhead)');
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.classList.add('cicd-pipeline-line');
+      line.setAttribute('x1', start.x);
+      line.setAttribute('y1', start.y);
+      line.setAttribute('x2', end.x);
+      line.setAttribute('y2', end.y);
+      line.setAttribute('stroke', color);
+      line.setAttribute('marker-end', 'url(#cicd-pipeline-arrowhead)');
 
-    cicdLeaderLineLayer.append(outline, line);
+      cicdLeaderLineLayer.append(outline, line);
+    });
   });
 
   grid.appendChild(cicdLeaderLineLayer);
