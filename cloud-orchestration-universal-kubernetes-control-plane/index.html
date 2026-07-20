@@ -21,13 +21,20 @@
           <p class="title-kicker">With a Universal Kubernetes Control Plane</p>
           <p class="speaker-line">Niklas Schuster | XX.XX.2026</p>
         </section>
+        <section class="cicd-antipattern-slide" aria-label="Seven-column CI/CD reference grid">
+          <div class="cicd-grid-reference" aria-hidden="true">
+            <div class="cicd-grid-column"></div>
+            <div class="cicd-grid-column"></div>
+            <div class="cicd-grid-column"></div>
+            <div class="cicd-grid-column"></div>
+            <div class="cicd-grid-column"></div>
+            <div class="cicd-grid-column"></div>
+            <div class="cicd-grid-column"></div>
+          </div>
+        </section>
         <section>
           <h2>Key Benefits of Adopting a Universal Control Plane</h2>
           <p class="slide-subtitle">Universal Kubernetes Control Plane</p>
-        </section>
-        <section>
-          <h2>The CI/CD Anti-Pattern: Pipelines Running The World</h2>
-          <p class="slide-subtitle">A single pipeline tries to build, deploy, provision, and operate everything.</p>
         </section>
         <section>
           <h2>The CI/CD Anti-Pattern: Pipelines Are Not Platforms</h2>
@@ -101,49 +108,6 @@
         <section>
           <h2>Crossplane Packages XPKG</h2>
           <p class="slide-subtitle">Package XRDs, Compositions, Providers, and Functions as portable OCI artifacts.</p>
-        </section>
-        <section class="cicd-antipattern-slide">
-          <h2>The CI/CD Anti-Pattern: Pipelines Running The World</h2>
-          <p class="slide-subtitle">Build outputs on the left. Target systems on the right. Pipeline logic in the middle.</p>
-          <div class="cicd-grid-reference" aria-label="Seven-column reference grid for CI/CD anti-pattern diagram">
-            <div class="cicd-grid-column" data-column="01"></div>
-            <div class="cicd-grid-column" data-column="02"></div>
-            <div class="cicd-grid-column" data-column="03"></div>
-            <div class="cicd-grid-column" data-column="04"></div>
-            <div class="cicd-grid-column" data-column="05"></div>
-            <div class="cicd-grid-column" data-column="06"></div>
-            <div class="cicd-grid-column" data-column="07"></div>
-          </div>
-          <div class="cicd-diagram-stage cicd-diagram-stage--left" aria-label="Inputs produced by teams and builds">
-            <div class="cicd-node cicd-node--code">
-              <span class="cicd-node-kicker">Code files</span>
-              <span class="cicd-node-title">Application code</span>
-              <span class="cicd-node-meta">Git repositories · YAML · manifests</span>
-            </div>
-            <div class="cicd-node cicd-node--artifact">
-              <span class="cicd-node-kicker">Artifacts</span>
-              <span class="cicd-node-title">Images &amp; packages</span>
-              <span class="cicd-node-meta">Container images · Helm charts · bundles</span>
-            </div>
-          </div>
-          <div class="cicd-pipeline-column" aria-label="CI/CD pipeline executing operational change">
-            <span class="cicd-pipeline-label">CI/CD pipeline</span>
-            <span class="cicd-pipeline-warning">runs the world</span>
-          </div>
-          <div class="cicd-diagram-stage cicd-diagram-stage--right" aria-label="Target systems managed by pipelines">
-            <div class="cicd-node cicd-node--target">
-              <span class="cicd-node-kicker">Target systems</span>
-              <span class="cicd-node-title">Kubernetes clusters</span>
-              <span class="cicd-node-meta">Deployments · services · policies</span>
-            </div>
-            <div class="cicd-node cicd-node--target">
-              <span class="cicd-node-kicker">Target systems</span>
-              <span class="cicd-node-title">Cloud resources</span>
-              <span class="cicd-node-meta">Accounts · databases · networks</span>
-            </div>
-          </div>
-          <div class="cicd-flow cicd-flow--left-to-pipeline" aria-hidden="true"></div>
-          <div class="cicd-flow cicd-flow--pipeline-to-right" aria-hidden="true"></div>
         </section>
         <section>
           <h2>The CI/CD Anti-Pattern: Pipelines Running The World</h2>
