@@ -212,10 +212,10 @@ body {
 .timeline-bar {
   position: absolute;
   top: 0;
-  left: -3.5rem;
+  left: -10rem;
   z-index: 2;
   height: 82px;
-  width: calc(25% + 3.5rem);
+  width: calc(25% + 10rem);
   background: var(--timeline-1990s);
 }
 
@@ -231,7 +231,7 @@ body {
 }
 
 .timeline-state--1 .timeline-bar {
-  width: calc(25% + 3.5rem);
+  width: calc(25% + 10rem);
   background: var(--timeline-1990s);
 }
 
@@ -240,7 +240,7 @@ body {
 }
 
 .timeline-state--2 .timeline-bar {
-  width: calc(50% + 3.5rem);
+  width: calc(50% + 10rem);
   background: linear-gradient(90deg, var(--timeline-1990s) 0%, var(--timeline-1990s) 18%, var(--timeline-2000s) 59%, var(--timeline-2000s) 100%);
 }
 
@@ -249,7 +249,7 @@ body {
 }
 
 .timeline-state--3 .timeline-bar {
-  width: calc(75% + 3.5rem);
+  width: calc(75% + 10rem);
   background: linear-gradient(90deg, var(--timeline-1990s) 0%, var(--timeline-1990s) 13%, var(--timeline-2000s) 42%, var(--timeline-2010s) 71%, var(--timeline-2010s) 100%);
 }
 
@@ -258,7 +258,7 @@ body {
 }
 
 .timeline-state--4 .timeline-bar {
-  width: calc(100% + 3.5rem);
+  width: calc(100% + 10rem);
   background: linear-gradient(90deg, var(--timeline-1990s) 0%, var(--timeline-1990s) 10%, var(--timeline-2000s) 32.5%, var(--timeline-2010s) 55%, var(--timeline-2020s) 77.5%, var(--timeline-2020s) 100%);
 }
 
@@ -306,8 +306,9 @@ body {
   z-index: 5;
   color: #ffffff;
   font-family: var(--font-display);
-  font-size: 0.7em;
+  font-size: 0.84em;
   font-weight: 700;
+  font-style: italic;
   letter-spacing: -0.035em;
   line-height: 1;
   text-shadow: 0 3px 18px rgba(0, 0, 0, 0.34);
@@ -357,7 +358,7 @@ body {
   left: 38px;
   z-index: 4;
   display: block;
-  width: 540px;
+  width: 590px;
   color: inherit;
   font-family: var(--font-display);
   text-shadow: 0 5px 24px rgba(0, 0, 0, 0.38);
@@ -366,7 +367,7 @@ body {
 .timeline-heading {
   display: block;
   color: currentColor;
-  font-size: 0.68em;
+  font-size: 0.86em;
   font-weight: 700;
   letter-spacing: 0.01em;
   line-height: 1;
@@ -375,22 +376,31 @@ body {
 
 .timeline-placeholder {
   display: block;
-  max-width: 480px;
-  margin-top: 0.34rem;
+  max-width: 540px;
+  margin-top: 0.46rem;
   color: var(--color-muted);
   font-family: var(--font-body);
-  font-size: 0.38em;
+  font-size: 0.5em;
   font-weight: 500;
   letter-spacing: normal;
-  line-height: 1.22;
+  line-height: 1.13;
   text-shadow: none;
+}
+
+.timeline-emphasis {
+  color: currentColor;
+  font-weight: 700;
+}
+
+.timeline-annotation--2020s .timeline-emphasis {
+  color: var(--timeline-2020s);
 }
 
 .timeline-icons {
   display: flex;
   align-items: center;
-  gap: 18px;
-  margin-top: 0.42rem;
+  gap: 34px;
+  margin-top: 0.92rem;
 }
 
 .timeline-icon-pair {
@@ -450,7 +460,7 @@ body {
 
 .timeline-annotation--2000s .timeline-copy,
 .timeline-annotation--2020s .timeline-copy {
-  top: calc(50% + 215px);
+  top: calc(50% + 120px);
 }
 
 .slide-background-branding {
