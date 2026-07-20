@@ -379,6 +379,10 @@ body {
   text-shadow: 0 5px 24px rgba(0, 0, 0, 0.38);
 }
 
+.timeline-annotation--1990s .timeline-copy {
+  left: 51px;
+}
+
 .timeline-heading {
   display: block;
   color: currentColor;
