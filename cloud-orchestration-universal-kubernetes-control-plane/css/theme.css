@@ -395,16 +395,39 @@ body {
 }
 
 .timeline-placeholder {
+  position: relative;
   display: block;
   max-width: 565px;
   margin-top: 0.46rem;
-  color: var(--color-muted);
+  color: var(--capgemini-white);
   font-family: var(--font-body);
   font-size: 0.56em;
   font-weight: 500;
   letter-spacing: normal;
   line-height: 1.13;
   text-shadow: none;
+}
+
+.timeline-placeholder::after {
+  position: absolute;
+  inset: -0.22rem -0.35rem -0.38rem;
+  z-index: 5;
+  content: "";
+  pointer-events: none;
+  background: rgba(18, 26, 56, 0);
+  border-radius: 0.5rem;
+  opacity: 0;
+  transition: opacity 260ms ease, background 260ms ease;
+}
+
+.timeline-state--2 .timeline-annotation--1990s .timeline-placeholder::after,
+.timeline-state--3 .timeline-annotation--1990s .timeline-placeholder::after,
+.timeline-state--3 .timeline-annotation--2000s .timeline-placeholder::after,
+.timeline-state--4 .timeline-annotation--1990s .timeline-placeholder::after,
+.timeline-state--4 .timeline-annotation--2000s .timeline-placeholder::after,
+.timeline-state--4 .timeline-annotation--2010s .timeline-placeholder::after {
+  background: rgba(18, 26, 56, 0.68);
+  opacity: 1;
 }
 
 .timeline-emphasis {
