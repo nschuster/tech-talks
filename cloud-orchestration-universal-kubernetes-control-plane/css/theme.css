@@ -596,8 +596,8 @@ body {
 .cicd-file-stack {
   position: absolute;
   left: 50%;
-  top: 112px;
-  bottom: 42px;
+  top: 100px;
+  bottom: 30px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -609,7 +609,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   text-align: center;
 }
 
@@ -617,26 +617,55 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 14px;
+  gap: 18px;
 }
 
-.cicd-file-pair img {
+.cicd-file-symbol {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 78px;
+  height: 94px;
+}
+
+.cicd-file-base {
   display: block;
-  width: 48px;
-  height: 58px;
+  width: 78px;
+  height: 94px;
   object-fit: contain;
-  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3));
+  filter: invert(1) drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3));
+}
+
+:root[data-theme="light"] .cicd-file-base {
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.2));
+}
+
+.cicd-file-type-icon {
+  position: absolute;
+  left: 50%;
+  top: 54%;
+  display: block;
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  transform: translate(-50%, -50%);
 }
 
 .cicd-file-label {
   color: var(--capgemini-white);
   font-family: var(--font-display);
-  font-size: 0.33em;
+  font-size: 0.43em;
   font-weight: 700;
-  line-height: 1.08;
+  line-height: 0.92;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: -0.025em;
   text-shadow: 0 5px 18px rgba(0, 0, 0, 0.38);
+}
+
+:root[data-theme="light"] .cicd-file-label {
+  color: #000000;
+  text-shadow: none;
 }
 
 .slide-background-branding {
