@@ -212,10 +212,10 @@ body {
 .timeline-bar {
   position: absolute;
   top: 0;
-  left: -10rem;
+  left: -18rem;
   z-index: 2;
   height: 82px;
-  width: calc(25% + 10rem);
+  width: calc(25% + 18rem);
   background: var(--timeline-1990s);
 }
 
@@ -231,7 +231,7 @@ body {
 }
 
 .timeline-state--1 .timeline-bar {
-  width: calc(25% + 10rem);
+  width: calc(25% + 18rem);
   background: var(--timeline-1990s);
 }
 
@@ -240,7 +240,7 @@ body {
 }
 
 .timeline-state--2 .timeline-bar {
-  width: calc(50% + 10rem);
+  width: calc(50% + 18rem);
   background: linear-gradient(90deg, var(--timeline-1990s) 0%, var(--timeline-1990s) 18%, var(--timeline-2000s) 59%, var(--timeline-2000s) 100%);
 }
 
@@ -249,7 +249,7 @@ body {
 }
 
 .timeline-state--3 .timeline-bar {
-  width: calc(75% + 10rem);
+  width: calc(75% + 18rem);
   background: linear-gradient(90deg, var(--timeline-1990s) 0%, var(--timeline-1990s) 13%, var(--timeline-2000s) 42%, var(--timeline-2010s) 71%, var(--timeline-2010s) 100%);
 }
 
@@ -258,7 +258,7 @@ body {
 }
 
 .timeline-state--4 .timeline-bar {
-  width: calc(100% + 10rem);
+  width: calc(100% + 18rem);
   background: linear-gradient(90deg, var(--timeline-1990s) 0%, var(--timeline-1990s) 10%, var(--timeline-2000s) 32.5%, var(--timeline-2010s) 55%, var(--timeline-2020s) 77.5%, var(--timeline-2020s) 100%);
 }
 
@@ -372,15 +372,16 @@ body {
   letter-spacing: 0.01em;
   line-height: 1;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .timeline-placeholder {
   display: block;
-  max-width: 540px;
+  max-width: 565px;
   margin-top: 0.46rem;
   color: var(--color-muted);
   font-family: var(--font-body);
-  font-size: 0.5em;
+  font-size: 0.56em;
   font-weight: 500;
   letter-spacing: normal;
   line-height: 1.13;
@@ -449,18 +450,18 @@ body {
 .timeline-annotation--2000s .timeline-connector,
 .timeline-annotation--2020s .timeline-connector {
   top: 50%;
-  height: 220px;
+  height: 185px;
 }
 
 .timeline-annotation--2000s .timeline-dot,
 .timeline-annotation--2020s .timeline-dot {
-  top: calc(50% + 220px);
+  top: calc(50% + 185px);
   transform: translate(-50%, -50%);
 }
 
 .timeline-annotation--2000s .timeline-copy,
 .timeline-annotation--2020s .timeline-copy {
-  top: calc(50% + 120px);
+  top: calc(50% + 85px);
 }
 
 .slide-background-branding {
