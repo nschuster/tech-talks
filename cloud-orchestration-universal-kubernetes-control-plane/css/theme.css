@@ -668,6 +668,86 @@ body {
   text-shadow: none;
 }
 
+.cicd-target-stack {
+  position: absolute;
+  left: 50%;
+  top: 98px;
+  bottom: 26px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: min(88%, 338px);
+  transform: translateX(-50%);
+}
+
+.cicd-target-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.cicd-target-icons {
+  display: grid;
+  justify-items: center;
+  align-items: center;
+}
+
+.cicd-target-icons--triple {
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  width: 238px;
+}
+
+.cicd-target-icons--aws-grid {
+  grid-template-columns: repeat(5, 1fr);
+  gap: 9px 11px;
+  width: 318px;
+}
+
+.cicd-target-icon {
+  display: block;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.26));
+}
+
+.cicd-target-icon--registry {
+  width: 54px;
+  height: 54px;
+  filter: invert(1) drop-shadow(0 8px 14px rgba(0, 0, 0, 0.26));
+}
+
+:root[data-theme="light"] .cicd-target-icon--registry {
+  filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.18));
+}
+
+.cicd-target-icon--kubernetes {
+  width: 58px;
+  height: 58px;
+}
+
+.cicd-target-icon--aws {
+  width: 39px;
+  height: 39px;
+}
+
+.cicd-target-label {
+  color: var(--capgemini-white);
+  font-family: var(--font-display);
+  font-size: 0.39em;
+  font-weight: 700;
+  line-height: 0.96;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  text-shadow: 0 5px 18px rgba(0, 0, 0, 0.38);
+}
+
+:root[data-theme="light"] .cicd-target-label {
+  color: #000000;
+  text-shadow: none;
+}
+
 .slide-background-branding {
   position: absolute;
   inset: 0;
