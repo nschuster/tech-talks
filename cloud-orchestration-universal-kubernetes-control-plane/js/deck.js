@@ -240,6 +240,7 @@ function renderCicdLeaderLines() {
 
   const deploymentManifestItem = currentSlide.querySelector('.cicd-file-item--deployment-manifests');
   const cloudInfrastructureGroup = currentSlide.querySelector('.cicd-target-group--cloud');
+  const thirdPartyGroup = currentSlide.querySelector('.cicd-target-group--third-party');
   if (deploymentManifestItem && cloudInfrastructureGroup) {
     pipelines.push(horizontalPipelineAtY(centerYInGrid(deploymentManifestItem)));
   }
@@ -253,6 +254,12 @@ function renderCicdLeaderLines() {
     routedPipelines.push(routedPipeline(
       elementYInGrid(deploymentManifestItem, 0.25),
       elementYInGrid(kubernetesGroup, 0.78)
+    ));
+  }
+  if (infraCodeItem && thirdPartyGroup) {
+    routedPipelines.push(routedPipeline(
+      elementYInGrid(infraCodeItem, 0.98),
+      centerYInGrid(thirdPartyGroup)
     ));
   }
 

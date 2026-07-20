@@ -826,6 +826,8 @@ body {
 
 .cicd-target-main-box--third-party {
   flex: 0 0 152px;
+  justify-content: center;
+  padding: 58px 14px 18px;
 }
 
 .cicd-target-box-content {
@@ -890,6 +892,12 @@ body {
   box-sizing: border-box;
 }
 
+.cicd-target-icons--third-party {
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+  width: 210px;
+}
+
 .cicd-target-icon {
   display: block;
   object-fit: contain;
@@ -933,6 +941,16 @@ body {
 .cicd-target-icon--aws {
   width: 44px;
   height: 44px;
+}
+
+.cicd-target-icon--third-party {
+  width: 52px;
+  height: 52px;
+  filter: invert(1) drop-shadow(0 7px 12px rgba(0, 0, 0, 0.25));
+}
+
+:root[data-theme="light"] .cicd-target-icon--third-party {
+  filter: drop-shadow(0 7px 12px rgba(0, 0, 0, 0.18));
 }
 
 .cicd-overlay-icon {
