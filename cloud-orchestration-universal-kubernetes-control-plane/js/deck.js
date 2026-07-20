@@ -215,12 +215,11 @@ function renderCicdLeaderLines() {
     const rect = column.getBoundingClientRect();
     return toGridPoint(rect.right, gridRect.top + y * scaleY);
   });
-  const routedPipeline = (startY, endY, { bend = 'standard' } = {}) => {
+  const routedPipeline = (startY, endY) => {
     const points = horizontalPipelineAtY(startY);
     const start = points[0];
-    const curveStart = bend === 'late' ? points[4] : points[2];
-    const curveEndX = bend === 'late' ? points[5].x : points[4].x;
-    const curveEnd = { x: curveEndX, y: endY };
+    const curveStart = points[1];
+    const curveEnd = { x: points[4].x, y: endY };
     const end = { x: points[5].x, y: endY };
     const controlOffset = Math.max(70, (curveEnd.x - curveStart.x) * 0.35);
     return [
@@ -282,8 +281,7 @@ function renderCicdLeaderLines() {
   if (testSuitesItem && kubernetesGroup) {
     routedPipelines.push(routedPipeline(
       elementYInGrid(testSuitesItem, 0.54),
-      kubernetesLowerY,
-      { bend: 'late' }
+      kubernetesLowerY
     ));
   }
 
