@@ -90,7 +90,7 @@ const reveal = document.querySelector('.reveal');
 let brandingLayer;
 let capgeminiLogo;
 let confidentialityPatch;
-let cicdLeaderLines = [];
+let cicdLeaderLineLayer;
 
 function getConfidentialityPatch() {
   return CONFIDENTIALITY_PATCHES[CONFIDENTIALITY_LEVEL] || CONFIDENTIALITY_PATCHES.SEC1;
@@ -160,8 +160,8 @@ function setTheme(theme) {
 }
 
 function clearCicdLeaderLines() {
-  cicdLeaderLines.forEach((line) => line.remove());
-  cicdLeaderLines = [];
+  cicdLeaderLineLayer?.remove();
+  cicdLeaderLineLayer = undefined;
 }
 
 function getCicdLineColor() {
@@ -172,7 +172,7 @@ function renderCicdLeaderLines() {
   clearCicdLeaderLines();
 
   const currentSlide = deck.getCurrentSlide();
-  if (!currentSlide?.classList.contains('cicd-antipattern-slide') || !window.LeaderLine) return;
+  if (!currentSlide?.classList.contains('cicd-antipattern-slide')) return;
 
   const ids = [
     'pipeline-source-anchor',
@@ -186,22 +186,79 @@ function renderCicdLeaderLines() {
   const anchors = ids.map((id) => currentSlide.querySelector(`#${id}`));
   if (anchors.some((anchor) => !anchor)) return;
 
+  const grid = currentSlide.querySelector('.cicd-grid-reference');
+  if (!grid) return;
+
   const color = getCicdLineColor();
-  for (let index = 0; index < anchors.length - 1; index += 1) {
-    cicdLeaderLines.push(new window.LeaderLine(anchors[index], anchors[index + 1], {
-      path: 'straight',
-      startSocket: 'right',
-      endSocket: 'left',
-      startPlug: 'behind',
-      endPlug: 'arrow3',
-      color,
-      size: 9,
-      endPlugSize: 2.35,
-      outline: true,
-      outlineColor: root.dataset.theme === 'light' ? 'rgba(255, 255, 255, 0.9)' : 'rgba(18, 26, 56, 0.98)',
-      outlineSize: 0.44
-    }));
-  }
+  const outlineColor = root.dataset.theme === 'light' ? 'rgba(255, 255, 255, 0.92)' : 'rgba(18, 26, 56, 0.98)';
+  const gridRect = grid.getBoundingClientRect();
+  const scaleX = gridRect.width / grid.offsetWidth;
+  const scaleY = gridRect.height / grid.offsetHeight;
+  const toSlidePoint = (x, y) => ({
+    x: (x - gridRect.left) / scaleX,
+    y: (y - gridRect.top) / scaleY
+  });
+  const center = (element) => {
+    const rect = element.getBoundingClientRect();
+    return toSlidePoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
+  };
+  const side = (element, edge) => {
+    const rect = element.getBoundingClientRect();
+    return toSlidePoint(edge === 'left' ? rect.left : rect.right, rect.top + rect.height / 2);
+  };
+
+  const points = anchors.map((anchor, index) => {
+    if (index === 0 || index === anchors.length - 1) return center(anchor);
+    return {
+      left: side(anchor, 'left'),
+      right: side(anchor, 'right')
+    };
+  });
+
+  cicdLeaderLineLayer = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  cicdLeaderLineLayer.classList.add('cicd-pipeline-lines-layer');
+  cicdLeaderLineLayer.setAttribute('aria-hidden', 'true');
+  cicdLeaderLineLayer.setAttribute('viewBox', `0 0 ${grid.offsetWidth} ${grid.offsetHeight}`);
+  cicdLeaderLineLayer.setAttribute('preserveAspectRatio', 'none');
+  cicdLeaderLineLayer.innerHTML = `
+    <defs>
+      <marker id="cicd-pipeline-arrowhead" markerWidth="20" markerHeight="20" refX="17" refY="10" orient="auto" markerUnits="userSpaceOnUse">
+        <path d="M 2 2 L 18 10 L 2 18 z" fill="${color}"></path>
+      </marker>
+    </defs>
+  `;
+
+  const segments = [
+    [points[0], points[1].left],
+    [points[1].right, points[2].left],
+    [points[2].right, points[3].left],
+    [points[3].right, points[4].left],
+    [points[4].right, points[5].left],
+    [points[5].right, points[6]]
+  ];
+
+  segments.forEach(([start, end]) => {
+    const outline = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    outline.classList.add('cicd-pipeline-line-outline');
+    outline.setAttribute('x1', start.x);
+    outline.setAttribute('y1', start.y);
+    outline.setAttribute('x2', end.x);
+    outline.setAttribute('y2', end.y);
+    outline.setAttribute('stroke', outlineColor);
+
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.classList.add('cicd-pipeline-line');
+    line.setAttribute('x1', start.x);
+    line.setAttribute('y1', start.y);
+    line.setAttribute('x2', end.x);
+    line.setAttribute('y2', end.y);
+    line.setAttribute('stroke', color);
+    line.setAttribute('marker-end', 'url(#cicd-pipeline-arrowhead)');
+
+    cicdLeaderLineLayer.append(outline, line);
+  });
+
+  grid.appendChild(cicdLeaderLineLayer);
 }
 
 function requestCicdLeaderLineUpdate() {

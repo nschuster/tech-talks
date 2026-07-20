@@ -746,6 +746,31 @@ body {
   filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.34));
 }
 
+.cicd-grid-reference > .cicd-pipeline-lines-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  filter: drop-shadow(0 5px 12px rgba(0, 0, 0, 0.34));
+}
+
+.cicd-pipeline-line-outline,
+.cicd-pipeline-line {
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.cicd-pipeline-line-outline {
+  stroke-width: 17px;
+}
+
+.cicd-pipeline-line {
+  stroke-width: 9px;
+}
+
 .cicd-target-stack {
   position: absolute;
   left: 0;
