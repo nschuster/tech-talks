@@ -202,13 +202,10 @@ function renderCicdLeaderLines() {
   const infraCodeItem = currentSlide.querySelector('.cicd-file-item--infra-code');
   const kubernetesGroup = currentSlide.querySelector('.cicd-target-group--kubernetes');
   if (infraCodeItem && kubernetesGroup) {
-    const startY = centerYInGrid(infraCodeItem);
-    const endY = centerYInGrid(kubernetesGroup);
-    const infraToKubernetesPoints = columns.slice(0, -1).map((column, index, edgeColumns) => {
-      const progress = edgeColumns.length === 1 ? 0 : index / (edgeColumns.length - 1);
-      const y = startY + (endY - startY) * progress;
+    const infraLaneY = centerYInGrid(infraCodeItem);
+    const infraToKubernetesPoints = columns.slice(0, -1).map((column) => {
       const rect = column.getBoundingClientRect();
-      return toGridPoint(rect.right, gridRect.top + y * scaleY);
+      return toGridPoint(rect.right, gridRect.top + infraLaneY * scaleY);
     });
     pipelines.push(infraToKubernetesPoints);
   }

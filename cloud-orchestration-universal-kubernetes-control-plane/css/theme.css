@@ -864,6 +864,10 @@ body {
   text-align: center;
 }
 
+.cicd-target-group--kubernetes {
+  margin-top: 49px;
+}
+
 .cicd-target-icons {
   display: grid;
   justify-items: center;
