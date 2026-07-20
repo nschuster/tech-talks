@@ -116,6 +116,11 @@ body {
   font-size: 2.35em;
 }
 
+.title-slide h1 {
+  max-width: 1700px;
+  font-size: 2.58em;
+}
+
 .reveal h2 {
   max-width: 1680px;
   font-size: 1.48em;
@@ -148,10 +153,11 @@ body {
 
 .title-kicker {
   color: var(--color-heading-secondary) !important;
+  font-size: 0.82em;
 }
 
 .speaker-line {
-  margin: 2.4rem 0 0 !important;
+  margin: auto 0 2.1rem !important;
   color: var(--color-muted) !important;
   font-size: 0.54em;
   font-weight: 500;
