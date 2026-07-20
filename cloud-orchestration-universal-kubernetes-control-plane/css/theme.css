@@ -306,7 +306,7 @@ body {
   z-index: 5;
   color: #ffffff;
   font-family: var(--font-display);
-  font-size: 0.62em;
+  font-size: 0.7em;
   font-weight: 700;
   letter-spacing: -0.035em;
   line-height: 1;
@@ -328,7 +328,7 @@ body {
   left: 0;
   z-index: 1;
   width: 0;
-  border-left: 7px dotted currentColor;
+  border-left: 10px dotted currentColor;
   transform: translateX(-50%);
 }
 
@@ -375,48 +375,82 @@ body {
 
 .timeline-placeholder {
   display: block;
-  max-width: 420px;
-  margin-top: 0.3rem;
+  max-width: 480px;
+  margin-top: 0.34rem;
   color: var(--color-muted);
   font-family: var(--font-body);
-  font-size: 0.25em;
+  font-size: 0.38em;
   font-weight: 500;
   letter-spacing: normal;
-  line-height: 1.32;
+  line-height: 1.22;
   text-shadow: none;
+}
+
+.timeline-icons {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-top: 0.42rem;
+}
+
+.timeline-icon-pair {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.timeline-icon {
+  display: block;
+  width: 68px;
+  height: 68px;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.28));
+}
+
+.timeline-icon--dark {
+  display: none;
+}
+
+:root[data-theme="light"] .timeline-icon--dark {
+  display: block;
+}
+
+:root[data-theme="light"] .timeline-icon--light {
+  display: none;
 }
 
 .timeline-annotation--1990s .timeline-connector,
 .timeline-annotation--2010s .timeline-connector {
   bottom: 50%;
-  height: 360px;
+  height: 340px;
 }
 
 .timeline-annotation--1990s .timeline-dot,
 .timeline-annotation--2010s .timeline-dot {
-  bottom: calc(50% + 360px);
+  bottom: calc(50% + 340px);
 }
 
 .timeline-annotation--1990s .timeline-copy,
 .timeline-annotation--2010s .timeline-copy {
-  bottom: calc(50% + 324px);
+  top: calc(50% - 365px);
+  bottom: auto;
 }
 
 .timeline-annotation--2000s .timeline-connector,
 .timeline-annotation--2020s .timeline-connector {
   top: 50%;
-  height: 320px;
+  height: 220px;
 }
 
 .timeline-annotation--2000s .timeline-dot,
 .timeline-annotation--2020s .timeline-dot {
-  top: calc(50% + 320px);
+  top: calc(50% + 220px);
   transform: translate(-50%, -50%);
 }
 
 .timeline-annotation--2000s .timeline-copy,
 .timeline-annotation--2020s .timeline-copy {
-  top: calc(50% + 292px);
+  top: calc(50% + 215px);
 }
 
 .slide-background-branding {
