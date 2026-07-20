@@ -197,17 +197,23 @@ function renderCicdLeaderLines() {
     return toGridPoint(gridRect.left, rect.top + rect.height / 2).y;
   };
 
+  const horizontalPipelineAtY = (y) => columns.slice(0, -1).map((column) => {
+    const rect = column.getBoundingClientRect();
+    return toGridPoint(rect.right, gridRect.top + y * scaleY);
+  });
+
   const sourceToRegistryPoints = columns.slice(0, -1).map((column) => rightEdgePointAtY(column, laneY));
   const pipelines = [sourceToRegistryPoints];
   const infraCodeItem = currentSlide.querySelector('.cicd-file-item--infra-code');
   const kubernetesGroup = currentSlide.querySelector('.cicd-target-group--kubernetes');
   if (infraCodeItem && kubernetesGroup) {
-    const infraLaneY = centerYInGrid(infraCodeItem);
-    const infraToKubernetesPoints = columns.slice(0, -1).map((column) => {
-      const rect = column.getBoundingClientRect();
-      return toGridPoint(rect.right, gridRect.top + infraLaneY * scaleY);
-    });
-    pipelines.push(infraToKubernetesPoints);
+    pipelines.push(horizontalPipelineAtY(centerYInGrid(infraCodeItem)));
+  }
+
+  const deploymentManifestItem = currentSlide.querySelector('.cicd-file-item--deployment-manifests');
+  const cloudInfrastructureGroup = currentSlide.querySelector('.cicd-target-group--cloud');
+  if (deploymentManifestItem && cloudInfrastructureGroup) {
+    pipelines.push(horizontalPipelineAtY(centerYInGrid(deploymentManifestItem)));
   }
 
   cicdLeaderLineLayer = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
