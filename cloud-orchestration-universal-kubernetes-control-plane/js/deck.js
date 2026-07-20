@@ -200,14 +200,15 @@ function renderCicdLeaderLines() {
     const rect = element.getBoundingClientRect();
     return toGridPoint(gridRect.left, rect.top + rect.height * ratio).y;
   };
-  const firstIconRowCenterYInGrid = (container) => {
+  const iconRowCenterYInGrid = (container, rowIndex = 0) => {
     const iconRects = [...container.querySelectorAll('.cicd-target-icon--aws')].map((icon) => icon.getBoundingClientRect());
     if (!iconRects.length) return centerYInGrid(container);
 
-    const firstRowTop = Math.min(...iconRects.map((rect) => rect.top));
-    const firstRowRects = iconRects.filter((rect) => Math.abs(rect.top - firstRowTop) < 3);
-    const firstRowCenter = firstRowRects.reduce((sum, rect) => sum + rect.top + rect.height / 2, 0) / firstRowRects.length;
-    return toGridPoint(gridRect.left, firstRowCenter).y;
+    const rowTops = [...new Set(iconRects.map((rect) => Math.round(rect.top)))].sort((a, b) => a - b);
+    const targetRowTop = rowTops[Math.min(rowIndex, rowTops.length - 1)];
+    const rowRects = iconRects.filter((rect) => Math.abs(rect.top - targetRowTop) < 3);
+    const rowCenter = rowRects.reduce((sum, rect) => sum + rect.top + rect.height / 2, 0) / rowRects.length;
+    return toGridPoint(gridRect.left, rowCenter).y;
   };
 
   const horizontalPipelineAtY = (y) => columns.slice(0, -1).map((column) => {
@@ -239,6 +240,7 @@ function renderCicdLeaderLines() {
   }
 
   const deploymentManifestItem = currentSlide.querySelector('.cicd-file-item--deployment-manifests');
+  const testSuitesItem = currentSlide.querySelector('.cicd-file-item--test-suites');
   const cloudInfrastructureGroup = currentSlide.querySelector('.cicd-target-group--cloud');
   const thirdPartyGroup = currentSlide.querySelector('.cicd-target-group--third-party');
   if (deploymentManifestItem && cloudInfrastructureGroup) {
@@ -247,7 +249,7 @@ function renderCicdLeaderLines() {
   if (infraCodeItem && cloudInfrastructureGroup) {
     routedPipelines.push(routedPipeline(
       elementYInGrid(infraCodeItem, 0.82),
-      firstIconRowCenterYInGrid(cloudInfrastructureGroup)
+      iconRowCenterYInGrid(cloudInfrastructureGroup, 0)
     ));
   }
   if (deploymentManifestItem && kubernetesGroup) {
@@ -260,6 +262,18 @@ function renderCicdLeaderLines() {
     routedPipelines.push(routedPipeline(
       elementYInGrid(infraCodeItem, 0.98),
       centerYInGrid(thirdPartyGroup)
+    ));
+  }
+  if (testSuitesItem && cloudInfrastructureGroup) {
+    routedPipelines.push(routedPipeline(
+      elementYInGrid(testSuitesItem, 0.22),
+      iconRowCenterYInGrid(cloudInfrastructureGroup, 2)
+    ));
+  }
+  if (testSuitesItem && kubernetesGroup) {
+    routedPipelines.push(routedPipeline(
+      elementYInGrid(testSuitesItem, 0.78),
+      elementYInGrid(kubernetesGroup, 0.42)
     ));
   }
 
