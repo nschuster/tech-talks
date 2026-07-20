@@ -509,6 +509,7 @@ body {
 .cicd-antipattern-slide {
   --cicd-content-top: 260px;
   --cicd-content-bottom: 124px;
+  --cicd-boundary-badge-size: 104px;
 }
 
 .cicd-antipattern-slide h2 {
@@ -539,8 +540,8 @@ body {
 
 .cicd-column-caption {
   position: absolute;
-  top: 26px;
-  left: 26px;
+  top: -4px;
+  left: -4px;
   display: inline-flex;
   align-items: center;
   gap: 14px;
@@ -555,12 +556,33 @@ body {
 }
 
 .cicd-column-caption-square {
-  display: inline-block;
+  display: inline-flex;
   flex: 0 0 auto;
-  width: 28px;
-  height: 28px;
+  align-items: center;
+  justify-content: center;
+  width: var(--cicd-boundary-badge-size);
+  height: var(--cicd-boundary-badge-size);
   background: var(--capgemini-white);
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.24);
+}
+
+.cicd-column-caption-icon {
+  display: block;
+  width: calc(var(--cicd-boundary-badge-size) * 0.68);
+  height: calc(var(--cicd-boundary-badge-size) * 0.68);
+  object-fit: contain;
+}
+
+.cicd-column-caption-icon--dark {
+  display: none;
+}
+
+:root[data-theme="light"] .cicd-column-caption-icon--dark {
+  display: block;
+}
+
+:root[data-theme="light"] .cicd-column-caption-icon--light {
+  display: none;
 }
 
 .cicd-grid-column:nth-child(1) { background: rgba(29, 184, 242, 0.18); }
