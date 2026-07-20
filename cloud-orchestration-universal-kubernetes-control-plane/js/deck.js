@@ -174,46 +174,26 @@ function renderCicdLeaderLines() {
   const currentSlide = deck.getCurrentSlide();
   if (!currentSlide?.classList.contains('cicd-antipattern-slide')) return;
 
-  const ids = [
-    'pipeline-source-anchor',
-    'pipeline-step-1',
-    'pipeline-step-2',
-    'pipeline-step-3',
-    'pipeline-step-4',
-    'pipeline-step-5',
-    'pipeline-registry-anchor'
-  ];
-  const anchors = ids.map((id) => currentSlide.querySelector(`#${id}`));
-  if (anchors.some((anchor) => !anchor)) return;
-
   const grid = currentSlide.querySelector('.cicd-grid-reference');
-  if (!grid) return;
+  const columns = [...currentSlide.querySelectorAll('.cicd-grid-column')];
+  if (!grid || columns.length < 2) return;
 
   const color = getCicdLineColor();
   const outlineColor = root.dataset.theme === 'light' ? 'rgba(255, 255, 255, 0.92)' : 'rgba(18, 26, 56, 0.98)';
   const gridRect = grid.getBoundingClientRect();
   const scaleX = gridRect.width / grid.offsetWidth;
   const scaleY = gridRect.height / grid.offsetHeight;
-  const toSlidePoint = (x, y) => ({
+  const toGridPoint = (x, y) => ({
     x: (x - gridRect.left) / scaleX,
     y: (y - gridRect.top) / scaleY
   });
-  const center = (element) => {
+  const laneY = Number.parseFloat(getComputedStyle(currentSlide).getPropertyValue('--cicd-pipeline-lane-y')) || 150;
+  const columnCenter = (element) => {
     const rect = element.getBoundingClientRect();
-    return toSlidePoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
-  };
-  const side = (element, edge) => {
-    const rect = element.getBoundingClientRect();
-    return toSlidePoint(edge === 'left' ? rect.left : rect.right, rect.top + rect.height / 2);
+    return toGridPoint(rect.left + rect.width / 2, gridRect.top + laneY * scaleY);
   };
 
-  const points = anchors.map((anchor, index) => {
-    if (index === 0 || index === anchors.length - 1) return center(anchor);
-    return {
-      left: side(anchor, 'left'),
-      right: side(anchor, 'right')
-    };
-  });
+  const points = columns.map(columnCenter);
 
   cicdLeaderLineLayer = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   cicdLeaderLineLayer.classList.add('cicd-pipeline-lines-layer');
@@ -228,14 +208,7 @@ function renderCicdLeaderLines() {
     </defs>
   `;
 
-  const segments = [
-    [points[0], points[1].left],
-    [points[1].right, points[2].left],
-    [points[2].right, points[3].left],
-    [points[3].right, points[4].left],
-    [points[4].right, points[5].left],
-    [points[5].right, points[6]]
-  ];
+  const segments = points.slice(0, -1).map((point, index) => [point, points[index + 1]]);
 
   segments.forEach(([start, end]) => {
     const outline = document.createElementNS('http://www.w3.org/2000/svg', 'line');

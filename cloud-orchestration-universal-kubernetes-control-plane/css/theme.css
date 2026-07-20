@@ -760,7 +760,9 @@ body {
 .cicd-pipeline-line-outline,
 .cicd-pipeline-line {
   stroke-linecap: round;
+  stroke-dasharray: 2 18;
   vector-effect: non-scaling-stroke;
+  animation: cicd-pipeline-dash 0.85s linear infinite;
 }
 
 .cicd-pipeline-line-outline {
@@ -769,6 +771,19 @@ body {
 
 .cicd-pipeline-line {
   stroke-width: 9px;
+}
+
+@keyframes cicd-pipeline-dash {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cicd-pipeline-line-outline,
+  .cicd-pipeline-line {
+    animation: none;
+  }
 }
 
 .cicd-target-stack {
