@@ -241,7 +241,7 @@ body {
 
 .timeline-state--2 .timeline-bar {
   width: 50%;
-  background: linear-gradient(90deg, var(--timeline-1990s) 0 50%, var(--timeline-2000s) 50% 100%);
+  background: linear-gradient(90deg, var(--timeline-1990s) 0%, var(--timeline-2000s) 100%);
 }
 
 .timeline-state--2 .timeline-bar::after {
@@ -250,7 +250,7 @@ body {
 
 .timeline-state--3 .timeline-bar {
   width: 75%;
-  background: linear-gradient(90deg, var(--timeline-1990s) 0 33.333%, var(--timeline-2000s) 33.333% 66.666%, var(--timeline-2010s) 66.666% 100%);
+  background: linear-gradient(90deg, var(--timeline-1990s) 0%, var(--timeline-2000s) 50%, var(--timeline-2010s) 100%);
 }
 
 .timeline-state--3 .timeline-bar::after {
@@ -259,7 +259,7 @@ body {
 
 .timeline-state--4 .timeline-bar {
   width: 100%;
-  background: linear-gradient(90deg, var(--timeline-1990s) 0 25%, var(--timeline-2000s) 25% 50%, var(--timeline-2010s) 50% 75%, var(--timeline-2020s) 75% 100%);
+  background: linear-gradient(90deg, var(--timeline-1990s) 0%, var(--timeline-2000s) 33.333%, var(--timeline-2010s) 66.666%, var(--timeline-2020s) 100%);
 }
 
 .timeline-state--4 .timeline-bar::after {
