@@ -214,7 +214,7 @@ function renderCicdLeaderLines() {
     const rect = column.getBoundingClientRect();
     return toGridPoint(rect.right, gridRect.top + y * scaleY);
   });
-  const routedInfraToCloudPipeline = (startY, endY) => {
+  const routedPipeline = (startY, endY) => {
     const points = horizontalPipelineAtY(startY);
     const start = points[0];
     const curveStart = points[2];
@@ -244,9 +244,15 @@ function renderCicdLeaderLines() {
     pipelines.push(horizontalPipelineAtY(centerYInGrid(deploymentManifestItem)));
   }
   if (infraCodeItem && cloudInfrastructureGroup) {
-    routedPipelines.push(routedInfraToCloudPipeline(
+    routedPipelines.push(routedPipeline(
       elementYInGrid(infraCodeItem, 0.82),
       firstIconRowCenterYInGrid(cloudInfrastructureGroup)
+    ));
+  }
+  if (deploymentManifestItem && kubernetesGroup) {
+    routedPipelines.push(routedPipeline(
+      elementYInGrid(deploymentManifestItem, 0.25),
+      elementYInGrid(kubernetesGroup, 0.78)
     ));
   }
 
