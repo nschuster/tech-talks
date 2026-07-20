@@ -215,11 +215,12 @@ function renderCicdLeaderLines() {
     const rect = column.getBoundingClientRect();
     return toGridPoint(rect.right, gridRect.top + y * scaleY);
   });
-  const routedPipeline = (startY, endY) => {
+  const routedPipeline = (startY, endY, { bend = 'standard' } = {}) => {
     const points = horizontalPipelineAtY(startY);
     const start = points[0];
-    const curveStart = points[2];
-    const curveEnd = { x: points[4].x, y: endY };
+    const curveStart = bend === 'late' ? points[4] : points[2];
+    const curveEndX = bend === 'late' ? points[5].x : points[4].x;
+    const curveEnd = { x: curveEndX, y: endY };
     const end = { x: points[5].x, y: endY };
     const controlOffset = Math.max(70, (curveEnd.x - curveStart.x) * 0.35);
     return [
@@ -230,50 +231,59 @@ function renderCicdLeaderLines() {
     ].join(' ');
   };
 
-  const sourceToRegistryPoints = columns.slice(0, -1).map((column) => rightEdgePointAtY(column, laneY));
-  const pipelines = [sourceToRegistryPoints];
-  const routedPipelines = [];
+  const sourceCodeItem = currentSlide.querySelector('.cicd-file-item--source-code');
   const infraCodeItem = currentSlide.querySelector('.cicd-file-item--infra-code');
-  const kubernetesGroup = currentSlide.querySelector('.cicd-target-group--kubernetes');
-  if (infraCodeItem && kubernetesGroup) {
-    pipelines.push(horizontalPipelineAtY(centerYInGrid(infraCodeItem)));
-  }
-
   const deploymentManifestItem = currentSlide.querySelector('.cicd-file-item--deployment-manifests');
   const testSuitesItem = currentSlide.querySelector('.cicd-file-item--test-suites');
+  const kubernetesGroup = currentSlide.querySelector('.cicd-target-group--kubernetes');
   const cloudInfrastructureGroup = currentSlide.querySelector('.cicd-target-group--cloud');
   const thirdPartyGroup = currentSlide.querySelector('.cicd-target-group--third-party');
+
+  const sourceLaneY = sourceCodeItem ? centerYInGrid(sourceCodeItem) : laneY;
+  const kubernetesUpperY = kubernetesGroup ? elementYInGrid(kubernetesGroup, 0.2) : laneY;
+  const kubernetesCenterY = kubernetesGroup ? elementYInGrid(kubernetesGroup, 0.5) : laneY;
+  const kubernetesLowerY = kubernetesGroup ? elementYInGrid(kubernetesGroup, 0.92) : laneY;
+  const cloudMiddleRowY = cloudInfrastructureGroup ? iconRowCenterYInGrid(cloudInfrastructureGroup, 1) : laneY;
+
+  const sourceToRegistryPoints = columns.slice(0, -1).map((column) => rightEdgePointAtY(column, sourceLaneY));
+  const pipelines = [sourceToRegistryPoints];
+  const routedPipelines = [];
+
+  if (infraCodeItem && kubernetesGroup) {
+    pipelines.push(horizontalPipelineAtY(kubernetesUpperY));
+  }
   if (deploymentManifestItem && cloudInfrastructureGroup) {
-    pipelines.push(horizontalPipelineAtY(centerYInGrid(deploymentManifestItem)));
+    pipelines.push(horizontalPipelineAtY(cloudMiddleRowY));
   }
   if (infraCodeItem && cloudInfrastructureGroup) {
     routedPipelines.push(routedPipeline(
-      elementYInGrid(infraCodeItem, 0.82),
+      elementYInGrid(infraCodeItem, 0.5),
       iconRowCenterYInGrid(cloudInfrastructureGroup, 0)
     ));
   }
   if (deploymentManifestItem && kubernetesGroup) {
     routedPipelines.push(routedPipeline(
-      elementYInGrid(deploymentManifestItem, 0.25),
-      elementYInGrid(kubernetesGroup, 0.78)
+      elementYInGrid(deploymentManifestItem, 0.15),
+      kubernetesCenterY
     ));
   }
   if (infraCodeItem && thirdPartyGroup) {
     routedPipelines.push(routedPipeline(
-      elementYInGrid(infraCodeItem, 0.98),
+      elementYInGrid(infraCodeItem, 0.78),
       centerYInGrid(thirdPartyGroup)
     ));
   }
   if (testSuitesItem && cloudInfrastructureGroup) {
     routedPipelines.push(routedPipeline(
-      elementYInGrid(testSuitesItem, 0.22),
+      elementYInGrid(testSuitesItem, 0.25),
       iconRowCenterYInGrid(cloudInfrastructureGroup, 2)
     ));
   }
   if (testSuitesItem && kubernetesGroup) {
     routedPipelines.push(routedPipeline(
-      elementYInGrid(testSuitesItem, 0.78),
-      elementYInGrid(kubernetesGroup, 0.42)
+      elementYInGrid(testSuitesItem, 0.54),
+      kubernetesLowerY,
+      { bend: 'late' }
     ));
   }
 
