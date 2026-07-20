@@ -195,11 +195,11 @@ function renderCicdLeaderLines() {
       startPlug: 'behind',
       endPlug: 'arrow3',
       color,
-      size: 5,
-      endPlugSize: 1.9,
+      size: 9,
+      endPlugSize: 2.35,
       outline: true,
-      outlineColor: root.dataset.theme === 'light' ? 'rgba(255, 255, 255, 0.72)' : 'rgba(18, 26, 56, 0.9)',
-      outlineSize: 0.36
+      outlineColor: root.dataset.theme === 'light' ? 'rgba(255, 255, 255, 0.9)' : 'rgba(18, 26, 56, 0.98)',
+      outlineSize: 0.44
     }));
   }
 }

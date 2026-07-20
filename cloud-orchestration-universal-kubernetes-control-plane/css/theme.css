@@ -741,7 +741,9 @@ body {
 }
 
 .leader-line {
+  z-index: 15 !important;
   pointer-events: none;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.34));
 }
 
 .cicd-target-stack {
@@ -910,8 +912,8 @@ body {
 }
 
 .cicd-overlay-icon--ecr {
-  width: 25px;
-  height: 25px;
+  width: 30px;
+  height: 30px;
   padding: 2px;
 }
 
