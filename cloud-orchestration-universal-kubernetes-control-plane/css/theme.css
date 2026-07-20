@@ -201,13 +201,12 @@ body {
 .evolution-timeline {
   align-self: flex-start;
   display: flex;
-  width: calc(100% + 7rem - 72px);
+  width: calc(100% - 72px);
   height: 82px;
   margin: auto 0;
-  margin-left: -3.5rem;
   overflow: visible;
-  background: rgba(255, 255, 255, 0.04);
-  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.22);
+  background: transparent;
+  box-shadow: none;
 }
 
 .timeline-era {
