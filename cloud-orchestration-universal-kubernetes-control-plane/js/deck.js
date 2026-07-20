@@ -188,12 +188,12 @@ function renderCicdLeaderLines() {
     y: (y - gridRect.top) / scaleY
   });
   const laneY = Number.parseFloat(getComputedStyle(currentSlide).getPropertyValue('--cicd-pipeline-lane-y')) || 150;
-  const columnCenter = (element) => {
+  const columnRightEdge = (element) => {
     const rect = element.getBoundingClientRect();
-    return toGridPoint(rect.left + rect.width / 2, gridRect.top + laneY * scaleY);
+    return toGridPoint(rect.right, gridRect.top + laneY * scaleY);
   };
 
-  const points = columns.map(columnCenter);
+  const points = columns.slice(0, -1).map(columnRightEdge);
 
   cicdLeaderLineLayer = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   cicdLeaderLineLayer.classList.add('cicd-pipeline-lines-layer');
