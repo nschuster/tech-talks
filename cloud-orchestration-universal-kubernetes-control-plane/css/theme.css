@@ -199,6 +199,10 @@ body {
   --timeline-left-tail: 180rem;
 }
 
+.reveal section.control-plane-evolution-slide {
+  overflow: visible;
+}
+
 .evolution-timeline {
   position: relative;
   align-self: flex-start;
