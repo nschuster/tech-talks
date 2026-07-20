@@ -454,8 +454,8 @@ body {
 
 .timeline-icon {
   display: block;
-  width: 68px;
-  height: 68px;
+  width: 82px;
+  height: 82px;
   object-fit: contain;
   filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.28));
 }
@@ -510,6 +510,7 @@ body {
   --cicd-content-top: 205px;
   --cicd-content-bottom: 124px;
   --cicd-boundary-badge-size: 72px;
+  --cicd-pipeline-lane-y: 150px;
 }
 
 .cicd-antipattern-slide h2 {
@@ -610,6 +611,7 @@ body {
 }
 
 .cicd-file-item {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -672,6 +674,76 @@ body {
   text-shadow: none;
 }
 
+
+.cicd-grid-column--pipeline-step {
+  overflow: visible;
+}
+
+.cicd-pipeline-step {
+  position: absolute;
+  left: 50%;
+  top: var(--cicd-pipeline-lane-y);
+  z-index: 8;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  width: 156px;
+  height: 56px;
+  box-sizing: border-box;
+  padding: 0 14px;
+  border: 3px solid var(--capgemini-white);
+  border-radius: 999px;
+  background: rgba(18, 26, 56, 0.92);
+  color: var(--capgemini-white);
+  font-family: var(--font-display);
+  font-size: 0.28em;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  text-transform: uppercase;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.3);
+}
+
+:root[data-theme="light"] .cicd-pipeline-step {
+  border-color: rgba(0, 0, 0, 0.7);
+  background: rgba(255, 255, 255, 0.96);
+  color: #000000;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
+}
+
+.cicd-pipeline-step-dot {
+  flex: 0 0 auto;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--capgemini-yellow);
+}
+
+.cicd-pipeline-anchor {
+  position: absolute;
+  z-index: 10;
+  width: 2px;
+  height: 2px;
+  pointer-events: none;
+}
+
+.cicd-pipeline-anchor--source {
+  right: -4px;
+  top: calc(50% - 14px);
+  transform: translateY(-50%);
+}
+
+.cicd-pipeline-anchor--registry {
+  left: -35px;
+  top: 62px;
+  transform: translateY(-50%);
+}
+
+.leader-line {
+  pointer-events: none;
+}
+
 .cicd-target-stack {
   position: absolute;
   left: 0;
@@ -680,7 +752,7 @@ body {
   bottom: 0;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 16px;
   width: 100%;
 }
 
@@ -705,11 +777,11 @@ body {
 .cicd-target-main-box--cloud {
   flex: 1 1 auto;
   min-height: 455px;
-  padding: 92px 12px 14px;
+  padding: 84px 10px 14px;
 }
 
 .cicd-target-main-box--third-party {
-  flex: 0 0 180px;
+  flex: 0 0 152px;
 }
 
 .cicd-target-box-content {
@@ -717,7 +789,8 @@ body {
   flex: 1 1 auto;
   flex-direction: column;
   align-items: center;
-  justify-content: space-evenly;
+  justify-content: flex-start;
+  gap: 20px;
   width: 100%;
 }
 
@@ -741,10 +814,11 @@ body {
 }
 
 .cicd-target-group {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   text-align: center;
 }
 
@@ -756,14 +830,14 @@ body {
 
 .cicd-target-icons--triple {
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  width: 258px;
+  gap: 22px;
+  width: 320px;
 }
 
 .cicd-target-icons--aws-grid {
   grid-template-columns: repeat(6, 1fr);
   gap: 4px;
-  width: 252px;
+  width: 326px;
   padding: 8px;
   box-sizing: border-box;
 }
@@ -775,8 +849,8 @@ body {
 }
 
 .cicd-target-icon--registry {
-  width: 62px;
-  height: 62px;
+  width: 82px;
+  height: 82px;
   filter: invert(1) drop-shadow(0 7px 12px rgba(0, 0, 0, 0.25));
 }
 
@@ -792,8 +866,8 @@ body {
 }
 
 .cicd-target-icon--kubernetes {
-  width: 68px;
-  height: 68px;
+  width: 88px;
+  height: 88px;
 }
 
 .cicd-target-icon--theme-dark {
@@ -809,8 +883,8 @@ body {
 }
 
 .cicd-target-icon--aws {
-  width: 34px;
-  height: 34px;
+  width: 44px;
+  height: 44px;
 }
 
 .cicd-overlay-icon {
@@ -830,21 +904,21 @@ body {
 }
 
 .cicd-overlay-icon--eks {
-  width: 25px;
-  height: 25px;
+  width: 30px;
+  height: 30px;
   padding: 2px;
 }
 
 .cicd-overlay-icon--ecr {
-  width: 21px;
-  height: 21px;
+  width: 25px;
+  height: 25px;
   padding: 2px;
 }
 
 .cicd-target-label {
   color: var(--capgemini-white);
   font-family: var(--font-display);
-  font-size: 0.31em;
+  font-size: 0.43em;
   font-weight: 700;
   line-height: 0.96;
   text-transform: uppercase;

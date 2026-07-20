@@ -90,6 +90,7 @@ const reveal = document.querySelector('.reveal');
 let brandingLayer;
 let capgeminiLogo;
 let confidentialityPatch;
+let cicdLeaderLines = [];
 
 function getConfidentialityPatch() {
   return CONFIDENTIALITY_PATCHES[CONFIDENTIALITY_LEVEL] || CONFIDENTIALITY_PATCHES.SEC1;
@@ -155,6 +156,58 @@ function setTheme(theme) {
   }
   updateMenuThemeButton(theme);
   updateBranding();
+  requestCicdLeaderLineUpdate();
+}
+
+function clearCicdLeaderLines() {
+  cicdLeaderLines.forEach((line) => line.remove());
+  cicdLeaderLines = [];
+}
+
+function getCicdLineColor() {
+  return root.dataset.theme === 'light' ? '#000000' : '#ffffff';
+}
+
+function renderCicdLeaderLines() {
+  clearCicdLeaderLines();
+
+  const currentSlide = deck.getCurrentSlide();
+  if (!currentSlide?.classList.contains('cicd-antipattern-slide') || !window.LeaderLine) return;
+
+  const ids = [
+    'pipeline-source-anchor',
+    'pipeline-step-1',
+    'pipeline-step-2',
+    'pipeline-step-3',
+    'pipeline-step-4',
+    'pipeline-step-5',
+    'pipeline-registry-anchor'
+  ];
+  const anchors = ids.map((id) => currentSlide.querySelector(`#${id}`));
+  if (anchors.some((anchor) => !anchor)) return;
+
+  const color = getCicdLineColor();
+  for (let index = 0; index < anchors.length - 1; index += 1) {
+    cicdLeaderLines.push(new window.LeaderLine(anchors[index], anchors[index + 1], {
+      path: 'straight',
+      startSocket: 'right',
+      endSocket: 'left',
+      startPlug: 'behind',
+      endPlug: 'arrow3',
+      color,
+      size: 5,
+      endPlugSize: 1.9,
+      outline: true,
+      outlineColor: root.dataset.theme === 'light' ? 'rgba(255, 255, 255, 0.72)' : 'rgba(18, 26, 56, 0.9)',
+      outlineSize: 0.36
+    }));
+  }
+}
+
+function requestCicdLeaderLineUpdate() {
+  window.requestAnimationFrame(() => {
+    window.requestAnimationFrame(renderCicdLeaderLines);
+  });
 }
 
 function toggleTheme() {
@@ -162,8 +215,18 @@ function toggleTheme() {
 }
 
 setTheme(localStorage.getItem('tech-talks-theme') || root.dataset.theme || 'dark');
-deck.on('ready', updateBranding);
-deck.on('slidechanged', updateBranding);
+deck.on('ready', () => {
+  updateBranding();
+  requestCicdLeaderLineUpdate();
+});
+deck.on('slidechanged', () => {
+  updateBranding();
+  requestCicdLeaderLineUpdate();
+});
+deck.on('resize', requestCicdLeaderLineUpdate);
+deck.on('overviewshown', clearCicdLeaderLines);
+deck.on('overviewhidden', requestCicdLeaderLineUpdate);
+window.addEventListener('resize', requestCicdLeaderLineUpdate);
 document.addEventListener('menu-ready', () => updateMenuThemeButton(root.dataset.theme || 'dark'));
 document.addEventListener('click', (event) => {
   const target = event.target instanceof Element ? event.target : event.target?.parentElement;
