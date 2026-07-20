@@ -403,29 +403,29 @@ body {
 
 .timeline-era:nth-child(odd) .timeline-connector {
   bottom: 50%;
-  height: 212px;
+  height: 360px;
 }
 
 .timeline-era:nth-child(odd) .timeline-dot {
-  bottom: calc(50% + 212px);
+  bottom: calc(50% + 360px);
 }
 
 .timeline-era:nth-child(odd) .timeline-copy {
-  bottom: calc(50% + 190px);
+  bottom: calc(50% + 334px);
 }
 
 .timeline-era:nth-child(even) .timeline-connector {
   top: 50%;
-  height: 164px;
+  height: 320px;
 }
 
 .timeline-era:nth-child(even) .timeline-dot {
-  top: calc(50% + 164px);
+  top: calc(50% + 320px);
   transform: translate(-50%, -50%);
 }
 
 .timeline-era:nth-child(even) .timeline-copy {
-  top: calc(50% + 132px);
+  top: calc(50% + 256px);
 }
 
 .slide-background-branding {
