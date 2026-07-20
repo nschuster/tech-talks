@@ -507,9 +507,9 @@ body {
 }
 
 .cicd-antipattern-slide {
-  --cicd-content-top: 260px;
+  --cicd-content-top: 205px;
   --cicd-content-bottom: 124px;
-  --cicd-boundary-badge-size: 104px;
+  --cicd-boundary-badge-size: 72px;
 }
 
 .cicd-antipattern-slide h2 {
