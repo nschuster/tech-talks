@@ -117,8 +117,8 @@ body {
 }
 
 .title-slide h1 {
-  max-width: 1700px;
-  font-size: 2.58em;
+  max-width: 1780px;
+  font-size: 3.05em;
 }
 
 .reveal h2 {
@@ -153,11 +153,11 @@ body {
 
 .title-kicker {
   color: var(--color-heading-secondary) !important;
-  font-size: 0.82em;
+  font-size: 1em;
 }
 
 .speaker-line {
-  margin: auto 0 2.1rem !important;
+  margin: auto 0 2.65rem !important;
   color: var(--color-muted) !important;
   font-size: 0.54em;
   font-weight: 500;
@@ -189,6 +189,98 @@ body {
 
 .title-slide--animated {
   background: transparent;
+}
+
+.control-plane-evolution-slide {
+  --timeline-1990s: #3f4650;
+  --timeline-2000s: var(--capgemini-blue);
+  --timeline-2010s: var(--capgemini-turquoise);
+  --timeline-2020s: var(--capgemini-yellow);
+}
+
+.evolution-timeline {
+  align-self: center;
+  display: flex;
+  width: min(1580px, 88%);
+  height: 174px;
+  margin: auto auto;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.28);
+}
+
+.timeline-era {
+  position: relative;
+  flex: 0 0 0;
+  min-width: 0;
+  height: 100%;
+  overflow: hidden;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition:
+    flex-basis 620ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    transform 620ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.evolution-timeline .timeline-era.fragment {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.timeline-era.visible {
+  flex-basis: 25%;
+  transform: scaleX(1);
+}
+
+.timeline-era--1990s {
+  background: linear-gradient(90deg, var(--timeline-1990s) 0 22%, var(--timeline-2000s) 100%);
+}
+
+.timeline-era--2000s {
+  background: linear-gradient(90deg, var(--timeline-2000s) 0 22%, var(--timeline-2010s) 100%);
+}
+
+.timeline-era--2010s {
+  background: linear-gradient(90deg, var(--timeline-2010s) 0 22%, var(--timeline-2020s) 100%);
+}
+
+.timeline-era--2020s {
+  background: linear-gradient(90deg, var(--timeline-2020s) 0 42%, #ffd96b 100%);
+}
+
+.timeline-marker {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 22px;
+  background: currentColor;
+  box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.2);
+}
+
+.timeline-era--1990s { color: var(--timeline-1990s); }
+.timeline-era--2000s { color: var(--timeline-2000s); }
+.timeline-era--2010s { color: var(--timeline-2010s); }
+.timeline-era--2020s { color: var(--timeline-2020s); }
+
+.timeline-caption {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #ffffff;
+  font-family: var(--font-display);
+  font-size: 1.04em;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1;
+  text-shadow: 0 3px 18px rgba(0, 0, 0, 0.34);
+}
+
+.timeline-era--2020s .timeline-caption {
+  color: var(--capgemini-dark-blue);
+  text-shadow: none;
 }
 
 .slide-background-branding {
