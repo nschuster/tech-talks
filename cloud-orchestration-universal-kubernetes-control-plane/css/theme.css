@@ -533,8 +533,7 @@ body {
   min-height: 100%;
 }
 
-.cicd-grid-column--source,
-.cicd-grid-column--target {
+.cicd-grid-column--source {
   border: 4px solid var(--capgemini-white);
 }
 
@@ -677,11 +676,11 @@ body {
   position: absolute;
   left: 50%;
   top: 86px;
-  bottom: 22px;
+  bottom: 0;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  width: min(90%, 346px);
+  gap: 18px;
+  width: min(94%, 362px);
   transform: translateX(-50%);
 }
 
@@ -690,7 +689,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  border: 2px solid rgba(255, 255, 255, 0.55);
+  border: 4px solid var(--capgemini-white);
   background: rgba(18, 26, 56, 0.22);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
 }
@@ -703,13 +702,13 @@ body {
 
 .cicd-target-main-box--cloud {
   flex: 1 1 auto;
-  min-height: 454px;
+  min-height: 430px;
   justify-content: space-evenly;
-  padding: 28px 10px 12px;
+  padding: 30px 12px 14px;
 }
 
 .cicd-target-main-box--third-party {
-  flex: 0 0 94px;
+  flex: 0 0 138px;
   justify-content: center;
 }
 
@@ -748,14 +747,16 @@ body {
 
 .cicd-target-icons--triple {
   grid-template-columns: repeat(3, 1fr);
-  gap: 15px;
-  width: 214px;
+  gap: 16px;
+  width: 258px;
 }
 
 .cicd-target-icons--aws-grid {
   grid-template-columns: repeat(6, 1fr);
-  gap: 5px 7px;
-  width: 308px;
+  gap: 4px;
+  width: 252px;
+  padding: 8px;
+  box-sizing: border-box;
 }
 
 .cicd-target-icon {
@@ -765,8 +766,8 @@ body {
 }
 
 .cicd-target-icon--registry {
-  width: 45px;
-  height: 45px;
+  width: 62px;
+  height: 62px;
   filter: invert(1) drop-shadow(0 7px 12px rgba(0, 0, 0, 0.25));
 }
 
@@ -782,8 +783,8 @@ body {
 }
 
 .cicd-target-icon--kubernetes {
-  width: 52px;
-  height: 52px;
+  width: 68px;
+  height: 68px;
 }
 
 .cicd-target-icon--theme-dark {
