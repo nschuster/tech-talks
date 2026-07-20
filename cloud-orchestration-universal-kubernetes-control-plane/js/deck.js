@@ -274,13 +274,13 @@ function renderCicdLeaderLines() {
   }
   if (testSuitesItem && cloudInfrastructureGroup) {
     routedPipelines.push(routedPipeline(
-      elementYInGrid(testSuitesItem, 0.25),
+      elementYInGrid(testSuitesItem, 0.54),
       iconRowCenterYInGrid(cloudInfrastructureGroup, 2)
     ));
   }
   if (testSuitesItem && kubernetesGroup) {
     routedPipelines.push(routedPipeline(
-      elementYInGrid(testSuitesItem, 0.54),
+      elementYInGrid(testSuitesItem, 0.25),
       kubernetesLowerY
     ));
   }
