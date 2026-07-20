@@ -759,7 +759,9 @@ body {
 
 .cicd-pipeline-line-outline,
 .cicd-pipeline-line {
+  fill: none;
   stroke-linecap: butt;
+  stroke-linejoin: round;
   stroke-dasharray: 30 18;
   vector-effect: non-scaling-stroke;
   animation: cicd-pipeline-dash 1s linear infinite;

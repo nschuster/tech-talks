@@ -196,14 +196,42 @@ function renderCicdLeaderLines() {
     const rect = element.getBoundingClientRect();
     return toGridPoint(gridRect.left, rect.top + rect.height / 2).y;
   };
+  const elementYInGrid = (element, ratio) => {
+    const rect = element.getBoundingClientRect();
+    return toGridPoint(gridRect.left, rect.top + rect.height * ratio).y;
+  };
+  const firstIconRowCenterYInGrid = (container) => {
+    const iconRects = [...container.querySelectorAll('.cicd-target-icon--aws')].map((icon) => icon.getBoundingClientRect());
+    if (!iconRects.length) return centerYInGrid(container);
+
+    const firstRowTop = Math.min(...iconRects.map((rect) => rect.top));
+    const firstRowRects = iconRects.filter((rect) => Math.abs(rect.top - firstRowTop) < 3);
+    const firstRowCenter = firstRowRects.reduce((sum, rect) => sum + rect.top + rect.height / 2, 0) / firstRowRects.length;
+    return toGridPoint(gridRect.left, firstRowCenter).y;
+  };
 
   const horizontalPipelineAtY = (y) => columns.slice(0, -1).map((column) => {
     const rect = column.getBoundingClientRect();
     return toGridPoint(rect.right, gridRect.top + y * scaleY);
   });
+  const routedInfraToCloudPipeline = (startY, endY) => {
+    const points = horizontalPipelineAtY(startY);
+    const start = points[0];
+    const curveStart = points[2];
+    const curveEnd = { x: points[4].x, y: endY };
+    const end = { x: points[5].x, y: endY };
+    const controlOffset = Math.max(70, (curveEnd.x - curveStart.x) * 0.35);
+    return [
+      `M ${start.x} ${start.y}`,
+      `H ${curveStart.x}`,
+      `C ${curveStart.x + controlOffset} ${start.y} ${curveEnd.x - controlOffset} ${endY} ${curveEnd.x} ${endY}`,
+      `H ${end.x}`
+    ].join(' ');
+  };
 
   const sourceToRegistryPoints = columns.slice(0, -1).map((column) => rightEdgePointAtY(column, laneY));
   const pipelines = [sourceToRegistryPoints];
+  const routedPipelines = [];
   const infraCodeItem = currentSlide.querySelector('.cicd-file-item--infra-code');
   const kubernetesGroup = currentSlide.querySelector('.cicd-target-group--kubernetes');
   if (infraCodeItem && kubernetesGroup) {
@@ -214,6 +242,12 @@ function renderCicdLeaderLines() {
   const cloudInfrastructureGroup = currentSlide.querySelector('.cicd-target-group--cloud');
   if (deploymentManifestItem && cloudInfrastructureGroup) {
     pipelines.push(horizontalPipelineAtY(centerYInGrid(deploymentManifestItem)));
+  }
+  if (infraCodeItem && cloudInfrastructureGroup) {
+    routedPipelines.push(routedInfraToCloudPipeline(
+      elementYInGrid(infraCodeItem, 0.82),
+      firstIconRowCenterYInGrid(cloudInfrastructureGroup)
+    ));
   }
 
   cicdLeaderLineLayer = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -252,6 +286,21 @@ function renderCicdLeaderLines() {
 
       cicdLeaderLineLayer.append(outline, line);
     });
+  });
+
+  routedPipelines.forEach((pathData) => {
+    const outline = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    outline.classList.add('cicd-pipeline-line-outline', 'cicd-pipeline-line-path');
+    outline.setAttribute('d', pathData);
+    outline.setAttribute('stroke', outlineColor);
+
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.classList.add('cicd-pipeline-line', 'cicd-pipeline-line-path');
+    path.setAttribute('d', pathData);
+    path.setAttribute('stroke', color);
+    path.setAttribute('marker-end', 'url(#cicd-pipeline-arrowhead)');
+
+    cicdLeaderLineLayer.append(outline, path);
   });
 
   grid.appendChild(cicdLeaderLineLayer);
