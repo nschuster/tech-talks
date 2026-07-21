@@ -272,6 +272,12 @@ function renderCicdLeaderLines() {
       centerYInGrid(thirdPartyGroup)
     ));
   }
+  if (deploymentManifestItem && thirdPartyGroup) {
+    routedPipelines.push(routedPipeline(
+      elementYInGrid(deploymentManifestItem, 0.72),
+      elementYInGrid(thirdPartyGroup, 0.6)
+    ));
+  }
   if (testSuitesItem && cloudInfrastructureGroup) {
     routedPipelines.push(routedPipeline(
       elementYInGrid(testSuitesItem, 0.54),
