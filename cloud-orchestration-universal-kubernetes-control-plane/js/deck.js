@@ -337,23 +337,52 @@ function renderCicdLeaderLines() {
   cicdLeaderLineLayer.querySelector('.cicd-pipeline-arrowhead-path')?.setAttribute('fill', color);
 
   const activePipelineIds = new Set();
+  const defs = cicdLeaderLineLayer.querySelector('defs');
+  const maskIdForPipeline = (id) => `cicd-pipeline-draw-mask-${id.replace(/[^a-z0-9_-]/gi, '-')}`;
+  const straightPathData = (points) => {
+    const [start, ...rest] = points;
+    return [`M ${start.x} ${start.y}`, ...rest.map((point) => `H ${point.x}`)].join(' ');
+  };
   const setCommonLineAttributes = (element, stroke) => {
     element.setAttribute('stroke', stroke);
     if (element.classList.contains('cicd-pipeline-line')) {
       element.setAttribute('marker-end', 'url(#cicd-pipeline-arrowhead)');
     }
   };
-  const addDrawOverlay = (group, tagName, attributes, length) => {
-    const drawLine = document.createElementNS('http://www.w3.org/2000/svg', tagName);
-    drawLine.classList.add('cicd-pipeline-line-draw');
-    Object.entries(attributes).forEach(([name, value]) => drawLine.setAttribute(name, value));
-    drawLine.setAttribute('stroke', color);
-    drawLine.setAttribute('marker-end', 'url(#cicd-pipeline-arrowhead)');
-    drawLine.style.setProperty('--cicd-draw-length', Math.max(1, length));
-    group.appendChild(drawLine);
-    const removeDrawLine = () => drawLine.remove();
-    drawLine.addEventListener('animationend', removeDrawLine, { once: true });
-    window.setTimeout(removeDrawLine, 900);
+  const clearDrawMask = (id) => {
+    const maskId = maskIdForPipeline(id);
+    cicdLeaderLineLayer.querySelectorAll(`[mask="url(#${maskId})"]`).forEach((element) => element.removeAttribute('mask'));
+    defs?.querySelector(`#${maskId}`)?.remove();
+  };
+  const addDrawMask = (id, pathData, length) => {
+    if (!defs) return;
+    clearDrawMask(id);
+    const maskId = maskIdForPipeline(id);
+    const mask = document.createElementNS('http://www.w3.org/2000/svg', 'mask');
+    mask.id = maskId;
+    mask.setAttribute('maskUnits', 'userSpaceOnUse');
+    mask.setAttribute('x', '-80');
+    mask.setAttribute('y', '-80');
+    mask.setAttribute('width', String(grid.offsetWidth + 160));
+    mask.setAttribute('height', String(grid.offsetHeight + 160));
+
+    const maskPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    maskPath.classList.add('cicd-pipeline-line-draw-mask');
+    maskPath.setAttribute('d', pathData);
+    maskPath.style.setProperty('--cicd-draw-length', Math.max(1, length));
+    mask.appendChild(maskPath);
+    defs.appendChild(mask);
+
+    const maskUrl = `url(#${maskId})`;
+    const group = cicdLeaderLineLayer.querySelector(`[data-cicd-pipeline-id="${id}"]`);
+    group?.querySelectorAll('.cicd-pipeline-line-outline, .cicd-pipeline-line').forEach((element) => element.setAttribute('mask', maskUrl));
+
+    const finishDraw = () => {
+      group?.querySelectorAll('.cicd-pipeline-line-outline, .cicd-pipeline-line').forEach((element) => element.removeAttribute('mask'));
+      mask.remove();
+    };
+    maskPath.addEventListener('animationend', finishDraw, { once: true });
+    window.setTimeout(finishDraw, 900);
   };
   const ensurePipelineGroup = (id) => {
     activePipelineIds.add(id);
@@ -367,36 +396,7 @@ function renderCicdLeaderLines() {
     }
     return { group, isNew };
   };
-
-  pipelines.forEach(({ id, points }) => {
-    const segments = points.slice(0, -1).map((point, index) => [point, points[index + 1], `${id}-${index}`]);
-
-    segments.forEach(([start, end, segmentId]) => {
-      const { group, isNew } = ensurePipelineGroup(segmentId);
-      let outline = group.querySelector('.cicd-pipeline-line-outline');
-      let line = group.querySelector('.cicd-pipeline-line');
-      if (!outline) {
-        outline = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-        outline.classList.add('cicd-pipeline-line-outline');
-        group.appendChild(outline);
-      }
-      if (!line) {
-        line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-        line.classList.add('cicd-pipeline-line');
-        group.appendChild(line);
-      }
-      const attrs = { x1: start.x, y1: start.y, x2: end.x, y2: end.y };
-      Object.entries(attrs).forEach(([name, value]) => {
-        outline.setAttribute(name, value);
-        line.setAttribute(name, value);
-      });
-      outline.setAttribute('stroke', outlineColor);
-      setCommonLineAttributes(line, color);
-      if (isNew) addDrawOverlay(group, 'line', attrs, Math.hypot(end.x - start.x, end.y - start.y));
-    });
-  });
-
-  routedPipelines.forEach(({ id, pathData }) => {
+  const renderPipelinePath = (id, pathData) => {
     const { group, isNew } = ensurePipelineGroup(id);
     let outline = group.querySelector('.cicd-pipeline-line-outline');
     let path = group.querySelector('.cicd-pipeline-line');
@@ -416,12 +416,23 @@ function renderCicdLeaderLines() {
     setCommonLineAttributes(path, color);
     if (isNew) {
       const length = path.getTotalLength ? path.getTotalLength() : 1;
-      addDrawOverlay(group, 'path', { d: pathData }, length);
+      addDrawMask(id, pathData, length);
     }
+  };
+
+  pipelines.forEach(({ id, points }) => {
+    renderPipelinePath(id, straightPathData(points));
+  });
+
+  routedPipelines.forEach(({ id, pathData }) => {
+    renderPipelinePath(id, pathData);
   });
 
   cicdLeaderLineLayer.querySelectorAll('.cicd-pipeline-group').forEach((group) => {
-    if (!activePipelineIds.has(group.dataset.cicdPipelineId)) group.remove();
+    if (!activePipelineIds.has(group.dataset.cicdPipelineId)) {
+      clearDrawMask(group.dataset.cicdPipelineId);
+      group.remove();
+    }
   });
 }
 
