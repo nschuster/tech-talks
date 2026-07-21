@@ -348,12 +348,15 @@ function renderCicdLeaderLines() {
       positionAnchor(startAnchor, start);
       positionAnchor(endAnchor, end);
       const line = new LeaderLine(startAnchor, endAnchor, { ...lineOptions, hide: true });
-      entry = { line, startAnchor, endAnchor };
+      entry = { line, startAnchor, endAnchor, signature: JSON.stringify({ start, end, color, outlineColor, path: route.path }) };
       cicdLeaderLines.set(route.id, entry);
       line.show('draw', { duration: 650, timing: [0.58, 0, 0.42, 1] });
       return;
     }
 
+    const nextSignature = JSON.stringify({ start, end, color, outlineColor, path: route.path });
+    if (entry.signature === nextSignature) return;
+    entry.signature = nextSignature;
     positionAnchor(entry.startAnchor, start);
     positionAnchor(entry.endAnchor, end);
     entry.line.setOptions(lineOptions);
