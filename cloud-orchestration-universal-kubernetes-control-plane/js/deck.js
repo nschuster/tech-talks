@@ -256,6 +256,7 @@ function renderCicdLeaderLines() {
   const cloudMiddleRowY = cloudInfrastructureGroup ? iconRowCenterYInGrid(cloudInfrastructureGroup, 1) : laneY;
   const thirdPartyUpperY = thirdPartyBox ? elementYInGrid(thirdPartyBox, 0.52) : (thirdPartyGroup ? elementYInGrid(thirdPartyGroup, 0.28) : laneY);
   const thirdPartyLowerY = thirdPartyBox ? elementYInGrid(thirdPartyBox, 0.74) : (thirdPartyGroup ? elementYInGrid(thirdPartyGroup, 0.7) : laneY);
+  const singlePipelineMode = currentSlide.classList.contains('cicd-antipattern-slide--single-pipeline');
   const currentFragment = deck.getIndices().f ?? -1;
   const isFragmentVisible = (fragmentIndex) => currentFragment >= fragmentIndex;
 
@@ -263,13 +264,13 @@ function renderCicdLeaderLines() {
   const pipelines = [];
   const routedPipelines = [];
 
-  if (isFragmentVisible(0)) {
+  if (singlePipelineMode || isFragmentVisible(0)) {
     pipelines.push({ id: 'source-to-registry', points: sourceToRegistryPoints });
   }
-  if (isFragmentVisible(1) && infraCodeItem && kubernetesGroup) {
+  if (!singlePipelineMode && isFragmentVisible(1) && infraCodeItem && kubernetesGroup) {
     pipelines.push({ id: 'infra-to-kubernetes', points: horizontalPipelineAtY(kubernetesUpperY) });
   }
-  if (isFragmentVisible(2) && infraCodeItem && cloudInfrastructureGroup) {
+  if (!singlePipelineMode && isFragmentVisible(2) && infraCodeItem && cloudInfrastructureGroup) {
     routedPipelines.push({
       id: 'infra-to-cloud',
       segments: routedPipeline(
@@ -278,7 +279,7 @@ function renderCicdLeaderLines() {
       )
     });
   }
-  if (isFragmentVisible(3) && infraCodeItem && thirdPartyGroup) {
+  if (!singlePipelineMode && isFragmentVisible(3) && infraCodeItem && thirdPartyGroup) {
     routedPipelines.push({
       id: 'infra-to-third-party',
       segments: routedPipeline(
@@ -287,7 +288,7 @@ function renderCicdLeaderLines() {
       )
     });
   }
-  if (isFragmentVisible(4) && deploymentManifestItem && kubernetesGroup) {
+  if (!singlePipelineMode && isFragmentVisible(4) && deploymentManifestItem && kubernetesGroup) {
     routedPipelines.push({
       id: 'deployment-to-kubernetes',
       segments: routedPipeline(
@@ -296,10 +297,10 @@ function renderCicdLeaderLines() {
       )
     });
   }
-  if (isFragmentVisible(5) && deploymentManifestItem && cloudInfrastructureGroup) {
+  if (!singlePipelineMode && isFragmentVisible(5) && deploymentManifestItem && cloudInfrastructureGroup) {
     pipelines.push({ id: 'deployment-to-cloud', points: horizontalPipelineAtY(cloudMiddleRowY) });
   }
-  if (isFragmentVisible(6) && deploymentManifestItem && thirdPartyGroup) {
+  if (!singlePipelineMode && isFragmentVisible(6) && deploymentManifestItem && thirdPartyGroup) {
     routedPipelines.push({
       id: 'deployment-to-third-party',
       segments: routedPipeline(
@@ -308,7 +309,7 @@ function renderCicdLeaderLines() {
       )
     });
   }
-  if (isFragmentVisible(7) && testSuitesItem && kubernetesGroup) {
+  if (!singlePipelineMode && isFragmentVisible(7) && testSuitesItem && kubernetesGroup) {
     routedPipelines.push({
       id: 'test-to-kubernetes',
       segments: routedPipeline(
@@ -317,7 +318,7 @@ function renderCicdLeaderLines() {
       )
     });
   }
-  if (isFragmentVisible(8) && testSuitesItem && cloudInfrastructureGroup) {
+  if (!singlePipelineMode && isFragmentVisible(8) && testSuitesItem && cloudInfrastructureGroup) {
     routedPipelines.push({
       id: 'test-to-cloud',
       segments: routedPipeline(
