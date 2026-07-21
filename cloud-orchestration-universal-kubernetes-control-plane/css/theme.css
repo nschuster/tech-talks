@@ -710,7 +710,7 @@ body {
   inset: 98px 8px 8px;
   content: "";
   border-radius: 24px;
-  background: rgba(18, 26, 56, 0.96);
+  background: var(--capgemini-dark-blue);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.08),
     0 16px 34px rgba(0, 0, 0, 0.24);
@@ -777,17 +777,7 @@ body {
 }
 
 .reveal section.cicd-antipattern-slide--next-slide-base .cicd-control-plane-icon-card::before {
-  position: absolute;
-  left: 50%;
-  top: 133px;
-  width: 14px;
-  height: 14px;
-  content: "";
-  border: 3px solid rgba(18, 26, 56, 0.96);
-  border-radius: 50%;
-  background: rgba(156, 166, 178, 0.96);
-  box-shadow: 0 0 0 2px rgba(156, 166, 178, 0.16);
-  transform: translateX(-50%);
+  display: none;
 }
 
 .reveal section.cicd-antipattern-slide--next-slide-base .cicd-control-plane-icon-card img {
@@ -823,6 +813,7 @@ body {
   padding: 12px 18px;
   box-sizing: border-box;
   border-radius: 18px;
+  background: var(--capgemini-dark-blue);
   pointer-events: none;
 }
 
@@ -832,9 +823,9 @@ body {
   z-index: 2;
   content: "";
   border-radius: 22px;
-  background: rgba(18, 26, 56, 0.52);
-  box-shadow: inset 0 0 42px rgba(18, 26, 56, 0.64);
-  mix-blend-mode: multiply;
+  background: transparent;
+  box-shadow: none;
+  mix-blend-mode: normal;
 }
 
 .reveal section.cicd-antipattern-slide--next-slide-base .cicd-control-plane-tool-icons img,
@@ -867,7 +858,7 @@ body {
 }
 
 :root[data-theme="light"] .reveal section.cicd-antipattern-slide--next-slide-base .cicd-control-plane-tool-icons::after {
-  background: rgba(18, 26, 56, 0.58);
+  background: transparent;
 }
 
 :root[data-theme="light"] .reveal section.cicd-antipattern-slide--next-slide-base .cicd-desired-state-gradient-box {
@@ -875,7 +866,7 @@ body {
 }
 
 :root[data-theme="light"] .reveal section.cicd-antipattern-slide--next-slide-base .cicd-desired-state-gradient-box::after {
-  background: rgba(18, 26, 56, 0.88);
+  background: var(--capgemini-dark-blue);
 }
 
 .cicd-file-pair {
@@ -1104,6 +1095,13 @@ body {
 
 .cicd-pipeline-line {
   stroke-width: 9px;
+}
+
+.cicd-control-plane-line-marker {
+  fill: rgba(156, 166, 178, 0.98);
+  stroke: var(--capgemini-dark-blue);
+  stroke-width: 4px;
+  vector-effect: non-scaling-stroke;
 }
 
 @keyframes cicd-pipeline-dash {

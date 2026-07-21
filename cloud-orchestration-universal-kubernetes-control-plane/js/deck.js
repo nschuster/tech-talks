@@ -202,6 +202,10 @@ function renderCicdLeaderLines() {
     const rect = element.getBoundingClientRect();
     return toGridPoint(gridRect.left, rect.top + rect.height / 2).y;
   };
+  const centerXInGrid = (element) => {
+    const rect = element.getBoundingClientRect();
+    return toGridPoint(rect.left + rect.width / 2, gridRect.top).x;
+  };
   const elementYInGrid = (element, ratio) => {
     const rect = element.getBoundingClientRect();
     return toGridPoint(gridRect.left, rect.top + rect.height * ratio).y;
@@ -278,6 +282,8 @@ function renderCicdLeaderLines() {
   const allowAllPipelineRoutes = !singlePipelineMode || showAllPipelines;
 
   const sourceToRegistryPoints = columns.slice(0, -1).map((column) => rightEdgePointAtY(column, sourceLaneY));
+  const controlPlaneMarkerCenters = [...currentSlide.querySelectorAll('.cicd-control-plane-icon-card')]
+    .map((card) => centerXInGrid(card));
   const pipelines = [];
   const routedPipelines = [];
 
@@ -682,7 +688,30 @@ function renderCicdLeaderLines() {
         line.setAttribute(name, value);
       });
       outline.setAttribute('stroke', outlineColor);
-      setCommonLineAttributes(line, stroke || (shouldDash ? color : staticColor));
+      const segmentStroke = stroke || (shouldDash ? color : staticColor);
+      setCommonLineAttributes(line, segmentStroke);
+      group.querySelectorAll('.cicd-control-plane-line-marker').forEach((marker) => marker.remove());
+      if (
+        nextSlideBaseMode &&
+        tagName === 'line' &&
+        (segmentStroke === desiredStateMutedColor || segmentStroke === desiredStateMutedReverseColor)
+      ) {
+        const x1 = Number.parseFloat(attributes.x1);
+        const x2 = Number.parseFloat(attributes.x2);
+        const y = Number.parseFloat(attributes.y1);
+        const minX = Math.min(x1, x2);
+        const maxX = Math.max(x1, x2);
+        controlPlaneMarkerCenters
+          .filter((x) => x >= minX + 8 && x <= maxX - 8)
+          .forEach((x) => {
+            const marker = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            marker.classList.add('cicd-control-plane-line-marker');
+            marker.setAttribute('cx', x);
+            marker.setAttribute('cy', y);
+            marker.setAttribute('r', '8');
+            group.appendChild(marker);
+          });
+      }
       if (isNew && shouldDraw) {
         const segmentLength = length || (line.getTotalLength ? line.getTotalLength() : 1);
         addDrawMask(group, tagName, attributes, segmentLength);
