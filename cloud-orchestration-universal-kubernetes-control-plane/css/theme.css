@@ -775,6 +775,17 @@ body {
   animation: cicd-pipeline-dash 1s linear infinite;
 }
 
+.cicd-pipeline-line-draw {
+  fill: none;
+  stroke-width: 11px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: var(--cicd-draw-length);
+  stroke-dashoffset: var(--cicd-draw-length);
+  animation: cicd-pipeline-draw 760ms ease-out forwards;
+}
+
 .cicd-pipeline-line-outline {
   stroke-width: 17px;
 }
@@ -789,9 +800,25 @@ body {
   }
 }
 
+@keyframes cicd-pipeline-draw {
+  0% {
+    opacity: 1;
+    stroke-dashoffset: var(--cicd-draw-length);
+  }
+  78% {
+    opacity: 1;
+    stroke-dashoffset: 0;
+  }
+  100% {
+    opacity: 0;
+    stroke-dashoffset: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .cicd-pipeline-line-outline,
-  .cicd-pipeline-line {
+  .cicd-pipeline-line,
+  .cicd-pipeline-line-draw {
     animation: none;
   }
 }
