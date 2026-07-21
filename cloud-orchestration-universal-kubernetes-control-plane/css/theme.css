@@ -670,7 +670,7 @@ body {
 .reveal section.cicd-antipattern-slide--next-slide-base .cicd-desired-state-gradient-box {
   position: absolute;
   left: calc(100% * 2.24 / 7.96);
-  top: 310px;
+  top: 246px;
   bottom: 0;
   z-index: 2;
   width: calc(100% * 3 / 7.96);
@@ -692,7 +692,7 @@ body {
   position: absolute;
   left: 24px;
   right: 24px;
-  top: 44px;
+  top: 34px;
   z-index: 1;
   content: "Universal Control Plane";
   color: var(--capgemini-white);
@@ -707,7 +707,7 @@ body {
 
 .reveal section.cicd-antipattern-slide--next-slide-base .cicd-desired-state-gradient-box::after {
   position: absolute;
-  inset: 116px 8px 8px;
+  inset: 98px 8px 8px;
   content: "";
   border-radius: 24px;
   background: rgba(18, 26, 56, 0.96);
@@ -757,7 +757,7 @@ body {
 .reveal section.cicd-antipattern-slide--next-slide-base .cicd-control-plane-icons {
   position: absolute;
   left: calc(100% * 2.24 / 7.96 + 112px);
-  top: 520px;
+  top: 372px;
   z-index: 13;
   display: flex;
   align-items: flex-start;
@@ -779,7 +779,7 @@ body {
 .reveal section.cicd-antipattern-slide--next-slide-base .cicd-control-plane-icon-card::before {
   position: absolute;
   left: 50%;
-  top: -18px;
+  top: 133px;
   width: 14px;
   height: 14px;
   content: "";

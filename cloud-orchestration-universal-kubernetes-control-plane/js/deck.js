@@ -283,15 +283,15 @@ function renderCicdLeaderLines() {
   }
   if (nextSlideBaseMode && infraCodeItem) {
     const infraDefinitionStart = rightEdgePointAtY(columns[0], elementYInGrid(infraCodeItem, 0.5));
-    const secondPipelineStep = sourceToRegistryPoints[2] || sourceToRegistryPoints[sourceToRegistryPoints.length - 1];
-    const controlX = infraDefinitionStart.x + Math.max(80, (secondPipelineStep.x - infraDefinitionStart.x) * 0.58);
+    const secondPipelineStepStart = sourceToRegistryPoints[1] || sourceToRegistryPoints[sourceToRegistryPoints.length - 1];
+    const controlX = infraDefinitionStart.x + Math.max(80, (secondPipelineStepStart.x - infraDefinitionStart.x) * 0.58);
     routedPipelines.push({
       id: 'infra-definitions-to-second-step',
       segments: [
         {
           kind: 'path',
           attributes: {
-            d: `M ${infraDefinitionStart.x} ${infraDefinitionStart.y} C ${controlX} ${infraDefinitionStart.y} ${controlX} ${secondPipelineStep.y} ${secondPipelineStep.x} ${secondPipelineStep.y}`
+            d: `M ${infraDefinitionStart.x} ${infraDefinitionStart.y} C ${controlX} ${infraDefinitionStart.y} ${controlX} ${secondPipelineStepStart.y} ${secondPipelineStepStart.x} ${secondPipelineStepStart.y}`
           }
         }
       ]
