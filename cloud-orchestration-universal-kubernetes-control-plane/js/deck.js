@@ -359,6 +359,22 @@ function renderCicdLeaderLines() {
       ]
     });
     routedPipelines.push({
+      id: 'reverse-desired-state-control-plane-crossing',
+      segments: [
+        {
+          kind: 'line',
+          stroke: desiredStateReverseColor,
+          attributes: {
+            x1: middleBoxEndReverse.x,
+            y1: middleBoxEndReverse.y,
+            x2: middleBoxStartReverse.x,
+            y2: middleBoxStartReverse.y
+          },
+          length: Math.hypot(middleBoxEndReverse.x - middleBoxStartReverse.x, 0)
+        }
+      ]
+    });
+    routedPipelines.push({
       id: 'reverse-cloud-infrastructure-to-desired-state-middle',
       segments: [
         {
