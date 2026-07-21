@@ -259,6 +259,7 @@ function renderCicdLeaderLines() {
   const thirdPartyUpperY = thirdPartyBox ? elementYInGrid(thirdPartyBox, 0.52) : (thirdPartyGroup ? elementYInGrid(thirdPartyGroup, 0.28) : laneY);
   const thirdPartyLowerY = thirdPartyBox ? elementYInGrid(thirdPartyBox, 0.74) : (thirdPartyGroup ? elementYInGrid(thirdPartyGroup, 0.7) : laneY);
   const singlePipelineMode = currentSlide.classList.contains('cicd-antipattern-slide--single-pipeline');
+  const skipPipelineDraw = currentSlide.classList.contains('cicd-antipattern-slide--no-pipeline-draw');
   const currentFragment = deck.getIndices().f ?? -1;
   const isFragmentVisible = (fragmentIndex) => currentFragment >= fragmentIndex;
 
@@ -424,7 +425,7 @@ function renderCicdLeaderLines() {
       });
       outline.setAttribute('stroke', outlineColor);
       setCommonLineAttributes(line, color);
-      if (isNew) addDrawMask(group, 'line', attrs, Math.hypot(end.x - start.x, end.y - start.y));
+      if (isNew && !skipPipelineDraw) addDrawMask(group, 'line', attrs, Math.hypot(end.x - start.x, end.y - start.y));
     });
   });
 
@@ -456,7 +457,7 @@ function renderCicdLeaderLines() {
       });
       outline.setAttribute('stroke', outlineColor);
       setCommonLineAttributes(line, color);
-      if (isNew) {
+      if (isNew && !skipPipelineDraw) {
         const segmentLength = length || (line.getTotalLength ? line.getTotalLength() : 1);
         addDrawMask(group, tagName, attributes, segmentLength);
       }
