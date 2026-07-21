@@ -251,12 +251,14 @@ function renderCicdLeaderLines() {
   const infraCodeItem = currentSlide.querySelector('.cicd-file-item--infra-code');
   const deploymentManifestItem = currentSlide.querySelector('.cicd-file-item--deployment-manifests');
   const testSuitesItem = currentSlide.querySelector('.cicd-file-item--test-suites');
+  const registryGroup = currentSlide.querySelector('.cicd-target-group--registry');
   const kubernetesGroup = currentSlide.querySelector('.cicd-target-group--kubernetes');
   const cloudInfrastructureGroup = currentSlide.querySelector('.cicd-target-group--cloud');
   const thirdPartyGroup = currentSlide.querySelector('.cicd-target-group--third-party');
   const thirdPartyBox = currentSlide.querySelector('.cicd-target-main-box--third-party');
 
   const sourceLaneY = sourceCodeItem ? centerYInGrid(sourceCodeItem) : laneY;
+  const registryCenterY = registryGroup ? centerYInGrid(registryGroup) : sourceLaneY;
   const kubernetesUpperY = kubernetesGroup ? elementYInGrid(kubernetesGroup, 0.1) : laneY;
   const kubernetesCenterY = kubernetesGroup ? elementYInGrid(kubernetesGroup, 0.46) : laneY;
   const kubernetesLowerY = kubernetesGroup ? elementYInGrid(kubernetesGroup, 0.84) : laneY;
@@ -296,17 +298,37 @@ function renderCicdLeaderLines() {
     });
   }
   if (nextSlideBaseMode && deploymentManifestItem) {
+    const desiredStateY = elementYInGrid(deploymentManifestItem, 0.5);
+    const middleBoxEnd = horizontalPipelineAtY(desiredStateY)[4];
+    const rightColumnStart = horizontalPipelineAtY(desiredStateY)[5];
+    const branchToTarget = (id, targetY) => {
+      const controlOffset = Math.max(42, (rightColumnStart.x - middleBoxEnd.x) * 0.42);
+      routedPipelines.push({
+        id,
+        segments: [
+          {
+            kind: 'path',
+            stroke: desiredStateColor,
+            attributes: {
+              d: `M ${middleBoxEnd.x} ${middleBoxEnd.y} C ${middleBoxEnd.x + controlOffset} ${middleBoxEnd.y} ${rightColumnStart.x - controlOffset} ${targetY} ${rightColumnStart.x} ${targetY}`
+            }
+          }
+        ]
+      });
+    };
     pipelines.push({
-      id: 'desired-state-to-right-box',
-      points: horizontalPipelineAtY(elementYInGrid(deploymentManifestItem, 0.5)),
+      id: 'desired-state-to-middle-box-end',
+      points: horizontalPipelineAtY(desiredStateY).slice(0, 5),
       segmentStrokes: [
         desiredStateColor,
         desiredStateMutedColor,
         desiredStateMutedColor,
-        desiredStateMutedColor,
-        desiredStateColor
+        desiredStateMutedColor
       ]
     });
+    branchToTarget('desired-state-middle-to-registry', registryCenterY);
+    branchToTarget('desired-state-middle-to-kubernetes', kubernetesCenterY);
+    branchToTarget('desired-state-middle-to-third-party', thirdPartyUpperY);
   }
   if (allowAllPipelineRoutes && isFragmentVisible(1) && infraCodeItem && kubernetesGroup) {
     pipelines.push({ id: 'infra-to-kubernetes', points: horizontalPipelineAtY(kubernetesUpperY) });
@@ -414,9 +436,12 @@ function renderCicdLeaderLines() {
     element.setAttribute('stroke', stroke);
     if (element.classList.contains('cicd-pipeline-line')) {
       let markerId = 'cicd-pipeline-arrowhead';
+      if (stroke === desiredStateMutedColor) {
+        element.removeAttribute('marker-end');
+        return;
+      }
       if (stroke === staticColor) markerId = 'cicd-pipeline-arrowhead-static';
       if (stroke === desiredStateColor) markerId = 'cicd-pipeline-arrowhead-desired';
-      if (stroke === desiredStateMutedColor) markerId = 'cicd-pipeline-arrowhead-muted';
       element.setAttribute('marker-end', `url(#${markerId})`);
     }
   };
@@ -506,7 +531,7 @@ function renderCicdLeaderLines() {
 
   routedPipelines.forEach(({ id, segments }) => {
     const segmentNames = ['start', 'curve', 'end'];
-    segments.forEach(({ kind, attributes, length }, index) => {
+    segments.forEach(({ kind, attributes, length, stroke }, index) => {
       const segmentId = `${id}-${segmentNames[index] || index}`;
       const { group, isNew } = ensurePipelineGroup(segmentId);
       const shouldDash = shouldDashPipelineGroup(segmentId);
@@ -534,7 +559,7 @@ function renderCicdLeaderLines() {
         line.setAttribute(name, value);
       });
       outline.setAttribute('stroke', outlineColor);
-      setCommonLineAttributes(line, shouldDash ? color : staticColor);
+      setCommonLineAttributes(line, stroke || (shouldDash ? color : staticColor));
       if (isNew && shouldDraw) {
         const segmentLength = length || (line.getTotalLength ? line.getTotalLength() : 1);
         addDrawMask(group, tagName, attributes, segmentLength);
