@@ -181,6 +181,8 @@ function renderCicdLeaderLines() {
   const color = getCicdLineColor();
   const staticColor = getCicdLineColor({ isStatic: true });
   const desiredStateColor = '#feb100';
+  const desiredStateReverseColor = '#d99a00';
+  const desiredStateReverseOffset = 16;
   const desiredStateMutedColor = 'rgba(156, 166, 178, 0.82)';
   const outlineColor = root.dataset.theme === 'light' ? 'rgba(255, 255, 255, 0.92)' : 'rgba(18, 26, 56, 0.98)';
   const gridRect = grid.getBoundingClientRect();
@@ -319,6 +321,62 @@ function renderCicdLeaderLines() {
         ]
       });
     };
+    const desiredStateReverseY = desiredStateY + desiredStateReverseOffset;
+    const desiredStateReversePoints = horizontalPipelineAtY(desiredStateReverseY);
+    const middleBoxStartReverse = desiredStateReversePoints[1];
+    const middleBoxEndReverse = desiredStateReversePoints[4];
+    const rightColumnStartReverse = desiredStateReversePoints[5];
+    const branchBackToControlPlane = (id, targetY) => {
+      const reverseTargetY = targetY + desiredStateReverseOffset;
+      const controlOffset = Math.max(42, (rightColumnStartReverse.x - middleBoxEndReverse.x) * 0.42);
+      routedPipelines.push({
+        id,
+        segments: [
+          {
+            kind: 'path',
+            stroke: desiredStateReverseColor,
+            attributes: {
+              d: `M ${rightColumnStartReverse.x} ${reverseTargetY} C ${rightColumnStartReverse.x - controlOffset} ${reverseTargetY} ${middleBoxEndReverse.x + controlOffset} ${middleBoxEndReverse.y} ${middleBoxEndReverse.x} ${middleBoxEndReverse.y}`
+            }
+          }
+        ]
+      });
+    };
+    routedPipelines.push({
+      id: 'reverse-desired-state-middle-to-source',
+      segments: [
+        {
+          kind: 'line',
+          stroke: desiredStateReverseColor,
+          attributes: {
+            x1: middleBoxStartReverse.x,
+            y1: middleBoxStartReverse.y,
+            x2: desiredStateReversePoints[0].x,
+            y2: desiredStateReversePoints[0].y
+          },
+          length: Math.hypot(middleBoxStartReverse.x - desiredStateReversePoints[0].x, 0)
+        }
+      ]
+    });
+    routedPipelines.push({
+      id: 'reverse-cloud-infrastructure-to-desired-state-middle',
+      segments: [
+        {
+          kind: 'line',
+          stroke: desiredStateReverseColor,
+          attributes: {
+            x1: rightColumnStartReverse.x,
+            y1: middleBoxEndReverse.y,
+            x2: middleBoxEndReverse.x,
+            y2: middleBoxEndReverse.y
+          },
+          length: Math.hypot(rightColumnStartReverse.x - middleBoxEndReverse.x, 0)
+        }
+      ]
+    });
+    branchBackToControlPlane('reverse-registry-to-desired-state-middle', registryBranchY);
+    branchBackToControlPlane('reverse-kubernetes-to-desired-state-middle', kubernetesCenterY);
+    branchBackToControlPlane('reverse-third-party-to-desired-state-middle', thirdPartyUpperY);
     routedPipelines.push({
       id: 'desired-state-to-middle-box',
       segments: [
@@ -452,6 +510,9 @@ function renderCicdLeaderLines() {
         <marker id="cicd-pipeline-arrowhead-desired" markerWidth="30" markerHeight="30" refX="26" refY="15" orient="auto" markerUnits="userSpaceOnUse">
           <path class="cicd-pipeline-arrowhead-path-desired" d="M 3 3 L 27 15 L 3 27 z"></path>
         </marker>
+        <marker id="cicd-pipeline-arrowhead-desired-reverse" markerWidth="30" markerHeight="30" refX="26" refY="15" orient="auto" markerUnits="userSpaceOnUse">
+          <path class="cicd-pipeline-arrowhead-path-desired-reverse" d="M 3 3 L 27 15 L 3 27 z"></path>
+        </marker>
         <marker id="cicd-pipeline-arrowhead-muted" markerWidth="20" markerHeight="20" refX="17" refY="10" orient="auto" markerUnits="userSpaceOnUse">
           <path class="cicd-pipeline-arrowhead-path-muted" d="M 2 2 L 18 10 L 2 18 z"></path>
         </marker>
@@ -465,6 +526,7 @@ function renderCicdLeaderLines() {
   cicdLeaderLineLayer.querySelector('.cicd-pipeline-arrowhead-path')?.setAttribute('fill', color);
   cicdLeaderLineLayer.querySelector('.cicd-pipeline-arrowhead-path-static')?.setAttribute('fill', staticColor);
   cicdLeaderLineLayer.querySelectorAll('.cicd-pipeline-arrowhead-path-desired').forEach((path) => path.setAttribute('fill', desiredStateColor));
+  cicdLeaderLineLayer.querySelectorAll('.cicd-pipeline-arrowhead-path-desired-reverse').forEach((path) => path.setAttribute('fill', desiredStateReverseColor));
   cicdLeaderLineLayer.querySelector('.cicd-pipeline-arrowhead-path-muted')?.setAttribute('fill', desiredStateMutedColor);
 
   const activePipelineIds = new Set();
@@ -480,6 +542,10 @@ function renderCicdLeaderLines() {
       if (stroke === staticColor) markerId = 'cicd-pipeline-arrowhead-static';
       if (stroke === desiredStateColor) {
         element.setAttribute('marker-end', 'url(#cicd-pipeline-arrowhead-desired)');
+        return;
+      }
+      if (stroke === desiredStateReverseColor) {
+        element.setAttribute('marker-end', 'url(#cicd-pipeline-arrowhead-desired-reverse)');
         return;
       }
       element.setAttribute('marker-end', `url(#${markerId})`);
