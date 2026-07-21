@@ -180,6 +180,8 @@ function renderCicdLeaderLines() {
 
   const color = getCicdLineColor();
   const staticColor = getCicdLineColor({ isStatic: true });
+  const desiredStateColor = '#feb100';
+  const desiredStateMutedColor = 'rgba(156, 166, 178, 0.82)';
   const outlineColor = root.dataset.theme === 'light' ? 'rgba(255, 255, 255, 0.92)' : 'rgba(18, 26, 56, 0.98)';
   const gridRect = grid.getBoundingClientRect();
   const scaleX = gridRect.width / grid.offsetWidth;
@@ -293,6 +295,19 @@ function renderCicdLeaderLines() {
       ]
     });
   }
+  if (nextSlideBaseMode && deploymentManifestItem) {
+    pipelines.push({
+      id: 'desired-state-to-right-box',
+      points: horizontalPipelineAtY(elementYInGrid(deploymentManifestItem, 0.5)),
+      segmentStrokes: [
+        desiredStateColor,
+        desiredStateMutedColor,
+        desiredStateMutedColor,
+        desiredStateMutedColor,
+        desiredStateColor
+      ]
+    });
+  }
   if (allowAllPipelineRoutes && isFragmentVisible(1) && infraCodeItem && kubernetesGroup) {
     pipelines.push({ id: 'infra-to-kubernetes', points: horizontalPipelineAtY(kubernetesUpperY) });
   }
@@ -376,6 +391,12 @@ function renderCicdLeaderLines() {
         <marker id="cicd-pipeline-arrowhead-static" markerWidth="20" markerHeight="20" refX="17" refY="10" orient="auto" markerUnits="userSpaceOnUse">
           <path class="cicd-pipeline-arrowhead-path-static" d="M 2 2 L 18 10 L 2 18 z"></path>
         </marker>
+        <marker id="cicd-pipeline-arrowhead-desired" markerWidth="20" markerHeight="20" refX="17" refY="10" orient="auto" markerUnits="userSpaceOnUse">
+          <path class="cicd-pipeline-arrowhead-path-desired" d="M 2 2 L 18 10 L 2 18 z"></path>
+        </marker>
+        <marker id="cicd-pipeline-arrowhead-muted" markerWidth="20" markerHeight="20" refX="17" refY="10" orient="auto" markerUnits="userSpaceOnUse">
+          <path class="cicd-pipeline-arrowhead-path-muted" d="M 2 2 L 18 10 L 2 18 z"></path>
+        </marker>
       </defs>
     `;
     grid.appendChild(cicdLeaderLineLayer);
@@ -385,12 +406,17 @@ function renderCicdLeaderLines() {
   cicdLeaderLineLayer.setAttribute('preserveAspectRatio', 'none');
   cicdLeaderLineLayer.querySelector('.cicd-pipeline-arrowhead-path')?.setAttribute('fill', color);
   cicdLeaderLineLayer.querySelector('.cicd-pipeline-arrowhead-path-static')?.setAttribute('fill', staticColor);
+  cicdLeaderLineLayer.querySelector('.cicd-pipeline-arrowhead-path-desired')?.setAttribute('fill', desiredStateColor);
+  cicdLeaderLineLayer.querySelector('.cicd-pipeline-arrowhead-path-muted')?.setAttribute('fill', desiredStateMutedColor);
 
   const activePipelineIds = new Set();
   const setCommonLineAttributes = (element, stroke) => {
     element.setAttribute('stroke', stroke);
     if (element.classList.contains('cicd-pipeline-line')) {
-      const markerId = stroke === staticColor ? 'cicd-pipeline-arrowhead-static' : 'cicd-pipeline-arrowhead';
+      let markerId = 'cicd-pipeline-arrowhead';
+      if (stroke === staticColor) markerId = 'cicd-pipeline-arrowhead-static';
+      if (stroke === desiredStateColor) markerId = 'cicd-pipeline-arrowhead-desired';
+      if (stroke === desiredStateMutedColor) markerId = 'cicd-pipeline-arrowhead-muted';
       element.setAttribute('marker-end', `url(#${markerId})`);
     }
   };
@@ -447,10 +473,10 @@ function renderCicdLeaderLines() {
     return !staticBasisMode || isSourceToRegistryGroup(pipelineGroupId);
   };
 
-  pipelines.forEach(({ id, points }) => {
-    const segments = points.slice(0, -1).map((point, index) => [point, points[index + 1], `${id}-${index}`]);
+  pipelines.forEach(({ id, points, segmentStrokes = [] }) => {
+    const segments = points.slice(0, -1).map((point, index) => [point, points[index + 1], `${id}-${index}`, segmentStrokes[index]]);
 
-    segments.forEach(([start, end, segmentId]) => {
+    segments.forEach(([start, end, segmentId, segmentStroke]) => {
       const { group, isNew } = ensurePipelineGroup(segmentId);
       const shouldDash = shouldDashPipelineGroup(segmentId);
       const shouldDraw = shouldDrawPipelineGroup(segmentId);
@@ -473,7 +499,7 @@ function renderCicdLeaderLines() {
         line.setAttribute(name, value);
       });
       outline.setAttribute('stroke', outlineColor);
-      setCommonLineAttributes(line, shouldDash ? color : staticColor);
+      setCommonLineAttributes(line, segmentStroke || (shouldDash ? color : staticColor));
       if (isNew && shouldDraw) addDrawMask(group, 'line', attrs, Math.hypot(end.x - start.x, end.y - start.y));
     });
   });
