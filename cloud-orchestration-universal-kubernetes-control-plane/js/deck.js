@@ -181,8 +181,8 @@ function renderCicdLeaderLines() {
   const color = getCicdLineColor();
   const staticColor = getCicdLineColor({ isStatic: true });
   const desiredStateColor = '#feb100';
-  const desiredStateReverseColor = '#d99a00';
-  const desiredStateReverseOffset = 16;
+  const desiredStateReverseColor = 'rgba(126, 78, 0, 0.58)';
+  const desiredStateReverseOffset = 48;
   const desiredStateMutedColor = 'rgba(156, 166, 178, 0.82)';
   const outlineColor = root.dataset.theme === 'light' ? 'rgba(255, 255, 255, 0.92)' : 'rgba(18, 26, 56, 0.98)';
   const gridRect = grid.getBoundingClientRect();
