@@ -263,6 +263,7 @@ function renderCicdLeaderLines() {
   const thirdPartyLowerY = thirdPartyBox ? elementYInGrid(thirdPartyBox, 0.82) : (thirdPartyGroup ? elementYInGrid(thirdPartyGroup, 0.78) : laneY);
   const singlePipelineMode = currentSlide.classList.contains('cicd-antipattern-slide--single-pipeline');
   const staticBasisMode = currentSlide.classList.contains('cicd-antipattern-slide--single-pipeline-basis');
+  const nextSlideBaseMode = currentSlide.classList.contains('cicd-antipattern-slide--next-slide-base');
   const skipPipelineDraw = currentSlide.classList.contains('cicd-antipattern-slide--no-pipeline-draw');
   const currentFragment = deck.getIndices().f ?? -1;
   const showAllPipelines = staticBasisMode;
@@ -275,6 +276,22 @@ function renderCicdLeaderLines() {
 
   if (singlePipelineMode || isFragmentVisible(0)) {
     pipelines.push({ id: 'source-to-registry', points: sourceToRegistryPoints });
+  }
+  if (nextSlideBaseMode && infraCodeItem) {
+    const infraDefinitionStart = rightEdgePointAtY(columns[0], elementYInGrid(infraCodeItem, 0.5));
+    const secondPipelineStep = sourceToRegistryPoints[2] || sourceToRegistryPoints[sourceToRegistryPoints.length - 1];
+    const controlX = infraDefinitionStart.x + Math.max(80, (secondPipelineStep.x - infraDefinitionStart.x) * 0.58);
+    routedPipelines.push({
+      id: 'infra-definitions-to-second-step',
+      segments: [
+        {
+          kind: 'path',
+          attributes: {
+            d: `M ${infraDefinitionStart.x} ${infraDefinitionStart.y} C ${controlX} ${infraDefinitionStart.y} ${controlX} ${secondPipelineStep.y} ${secondPipelineStep.x} ${secondPipelineStep.y}`
+          }
+        }
+      ]
+    });
   }
   if (allowAllPipelineRoutes && isFragmentVisible(1) && infraCodeItem && kubernetesGroup) {
     pipelines.push({ id: 'infra-to-kubernetes', points: horizontalPipelineAtY(kubernetesUpperY) });
@@ -426,6 +443,7 @@ function renderCicdLeaderLines() {
   };
   const shouldDrawPipelineGroup = (pipelineGroupId) => {
     if (skipPipelineDraw) return false;
+    if (nextSlideBaseMode && isSourceToRegistryGroup(pipelineGroupId)) return false;
     return !staticBasisMode || isSourceToRegistryGroup(pipelineGroupId);
   };
 
