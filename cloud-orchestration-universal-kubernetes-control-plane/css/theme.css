@@ -805,7 +805,7 @@ body {
     stroke-dashoffset: 0;
   }
   100% {
-    opacity: 0;
+    opacity: 1;
     stroke-dashoffset: 0;
   }
 }
