@@ -508,17 +508,13 @@ body {
 
 .cicd-antipattern-slide {
   --cicd-content-top: 205px;
-  --cicd-content-bottom: 124px;
+  --cicd-content-bottom: 94px;
   --cicd-boundary-badge-size: 58px;
   --cicd-pipeline-lane-y: 150px;
 }
 
 .cicd-antipattern-slide h2 {
   max-width: 1720px;
-}
-
-.cicd-antipattern-slide--single-pipeline {
-  --cicd-content-bottom: 94px;
 }
 
 .cicd-pipeline-explanation {
