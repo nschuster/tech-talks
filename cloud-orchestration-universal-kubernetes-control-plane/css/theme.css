@@ -670,7 +670,7 @@ body {
 .reveal section.cicd-antipattern-slide--next-slide-base .cicd-desired-state-gradient-box {
   position: absolute;
   left: calc(100% * 2.24 / 7.96);
-  top: 292px;
+  top: 310px;
   bottom: 0;
   z-index: 2;
   width: calc(100% * 3 / 7.96);
@@ -692,7 +692,7 @@ body {
   position: absolute;
   left: 24px;
   right: 24px;
-  top: 24px;
+  top: 44px;
   z-index: 1;
   content: "Universal Control Plane";
   color: var(--capgemini-white);
@@ -719,7 +719,7 @@ body {
 .reveal section.cicd-antipattern-slide--next-slide-base .cicd-pipeline-legend {
   position: absolute;
   left: calc(100% * 1.24 / 7.96 + 28px);
-  top: 26px;
+  top: 0;
   z-index: 16;
   display: flex;
   align-items: center;
@@ -752,6 +752,60 @@ body {
 
 .reveal section.cicd-antipattern-slide--next-slide-base .cicd-pipeline-legend-swatch--manage {
   background: #feb100;
+}
+
+.reveal section.cicd-antipattern-slide--next-slide-base .cicd-control-plane-icons {
+  position: absolute;
+  left: calc(100% * 2.24 / 7.96 + 58px);
+  top: 558px;
+  z-index: 13;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  width: calc(100% * 3 / 7.96 - 116px);
+  pointer-events: none;
+}
+
+.reveal section.cicd-antipattern-slide--next-slide-base .cicd-control-plane-icon-card {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  min-width: 128px;
+  color: var(--capgemini-white);
+  font-family: var(--font-display);
+  font-size: 0.28em;
+  font-weight: 800;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  text-shadow: 0 5px 16px rgba(0, 0, 0, 0.42);
+}
+
+.reveal section.cicd-antipattern-slide--next-slide-base .cicd-control-plane-icon-card::before {
+  position: absolute;
+  left: 50%;
+  top: -61px;
+  width: 22px;
+  height: 22px;
+  content: "";
+  border: 4px solid rgba(18, 26, 56, 0.96);
+  border-radius: 50%;
+  background: rgba(156, 166, 178, 0.96);
+  box-shadow: 0 0 0 3px rgba(156, 166, 178, 0.18);
+  transform: translateX(-50%);
+}
+
+.reveal section.cicd-antipattern-slide--next-slide-base .cicd-control-plane-icon-card img {
+  width: 74px;
+  height: 74px;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.34));
+}
+
+.reveal section.cicd-antipattern-slide--next-slide-base .cicd-control-plane-icon-card span {
+  white-space: nowrap;
 }
 
 :root[data-theme="light"] .reveal section.cicd-antipattern-slide--next-slide-base .cicd-desired-state-gradient-box {

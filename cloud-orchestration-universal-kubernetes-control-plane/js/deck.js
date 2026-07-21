@@ -452,9 +452,6 @@ function renderCicdLeaderLines() {
         <marker id="cicd-pipeline-arrowhead-desired" markerWidth="30" markerHeight="30" refX="26" refY="15" orient="auto" markerUnits="userSpaceOnUse">
           <path class="cicd-pipeline-arrowhead-path-desired" d="M 3 3 L 27 15 L 3 27 z"></path>
         </marker>
-        <marker id="cicd-pipeline-arrowhead-desired-start" markerWidth="30" markerHeight="30" refX="4" refY="15" orient="auto" markerUnits="userSpaceOnUse">
-          <path class="cicd-pipeline-arrowhead-path-desired" d="M 3 3 L 27 15 L 3 27 z"></path>
-        </marker>
         <marker id="cicd-pipeline-arrowhead-muted" markerWidth="20" markerHeight="20" refX="17" refY="10" orient="auto" markerUnits="userSpaceOnUse">
           <path class="cicd-pipeline-arrowhead-path-muted" d="M 2 2 L 18 10 L 2 18 z"></path>
         </marker>
@@ -482,7 +479,6 @@ function renderCicdLeaderLines() {
       }
       if (stroke === staticColor) markerId = 'cicd-pipeline-arrowhead-static';
       if (stroke === desiredStateColor) {
-        element.setAttribute('marker-start', 'url(#cicd-pipeline-arrowhead-desired-start)');
         element.setAttribute('marker-end', 'url(#cicd-pipeline-arrowhead-desired)');
         return;
       }
