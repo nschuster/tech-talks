@@ -728,6 +728,14 @@ body {
   pointer-events: none;
 }
 
+.cicd-pipeline-fragment-cue {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0 !important;
+  pointer-events: none;
+}
+
 .cicd-pipeline-anchor--source {
   right: -4px;
   top: calc(50% - 14px);
@@ -868,8 +876,16 @@ body {
   text-align: center;
 }
 
+.cicd-target-group--registry {
+  margin-top: 24px;
+}
+
 .cicd-target-group--kubernetes {
-  margin-top: 49px;
+  margin-top: 24px;
+}
+
+.cicd-target-group--cloud {
+  margin-top: -10px;
 }
 
 .cicd-target-icons {

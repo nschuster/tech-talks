@@ -165,7 +165,7 @@ function clearCicdLeaderLines() {
 }
 
 function getCicdLineColor() {
-  return root.dataset.theme === 'light' ? '#000000' : '#ffffff';
+  return '#1db8f2';
 }
 
 function renderCicdLeaderLines() {
@@ -244,53 +244,58 @@ function renderCicdLeaderLines() {
   const kubernetesCenterY = kubernetesGroup ? elementYInGrid(kubernetesGroup, 0.5) : laneY;
   const kubernetesLowerY = kubernetesGroup ? elementYInGrid(kubernetesGroup, 0.92) : laneY;
   const cloudMiddleRowY = cloudInfrastructureGroup ? iconRowCenterYInGrid(cloudInfrastructureGroup, 1) : laneY;
-  const thirdPartyUpperY = thirdPartyBox ? elementYInGrid(thirdPartyBox, 0.6) : (thirdPartyGroup ? elementYInGrid(thirdPartyGroup, 0.32) : laneY);
-  const thirdPartyLowerY = thirdPartyBox ? elementYInGrid(thirdPartyBox, 0.82) : (thirdPartyGroup ? elementYInGrid(thirdPartyGroup, 0.78) : laneY);
+  const thirdPartyUpperY = thirdPartyBox ? elementYInGrid(thirdPartyBox, 0.52) : (thirdPartyGroup ? elementYInGrid(thirdPartyGroup, 0.28) : laneY);
+  const thirdPartyLowerY = thirdPartyBox ? elementYInGrid(thirdPartyBox, 0.74) : (thirdPartyGroup ? elementYInGrid(thirdPartyGroup, 0.7) : laneY);
+  const currentFragment = deck.getIndices().f ?? -1;
+  const isFragmentVisible = (fragmentIndex) => currentFragment >= fragmentIndex;
 
   const sourceToRegistryPoints = columns.slice(0, -1).map((column) => rightEdgePointAtY(column, sourceLaneY));
-  const pipelines = [sourceToRegistryPoints];
+  const pipelines = [];
   const routedPipelines = [];
 
-  if (infraCodeItem && kubernetesGroup) {
+  if (isFragmentVisible(0)) {
+    pipelines.push(sourceToRegistryPoints);
+  }
+  if (isFragmentVisible(1) && infraCodeItem && kubernetesGroup) {
     pipelines.push(horizontalPipelineAtY(kubernetesUpperY));
   }
-  if (deploymentManifestItem && cloudInfrastructureGroup) {
-    pipelines.push(horizontalPipelineAtY(cloudMiddleRowY));
-  }
-  if (infraCodeItem && cloudInfrastructureGroup) {
+  if (isFragmentVisible(2) && infraCodeItem && cloudInfrastructureGroup) {
     routedPipelines.push(routedPipeline(
       elementYInGrid(infraCodeItem, 0.5),
       iconRowCenterYInGrid(cloudInfrastructureGroup, 0)
     ));
   }
-  if (deploymentManifestItem && kubernetesGroup) {
-    routedPipelines.push(routedPipeline(
-      elementYInGrid(deploymentManifestItem, 0.15),
-      kubernetesCenterY
-    ));
-  }
-  if (infraCodeItem && thirdPartyGroup) {
+  if (isFragmentVisible(3) && infraCodeItem && thirdPartyGroup) {
     routedPipelines.push(routedPipeline(
       elementYInGrid(infraCodeItem, 0.78),
       thirdPartyUpperY
     ));
   }
-  if (deploymentManifestItem && thirdPartyGroup) {
+  if (isFragmentVisible(4) && deploymentManifestItem && kubernetesGroup) {
+    routedPipelines.push(routedPipeline(
+      elementYInGrid(deploymentManifestItem, 0.15),
+      kubernetesCenterY
+    ));
+  }
+  if (isFragmentVisible(5) && deploymentManifestItem && cloudInfrastructureGroup) {
+    pipelines.push(horizontalPipelineAtY(cloudMiddleRowY));
+  }
+  if (isFragmentVisible(6) && deploymentManifestItem && thirdPartyGroup) {
     routedPipelines.push(routedPipeline(
       elementYInGrid(deploymentManifestItem, 0.72),
       thirdPartyLowerY
     ));
   }
-  if (testSuitesItem && cloudInfrastructureGroup) {
-    routedPipelines.push(routedPipeline(
-      elementYInGrid(testSuitesItem, 0.54),
-      iconRowCenterYInGrid(cloudInfrastructureGroup, 2)
-    ));
-  }
-  if (testSuitesItem && kubernetesGroup) {
+  if (isFragmentVisible(7) && testSuitesItem && kubernetesGroup) {
     routedPipelines.push(routedPipeline(
       elementYInGrid(testSuitesItem, 0.25),
       kubernetesLowerY
+    ));
+  }
+  if (isFragmentVisible(8) && testSuitesItem && cloudInfrastructureGroup) {
+    routedPipelines.push(routedPipeline(
+      elementYInGrid(testSuitesItem, 0.54),
+      iconRowCenterYInGrid(cloudInfrastructureGroup, 2)
     ));
   }
 
@@ -354,6 +359,8 @@ function requestCicdLeaderLineUpdate() {
   window.requestAnimationFrame(() => {
     window.requestAnimationFrame(renderCicdLeaderLines);
   });
+  window.setTimeout(renderCicdLeaderLines, 160);
+  window.setTimeout(renderCicdLeaderLines, 420);
 }
 
 function toggleTheme() {
@@ -369,6 +376,8 @@ deck.on('slidechanged', () => {
   updateBranding();
   requestCicdLeaderLineUpdate();
 });
+deck.on('fragmentshown', requestCicdLeaderLineUpdate);
+deck.on('fragmenthidden', requestCicdLeaderLineUpdate);
 deck.on('resize', requestCicdLeaderLineUpdate);
 deck.on('overviewshown', clearCicdLeaderLines);
 deck.on('overviewhidden', requestCicdLeaderLineUpdate);
