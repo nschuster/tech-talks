@@ -215,13 +215,15 @@ function renderCicdLeaderLines() {
     const rect = column.getBoundingClientRect();
     return toGridPoint(rect.right, gridRect.top + y * scaleY);
   });
-  const routedPipeline = (startY, endY) => {
+  const routedPipeline = (startY, endY, options = {}) => {
     const points = horizontalPipelineAtY(startY);
+    const curveStartIndex = options.curveStartIndex ?? 1;
+    const curveEndIndex = options.curveEndIndex ?? 4;
     const start = points[0];
-    const curveStart = points[1];
-    const curveEnd = { x: points[4].x, y: endY };
+    const curveStart = points[curveStartIndex];
+    const curveEnd = { x: points[curveEndIndex].x, y: endY };
     const end = { x: points[5].x, y: endY };
-    const controlOffset = Math.max(70, (curveEnd.x - curveStart.x) * 0.35);
+    const controlOffset = Math.max(70, (curveEnd.x - curveStart.x) * (options.controlFactor ?? 0.35));
     return [
       {
         kind: 'line',
@@ -252,12 +254,12 @@ function renderCicdLeaderLines() {
   const thirdPartyBox = currentSlide.querySelector('.cicd-target-main-box--third-party');
 
   const sourceLaneY = sourceCodeItem ? centerYInGrid(sourceCodeItem) : laneY;
-  const kubernetesUpperY = kubernetesGroup ? elementYInGrid(kubernetesGroup, 0.2) : laneY;
-  const kubernetesCenterY = kubernetesGroup ? elementYInGrid(kubernetesGroup, 0.5) : laneY;
-  const kubernetesLowerY = kubernetesGroup ? elementYInGrid(kubernetesGroup, 0.92) : laneY;
+  const kubernetesUpperY = kubernetesGroup ? elementYInGrid(kubernetesGroup, 0.1) : laneY;
+  const kubernetesCenterY = kubernetesGroup ? elementYInGrid(kubernetesGroup, 0.46) : laneY;
+  const kubernetesLowerY = kubernetesGroup ? elementYInGrid(kubernetesGroup, 0.84) : laneY;
   const cloudMiddleRowY = cloudInfrastructureGroup ? iconRowCenterYInGrid(cloudInfrastructureGroup, 1) : laneY;
-  const thirdPartyUpperY = thirdPartyBox ? elementYInGrid(thirdPartyBox, 0.52) : (thirdPartyGroup ? elementYInGrid(thirdPartyGroup, 0.28) : laneY);
-  const thirdPartyLowerY = thirdPartyBox ? elementYInGrid(thirdPartyBox, 0.74) : (thirdPartyGroup ? elementYInGrid(thirdPartyGroup, 0.7) : laneY);
+  const thirdPartyUpperY = thirdPartyBox ? elementYInGrid(thirdPartyBox, 0.46) : (thirdPartyGroup ? elementYInGrid(thirdPartyGroup, 0.22) : laneY);
+  const thirdPartyLowerY = thirdPartyBox ? elementYInGrid(thirdPartyBox, 0.82) : (thirdPartyGroup ? elementYInGrid(thirdPartyGroup, 0.78) : laneY);
   const singlePipelineMode = currentSlide.classList.contains('cicd-antipattern-slide--single-pipeline');
   const staticBasisMode = currentSlide.classList.contains('cicd-antipattern-slide--single-pipeline-basis');
   const skipPipelineDraw = currentSlide.classList.contains('cicd-antipattern-slide--no-pipeline-draw');
@@ -289,7 +291,7 @@ function renderCicdLeaderLines() {
     routedPipelines.push({
       id: 'infra-to-third-party',
       segments: routedPipeline(
-        elementYInGrid(infraCodeItem, 0.78),
+        elementYInGrid(infraCodeItem, 0.9),
         thirdPartyUpperY
       )
     });
@@ -298,7 +300,7 @@ function renderCicdLeaderLines() {
     routedPipelines.push({
       id: 'deployment-to-kubernetes',
       segments: routedPipeline(
-        elementYInGrid(deploymentManifestItem, 0.15),
+        elementYInGrid(deploymentManifestItem, 0.08),
         kubernetesCenterY
       )
     });
@@ -310,7 +312,7 @@ function renderCicdLeaderLines() {
     routedPipelines.push({
       id: 'deployment-to-third-party',
       segments: routedPipeline(
-        elementYInGrid(deploymentManifestItem, 0.72),
+        elementYInGrid(deploymentManifestItem, 0.86),
         thirdPartyLowerY
       )
     });
@@ -319,7 +321,7 @@ function renderCicdLeaderLines() {
     routedPipelines.push({
       id: 'test-to-kubernetes',
       segments: routedPipeline(
-        elementYInGrid(testSuitesItem, 0.25),
+        elementYInGrid(testSuitesItem, 0.12),
         kubernetesLowerY
       )
     });
@@ -403,9 +405,13 @@ function renderCicdLeaderLines() {
     }
     return { group, isNew };
   };
-  const shouldAnimatePipelineGroup = (pipelineGroupId) => {
+  const isSourceToRegistryGroup = (pipelineGroupId) => pipelineGroupId.startsWith('source-to-registry-');
+  const shouldDashPipelineGroup = (pipelineGroupId) => {
+    return !staticBasisMode || isSourceToRegistryGroup(pipelineGroupId);
+  };
+  const shouldDrawPipelineGroup = (pipelineGroupId) => {
     if (skipPipelineDraw) return false;
-    return !staticBasisMode || pipelineGroupId.startsWith('source-to-registry-');
+    return !staticBasisMode || isSourceToRegistryGroup(pipelineGroupId);
   };
 
   pipelines.forEach(({ id, points }) => {
@@ -413,8 +419,9 @@ function renderCicdLeaderLines() {
 
     segments.forEach(([start, end, segmentId]) => {
       const { group, isNew } = ensurePipelineGroup(segmentId);
-      const shouldAnimate = shouldAnimatePipelineGroup(segmentId);
-      group.classList.toggle('cicd-pipeline-group--static', !shouldAnimate);
+      const shouldDash = shouldDashPipelineGroup(segmentId);
+      const shouldDraw = shouldDrawPipelineGroup(segmentId);
+      group.classList.toggle('cicd-pipeline-group--static', !shouldDash);
       let outline = group.querySelector('.cicd-pipeline-line-outline');
       let line = group.querySelector('.cicd-pipeline-line');
       if (!outline) {
@@ -434,7 +441,7 @@ function renderCicdLeaderLines() {
       });
       outline.setAttribute('stroke', outlineColor);
       setCommonLineAttributes(line, color);
-      if (isNew && shouldAnimate) addDrawMask(group, 'line', attrs, Math.hypot(end.x - start.x, end.y - start.y));
+      if (isNew && shouldDraw) addDrawMask(group, 'line', attrs, Math.hypot(end.x - start.x, end.y - start.y));
     });
   });
 
@@ -443,8 +450,9 @@ function renderCicdLeaderLines() {
     segments.forEach(({ kind, attributes, length }, index) => {
       const segmentId = `${id}-${segmentNames[index] || index}`;
       const { group, isNew } = ensurePipelineGroup(segmentId);
-      const shouldAnimate = shouldAnimatePipelineGroup(segmentId);
-      group.classList.toggle('cicd-pipeline-group--static', !shouldAnimate);
+      const shouldDash = shouldDashPipelineGroup(segmentId);
+      const shouldDraw = shouldDrawPipelineGroup(segmentId);
+      group.classList.toggle('cicd-pipeline-group--static', !shouldDash);
       const tagName = kind === 'path' ? 'path' : 'line';
       let outline = group.querySelector('.cicd-pipeline-line-outline');
       let line = group.querySelector('.cicd-pipeline-line');
@@ -468,7 +476,7 @@ function renderCicdLeaderLines() {
       });
       outline.setAttribute('stroke', outlineColor);
       setCommonLineAttributes(line, color);
-      if (isNew && shouldAnimate) {
+      if (isNew && shouldDraw) {
         const segmentLength = length || (line.getTotalLength ? line.getTotalLength() : 1);
         addDrawMask(group, tagName, attributes, segmentLength);
       }
@@ -491,6 +499,19 @@ function requestCicdLeaderLineUpdate() {
   window.setTimeout(renderCicdLeaderLines, 420);
 }
 
+function updateCicdOverlayVideos() {
+  document.querySelectorAll('.cicd-static-pipeline-video-overlay').forEach((video) => {
+    if (!(video instanceof HTMLVideoElement)) return;
+    const isPresent = video.closest('section')?.classList.contains('present');
+    if (isPresent) {
+      video.play().catch(() => {});
+    } else {
+      video.pause();
+      video.currentTime = 0;
+    }
+  });
+}
+
 function toggleTheme() {
   setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark');
 }
@@ -498,10 +519,12 @@ function toggleTheme() {
 setTheme(localStorage.getItem('tech-talks-theme') || root.dataset.theme || 'dark');
 deck.on('ready', () => {
   updateBranding();
+  updateCicdOverlayVideos();
   requestCicdLeaderLineUpdate();
 });
 deck.on('slidechanged', () => {
   updateBranding();
+  updateCicdOverlayVideos();
   requestCicdLeaderLineUpdate();
 });
 deck.on('fragmentshown', requestCicdLeaderLineUpdate);

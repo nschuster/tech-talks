@@ -772,6 +772,23 @@ body {
   pointer-events: none;
 }
 
+.reveal section.cicd-antipattern-slide .cicd-static-pipeline-video-overlay {
+  position: absolute !important;
+  top: var(--cicd-content-top) !important;
+  right: 482px !important;
+  bottom: var(--cicd-content-bottom) !important;
+  left: 348px !important;
+  z-index: 8;
+  width: 1090px !important;
+  height: calc(100% - var(--cicd-content-top) - var(--cicd-content-bottom)) !important;
+  max-width: none !important;
+  max-height: none !important;
+  object-fit: cover;
+  opacity: 0.72;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
 .cicd-pipeline-anchor--source {
   right: -4px;
   top: calc(50% - 14px);
