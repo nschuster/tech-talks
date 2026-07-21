@@ -299,8 +299,11 @@ function renderCicdLeaderLines() {
   }
   if (nextSlideBaseMode && deploymentManifestItem) {
     const desiredStateY = elementYInGrid(deploymentManifestItem, 0.5);
-    const middleBoxEnd = horizontalPipelineAtY(desiredStateY)[4];
-    const rightColumnStart = horizontalPipelineAtY(desiredStateY)[5];
+    const desiredStatePoints = horizontalPipelineAtY(desiredStateY);
+    const middleBoxStart = desiredStatePoints[1];
+    const middleBoxEnd = desiredStatePoints[4];
+    const rightColumnStart = desiredStatePoints[5];
+    const registryBranchY = registryCenterY + 34;
     const branchToTarget = (id, targetY) => {
       const controlOffset = Math.max(42, (rightColumnStart.x - middleBoxEnd.x) * 0.42);
       routedPipelines.push({
@@ -316,14 +319,31 @@ function renderCicdLeaderLines() {
         ]
       });
     };
-    pipelines.push({
-      id: 'desired-state-to-middle-box-end',
-      points: horizontalPipelineAtY(desiredStateY).slice(0, 5),
-      segmentStrokes: [
-        desiredStateColor,
-        desiredStateMutedColor,
-        desiredStateMutedColor,
-        desiredStateMutedColor
+    routedPipelines.push({
+      id: 'desired-state-to-middle-box',
+      segments: [
+        {
+          kind: 'line',
+          stroke: desiredStateColor,
+          attributes: {
+            x1: desiredStatePoints[0].x,
+            y1: desiredStatePoints[0].y,
+            x2: middleBoxStart.x,
+            y2: middleBoxStart.y
+          },
+          length: Math.hypot(middleBoxStart.x - desiredStatePoints[0].x, 0)
+        },
+        {
+          kind: 'line',
+          stroke: desiredStateMutedColor,
+          attributes: {
+            x1: middleBoxStart.x,
+            y1: middleBoxStart.y,
+            x2: middleBoxEnd.x,
+            y2: middleBoxEnd.y
+          },
+          length: Math.hypot(middleBoxEnd.x - middleBoxStart.x, 0)
+        }
       ]
     });
     routedPipelines.push({
@@ -342,7 +362,7 @@ function renderCicdLeaderLines() {
         }
       ]
     });
-    branchToTarget('desired-state-middle-to-registry', registryCenterY);
+    branchToTarget('desired-state-middle-to-registry', registryBranchY);
     branchToTarget('desired-state-middle-to-kubernetes', kubernetesCenterY);
     branchToTarget('desired-state-middle-to-third-party', thirdPartyUpperY);
   }
@@ -429,8 +449,11 @@ function renderCicdLeaderLines() {
         <marker id="cicd-pipeline-arrowhead-static" markerWidth="20" markerHeight="20" refX="17" refY="10" orient="auto" markerUnits="userSpaceOnUse">
           <path class="cicd-pipeline-arrowhead-path-static" d="M 2 2 L 18 10 L 2 18 z"></path>
         </marker>
-        <marker id="cicd-pipeline-arrowhead-desired" markerWidth="20" markerHeight="20" refX="17" refY="10" orient="auto" markerUnits="userSpaceOnUse">
-          <path class="cicd-pipeline-arrowhead-path-desired" d="M 2 2 L 18 10 L 2 18 z"></path>
+        <marker id="cicd-pipeline-arrowhead-desired" markerWidth="30" markerHeight="30" refX="26" refY="15" orient="auto" markerUnits="userSpaceOnUse">
+          <path class="cicd-pipeline-arrowhead-path-desired" d="M 3 3 L 27 15 L 3 27 z"></path>
+        </marker>
+        <marker id="cicd-pipeline-arrowhead-desired-start" markerWidth="30" markerHeight="30" refX="4" refY="15" orient="auto" markerUnits="userSpaceOnUse">
+          <path class="cicd-pipeline-arrowhead-path-desired" d="M 3 3 L 27 15 L 3 27 z"></path>
         </marker>
         <marker id="cicd-pipeline-arrowhead-muted" markerWidth="20" markerHeight="20" refX="17" refY="10" orient="auto" markerUnits="userSpaceOnUse">
           <path class="cicd-pipeline-arrowhead-path-muted" d="M 2 2 L 18 10 L 2 18 z"></path>
@@ -444,20 +467,25 @@ function renderCicdLeaderLines() {
   cicdLeaderLineLayer.setAttribute('preserveAspectRatio', 'none');
   cicdLeaderLineLayer.querySelector('.cicd-pipeline-arrowhead-path')?.setAttribute('fill', color);
   cicdLeaderLineLayer.querySelector('.cicd-pipeline-arrowhead-path-static')?.setAttribute('fill', staticColor);
-  cicdLeaderLineLayer.querySelector('.cicd-pipeline-arrowhead-path-desired')?.setAttribute('fill', desiredStateColor);
+  cicdLeaderLineLayer.querySelectorAll('.cicd-pipeline-arrowhead-path-desired').forEach((path) => path.setAttribute('fill', desiredStateColor));
   cicdLeaderLineLayer.querySelector('.cicd-pipeline-arrowhead-path-muted')?.setAttribute('fill', desiredStateMutedColor);
 
   const activePipelineIds = new Set();
   const setCommonLineAttributes = (element, stroke) => {
     element.setAttribute('stroke', stroke);
     if (element.classList.contains('cicd-pipeline-line')) {
+      element.removeAttribute('marker-start');
+      element.removeAttribute('marker-end');
       let markerId = 'cicd-pipeline-arrowhead';
       if (stroke === desiredStateMutedColor) {
-        element.removeAttribute('marker-end');
         return;
       }
       if (stroke === staticColor) markerId = 'cicd-pipeline-arrowhead-static';
-      if (stroke === desiredStateColor) markerId = 'cicd-pipeline-arrowhead-desired';
+      if (stroke === desiredStateColor) {
+        element.setAttribute('marker-start', 'url(#cicd-pipeline-arrowhead-desired-start)');
+        element.setAttribute('marker-end', 'url(#cicd-pipeline-arrowhead-desired)');
+        return;
+      }
       element.setAttribute('marker-end', `url(#${markerId})`);
     }
   };
