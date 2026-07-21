@@ -1,4 +1,6 @@
 import Reveal from '../node_modules/reveal.js/dist/reveal.mjs';
+import '../node_modules/reveal.js-menu/menu.css';
+import '../css/menu-overrides.css';
 import RevealMenu from '../node_modules/reveal.js-menu/plugin.js';
 
 // Global confidentiality level for the complete deck.
@@ -55,7 +57,7 @@ const deck = new Reveal({
   autoAnimateDuration: 0.85,
   menu: {
     side: 'left',
-    width: 'normal',
+    width: 'wide',
     numbers: true,
     titleSelector: 'h1, h2',
     useTextContentForMissingTitles: true,

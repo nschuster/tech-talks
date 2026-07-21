@@ -1,0 +1,151 @@
+.slide-menu-wrapper {
+  font-family: var(--font-body);
+}
+
+.slide-menu-wrapper .slide-menu,
+.slide-menu-wrapper .slide-menu.slide-menu--wide {
+  width: min(760px, 68vw);
+  background:
+    radial-gradient(circle at 16% 0%, rgba(29, 184, 242, 0.18), transparent 32%),
+    linear-gradient(180deg, rgba(18, 26, 56, 0.98) 0%, rgba(5, 13, 33, 0.98) 100%);
+  border-right: 3px solid rgba(29, 184, 242, 0.78);
+  box-shadow: 24px 0 70px rgba(0, 0, 0, 0.44);
+  font-family: var(--font-body);
+  font-size: 18px;
+}
+
+.slide-menu-wrapper .slide-menu-toolbar {
+  height: 74px;
+  border-bottom: 1px solid rgba(29, 184, 242, 0.38);
+  background: rgba(0, 88, 171, 0.18);
+}
+
+.slide-menu-wrapper .slide-menu-toolbar > li {
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.slide-menu-wrapper .slide-menu-toolbar > li.toolbar-panel-button:hover,
+.slide-menu-wrapper .slide-menu-toolbar > li.active-toolbar-button {
+  color: var(--capgemini-light-blue);
+  text-decoration: none;
+  text-shadow: 0 0 20px rgba(29, 184, 242, 0.45);
+}
+
+.slide-menu-wrapper .slide-menu-panel {
+  height: calc(100% - 74px);
+  color: rgba(255, 255, 255, 0.78);
+  overflow-x: hidden;
+}
+
+.slide-menu-wrapper .slide-menu-items {
+  border-bottom-color: rgba(29, 184, 242, 0.22);
+}
+
+.slide-menu-wrapper .slide-menu-item,
+.slide-menu-wrapper .slide-menu-item-vertical {
+  padding: 13px 26px;
+  border-top: 1px solid rgba(29, 184, 242, 0.16);
+  color: rgba(255, 255, 255, 0.74);
+  line-height: 1.18;
+}
+
+.slide-menu-wrapper .slide-menu--wide .slide-menu-item-vertical {
+  padding-left: 58px;
+}
+
+.slide-menu-wrapper .slide-menu-item-number {
+  color: var(--capgemini-light-blue);
+  font-weight: 700;
+}
+
+.slide-menu-wrapper .slide-menu-item-title {
+  white-space: normal;
+}
+
+.slide-menu-wrapper .active-menu-panel li.selected {
+  background: linear-gradient(90deg, rgba(29, 184, 242, 0.28), rgba(0, 88, 171, 0.16));
+  color: #ffffff;
+  box-shadow: inset 5px 0 0 var(--capgemini-light-blue);
+}
+
+.slide-menu-wrapper .active-menu-panel li.active {
+  color: #ffffff;
+}
+
+.slide-menu-wrapper .slide-menu-panel h1,
+.slide-menu-wrapper .slide-menu-panel h2,
+.slide-menu-wrapper .slide-menu-panel h3,
+.slide-menu-wrapper .slide-menu-panel h4,
+.slide-menu-wrapper .slide-menu-panel h5,
+.slide-menu-wrapper .slide-menu-panel h6 {
+  color: #ffffff;
+  font-family: var(--font-display);
+}
+
+.slide-menu-wrapper .slide-menu-overlay.active {
+  background-color: #050d21;
+  opacity: 0.72;
+}
+
+.reveal .slide-menu-button {
+  left: 30px;
+  bottom: 26px;
+  z-index: 60;
+  width: 58px;
+  height: 58px;
+  font-size: 0;
+}
+
+.reveal .slide-menu-button a {
+  position: relative;
+  display: flex;
+  width: 58px;
+  height: 58px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(29, 184, 242, 0.66);
+  border-radius: 18px;
+  background:
+    linear-gradient(135deg, rgba(29, 184, 242, 0.34), rgba(0, 88, 171, 0.44)),
+    rgba(18, 26, 56, 0.82);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+  transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.reveal .slide-menu-button a:hover,
+.reveal .slide-menu-button a:focus-visible {
+  border-color: var(--capgemini-light-blue);
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.42), 0 0 26px rgba(29, 184, 242, 0.32);
+  outline: none;
+  transform: translateY(-2px);
+}
+
+.reveal .slide-menu-button a i,
+.reveal .slide-menu-button a svg {
+  display: none !important;
+}
+
+.reveal .slide-menu-button a::before,
+.reveal .slide-menu-button a::after {
+  position: absolute;
+  content: "";
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+.reveal .slide-menu-button a::before {
+  width: 29px;
+  height: 22px;
+  border: 2px solid #ffffff;
+  background: linear-gradient(90deg, var(--capgemini-light-blue) 0 28%, transparent 28% 100%);
+  box-shadow: -5px -5px 0 rgba(255, 255, 255, 0.24), 5px 5px 0 rgba(29, 184, 242, 0.24);
+}
+
+.reveal .slide-menu-button a::after {
+  width: 17px;
+  height: 2px;
+  background: #ffffff;
+  box-shadow: 0 6px 0 #ffffff, 0 12px 0 #ffffff;
+  transform: translateX(5px) translateY(-6px);
+}

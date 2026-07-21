@@ -523,19 +523,19 @@ body {
 
 .cicd-pipeline-explanation {
   position: absolute;
-  left: 360px;
-  width: 960px;
+  left: 324px;
+  width: 982px;
   top: calc(var(--cicd-content-top) + var(--cicd-pipeline-lane-y) + 68px);
   z-index: 5;
-  padding: 22px 28px;
+  padding: 24px 32px;
   border: 2px solid rgba(255, 255, 255, 0.34);
   border-radius: 18px;
   background: rgba(18, 26, 56, 0.74);
   box-shadow: 0 18px 48px rgba(0, 0, 0, 0.34);
   color: var(--capgemini-white);
   font-family: var(--font-body);
-  font-size: 0.39em;
-  line-height: 1.25;
+  font-size: 0.49em;
+  line-height: 1.18;
   text-align: left;
   backdrop-filter: blur(7px);
 }
