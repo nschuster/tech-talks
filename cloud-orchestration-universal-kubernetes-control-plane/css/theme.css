@@ -774,19 +774,34 @@ body {
 
 .reveal section.cicd-antipattern-slide .cicd-static-pipeline-video-overlay {
   position: absolute !important;
-  top: var(--cicd-content-top) !important;
+  top: calc(var(--cicd-content-top) + 190px) !important;
   right: 482px !important;
   bottom: var(--cicd-content-bottom) !important;
   left: 348px !important;
   z-index: 8;
   width: 1090px !important;
-  height: calc(100% - var(--cicd-content-top) - var(--cicd-content-bottom)) !important;
+  height: calc(100% - var(--cicd-content-top) - var(--cicd-content-bottom) - 190px) !important;
   max-width: none !important;
   max-height: none !important;
   object-fit: cover;
-  filter: hue-rotate(185deg) saturate(1.45) brightness(1.15);
-  opacity: 0.95;
+  object-position: center 62%;
+  filter: hue-rotate(185deg) saturate(1.45) brightness(1.16) contrast(1.05);
+  opacity: 0.96;
   pointer-events: none;
+}
+
+.reveal section.cicd-antipattern-slide--single-pipeline-basis .cicd-pipeline-group--static {
+  opacity: 0.2;
+}
+
+.reveal section.cicd-antipattern-slide--single-pipeline-basis .cicd-pipeline-group--static .cicd-pipeline-line-outline {
+  stroke: rgba(18, 26, 56, 0.32) !important;
+  stroke-width: 13px;
+}
+
+.reveal section.cicd-antipattern-slide--single-pipeline-basis .cicd-pipeline-group--static .cicd-pipeline-line {
+  stroke: rgba(120, 207, 236, 0.32) !important;
+  stroke-width: 6px;
 }
 
 .cicd-pipeline-anchor--source {
