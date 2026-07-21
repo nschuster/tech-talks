@@ -794,11 +794,11 @@ body {
 
 .reveal section.cicd-antipattern-slide .cicd-static-pipeline-questionmark {
   position: absolute !important;
-  top: calc(var(--cicd-content-top) + 258px) !important;
-  left: 724px !important;
+  top: calc(var(--cicd-content-top) + 359.5px) !important;
+  left: 767px !important;
   z-index: 8;
-  width: 360px !important;
-  height: 360px !important;
+  width: 252px !important;
+  height: 252px !important;
   max-width: none !important;
   max-height: none !important;
   object-fit: contain;
