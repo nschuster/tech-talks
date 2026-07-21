@@ -326,6 +326,22 @@ function renderCicdLeaderLines() {
         desiredStateMutedColor
       ]
     });
+    routedPipelines.push({
+      id: 'desired-state-middle-to-cloud-infrastructure',
+      segments: [
+        {
+          kind: 'line',
+          stroke: desiredStateColor,
+          attributes: {
+            x1: middleBoxEnd.x,
+            y1: middleBoxEnd.y,
+            x2: rightColumnStart.x,
+            y2: middleBoxEnd.y
+          },
+          length: Math.hypot(rightColumnStart.x - middleBoxEnd.x, 0)
+        }
+      ]
+    });
     branchToTarget('desired-state-middle-to-registry', registryCenterY);
     branchToTarget('desired-state-middle-to-kubernetes', kubernetesCenterY);
     branchToTarget('desired-state-middle-to-third-party', thirdPartyUpperY);

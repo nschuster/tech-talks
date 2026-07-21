@@ -690,7 +690,7 @@ body {
 
 .reveal section.cicd-antipattern-slide--next-slide-base .cicd-desired-state-gradient-box::after {
   position: absolute;
-  inset: 58px 24px 24px;
+  inset: 78px 8px 8px;
   content: "";
   border-radius: 24px;
   background: rgba(18, 26, 56, 0.96);
