@@ -413,6 +413,8 @@ function renderCicdLeaderLines() {
 
     segments.forEach(([start, end, segmentId]) => {
       const { group, isNew } = ensurePipelineGroup(segmentId);
+      const shouldAnimate = shouldAnimatePipelineGroup(segmentId);
+      group.classList.toggle('cicd-pipeline-group--static', !shouldAnimate);
       let outline = group.querySelector('.cicd-pipeline-line-outline');
       let line = group.querySelector('.cicd-pipeline-line');
       if (!outline) {
@@ -432,7 +434,7 @@ function renderCicdLeaderLines() {
       });
       outline.setAttribute('stroke', outlineColor);
       setCommonLineAttributes(line, color);
-      if (isNew && shouldAnimatePipelineGroup(segmentId)) addDrawMask(group, 'line', attrs, Math.hypot(end.x - start.x, end.y - start.y));
+      if (isNew && shouldAnimate) addDrawMask(group, 'line', attrs, Math.hypot(end.x - start.x, end.y - start.y));
     });
   });
 
@@ -441,6 +443,8 @@ function renderCicdLeaderLines() {
     segments.forEach(({ kind, attributes, length }, index) => {
       const segmentId = `${id}-${segmentNames[index] || index}`;
       const { group, isNew } = ensurePipelineGroup(segmentId);
+      const shouldAnimate = shouldAnimatePipelineGroup(segmentId);
+      group.classList.toggle('cicd-pipeline-group--static', !shouldAnimate);
       const tagName = kind === 'path' ? 'path' : 'line';
       let outline = group.querySelector('.cicd-pipeline-line-outline');
       let line = group.querySelector('.cicd-pipeline-line');
@@ -464,7 +468,7 @@ function renderCicdLeaderLines() {
       });
       outline.setAttribute('stroke', outlineColor);
       setCommonLineAttributes(line, color);
-      if (isNew && shouldAnimatePipelineGroup(segmentId)) {
+      if (isNew && shouldAnimate) {
         const segmentLength = length || (line.getTotalLength ? line.getTotalLength() : 1);
         addDrawMask(group, tagName, attributes, segmentLength);
       }

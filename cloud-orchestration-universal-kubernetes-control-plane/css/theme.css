@@ -805,6 +805,11 @@ body {
   animation: cicd-pipeline-dash 1s linear infinite;
 }
 
+.cicd-pipeline-group--static .cicd-pipeline-line-outline,
+.cicd-pipeline-group--static .cicd-pipeline-line {
+  animation: none;
+}
+
 .cicd-pipeline-line-draw-mask {
   fill: none;
   stroke: #ffffff;
