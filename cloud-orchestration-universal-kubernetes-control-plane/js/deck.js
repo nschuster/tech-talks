@@ -90,7 +90,8 @@ const reveal = document.querySelector('.reveal');
 let brandingLayer;
 let capgeminiLogo;
 let confidentialityPatch;
-let cicdLeaderLineLayer;
+const cicdLeaderLines = new Map();
+let cicdLeaderLineAnchorLayer;
 
 function getConfidentialityPatch() {
   return CONFIDENTIALITY_PATCHES[CONFIDENTIALITY_LEVEL] || CONFIDENTIALITY_PATCHES.SEC1;
@@ -160,23 +161,39 @@ function setTheme(theme) {
 }
 
 function clearCicdLeaderLines() {
-  cicdLeaderLineLayer?.remove();
-  cicdLeaderLineLayer = undefined;
+  cicdLeaderLines.forEach(({ line }) => line.remove());
+  cicdLeaderLines.clear();
+  cicdLeaderLineAnchorLayer?.remove();
+  cicdLeaderLineAnchorLayer = undefined;
 }
 
 function getCicdLineColor() {
   return '#1db8f2';
 }
 
-function renderCicdLeaderLines() {
-  clearCicdLeaderLines();
+function ensureCicdLeaderLineAnchorLayer() {
+  if (cicdLeaderLineAnchorLayer) return cicdLeaderLineAnchorLayer;
+  cicdLeaderLineAnchorLayer = document.createElement('div');
+  cicdLeaderLineAnchorLayer.className = 'cicd-leaderline-anchor-layer';
+  cicdLeaderLineAnchorLayer.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(cicdLeaderLineAnchorLayer);
+  return cicdLeaderLineAnchorLayer;
+}
 
+function renderCicdLeaderLines() {
+  const LeaderLine = window.LeaderLine;
   const currentSlide = deck.getCurrentSlide();
-  if (!currentSlide?.classList.contains('cicd-antipattern-slide')) return;
+  if (!currentSlide?.classList.contains('cicd-antipattern-slide') || !LeaderLine) {
+    clearCicdLeaderLines();
+    return;
+  }
 
   const grid = currentSlide.querySelector('.cicd-grid-reference');
   const columns = [...currentSlide.querySelectorAll('.cicd-grid-column')];
-  if (!grid || columns.length < 2) return;
+  if (!grid || columns.length < 2) {
+    clearCicdLeaderLines();
+    return;
+  }
 
   const color = getCicdLineColor();
   const outlineColor = root.dataset.theme === 'light' ? 'rgba(255, 255, 255, 0.92)' : 'rgba(18, 26, 56, 0.98)';
@@ -186,6 +203,10 @@ function renderCicdLeaderLines() {
   const toGridPoint = (x, y) => ({
     x: (x - gridRect.left) / scaleX,
     y: (y - gridRect.top) / scaleY
+  });
+  const toViewportPoint = (point) => ({
+    x: gridRect.left + point.x * scaleX,
+    y: gridRect.top + point.y * scaleY
   });
   const laneY = Number.parseFloat(getComputedStyle(currentSlide).getPropertyValue('--cicd-pipeline-lane-y')) || 150;
   const rightEdgePointAtY = (element, y) => {
@@ -211,23 +232,19 @@ function renderCicdLeaderLines() {
     return toGridPoint(gridRect.left, rowCenter).y;
   };
 
-  const horizontalPipelineAtY = (y) => columns.slice(0, -1).map((column) => {
-    const rect = column.getBoundingClientRect();
-    return toGridPoint(rect.right, gridRect.top + y * scaleY);
-  });
+  const horizontalPipelineAtY = (y) => {
+    const start = rightEdgePointAtY(columns[0], y);
+    const end = (() => {
+      const rect = columns[6].getBoundingClientRect();
+      return toGridPoint(rect.left, gridRect.top + y * scaleY);
+    })();
+    return { start, end, path: 'straight' };
+  };
   const routedPipeline = (startY, endY) => {
-    const points = horizontalPipelineAtY(startY);
-    const start = points[0];
-    const curveStart = points[1];
-    const curveEnd = { x: points[4].x, y: endY };
-    const end = { x: points[5].x, y: endY };
-    const controlOffset = Math.max(70, (curveEnd.x - curveStart.x) * 0.35);
-    return [
-      `M ${start.x} ${start.y}`,
-      `H ${curveStart.x}`,
-      `C ${curveStart.x + controlOffset} ${start.y} ${curveEnd.x - controlOffset} ${endY} ${curveEnd.x} ${endY}`,
-      `H ${end.x}`
-    ].join(' ');
+    const start = rightEdgePointAtY(columns[0], startY);
+    const targetRect = columns[6].getBoundingClientRect();
+    const end = toGridPoint(targetRect.left, gridRect.top + endY * scaleY);
+    return { start, end, path: 'fluid' };
   };
 
   const sourceCodeItem = currentSlide.querySelector('.cicd-file-item--source-code');
@@ -249,190 +266,98 @@ function renderCicdLeaderLines() {
   const currentFragment = deck.getIndices().f ?? -1;
   const isFragmentVisible = (fragmentIndex) => currentFragment >= fragmentIndex;
 
-  const sourceToRegistryPoints = columns.slice(0, -1).map((column) => rightEdgePointAtY(column, sourceLaneY));
-  const pipelines = [];
-  const routedPipelines = [];
-
+  const routes = [];
   if (isFragmentVisible(0)) {
-    pipelines.push({ id: 'source-to-registry', points: sourceToRegistryPoints });
+    routes.push({ id: 'source-to-registry', ...horizontalPipelineAtY(sourceLaneY) });
   }
   if (isFragmentVisible(1) && infraCodeItem && kubernetesGroup) {
-    pipelines.push({ id: 'infra-to-kubernetes', points: horizontalPipelineAtY(kubernetesUpperY) });
+    routes.push({ id: 'infra-to-kubernetes', ...horizontalPipelineAtY(kubernetesUpperY) });
   }
   if (isFragmentVisible(2) && infraCodeItem && cloudInfrastructureGroup) {
-    routedPipelines.push({
-      id: 'infra-to-cloud',
-      pathData: routedPipeline(
-        elementYInGrid(infraCodeItem, 0.5),
-        iconRowCenterYInGrid(cloudInfrastructureGroup, 0)
-      )
-    });
+    routes.push({ id: 'infra-to-cloud', ...routedPipeline(elementYInGrid(infraCodeItem, 0.5), iconRowCenterYInGrid(cloudInfrastructureGroup, 0)) });
   }
   if (isFragmentVisible(3) && infraCodeItem && thirdPartyGroup) {
-    routedPipelines.push({
-      id: 'infra-to-third-party',
-      pathData: routedPipeline(
-        elementYInGrid(infraCodeItem, 0.78),
-        thirdPartyUpperY
-      )
-    });
+    routes.push({ id: 'infra-to-third-party', ...routedPipeline(elementYInGrid(infraCodeItem, 0.78), thirdPartyUpperY) });
   }
   if (isFragmentVisible(4) && deploymentManifestItem && kubernetesGroup) {
-    routedPipelines.push({
-      id: 'deployment-to-kubernetes',
-      pathData: routedPipeline(
-        elementYInGrid(deploymentManifestItem, 0.15),
-        kubernetesCenterY
-      )
-    });
+    routes.push({ id: 'deployment-to-kubernetes', ...routedPipeline(elementYInGrid(deploymentManifestItem, 0.15), kubernetesCenterY) });
   }
   if (isFragmentVisible(5) && deploymentManifestItem && cloudInfrastructureGroup) {
-    pipelines.push({ id: 'deployment-to-cloud', points: horizontalPipelineAtY(cloudMiddleRowY) });
+    routes.push({ id: 'deployment-to-cloud', ...horizontalPipelineAtY(cloudMiddleRowY) });
   }
   if (isFragmentVisible(6) && deploymentManifestItem && thirdPartyGroup) {
-    routedPipelines.push({
-      id: 'deployment-to-third-party',
-      pathData: routedPipeline(
-        elementYInGrid(deploymentManifestItem, 0.72),
-        thirdPartyLowerY
-      )
-    });
+    routes.push({ id: 'deployment-to-third-party', ...routedPipeline(elementYInGrid(deploymentManifestItem, 0.72), thirdPartyLowerY) });
   }
   if (isFragmentVisible(7) && testSuitesItem && kubernetesGroup) {
-    routedPipelines.push({
-      id: 'test-to-kubernetes',
-      pathData: routedPipeline(
-        elementYInGrid(testSuitesItem, 0.25),
-        kubernetesLowerY
-      )
-    });
+    routes.push({ id: 'test-to-kubernetes', ...routedPipeline(elementYInGrid(testSuitesItem, 0.25), kubernetesLowerY) });
   }
   if (isFragmentVisible(8) && testSuitesItem && cloudInfrastructureGroup) {
-    routedPipelines.push({
-      id: 'test-to-cloud',
-      pathData: routedPipeline(
-        elementYInGrid(testSuitesItem, 0.54),
-        iconRowCenterYInGrid(cloudInfrastructureGroup, 2)
-      )
-    });
+    routes.push({ id: 'test-to-cloud', ...routedPipeline(elementYInGrid(testSuitesItem, 0.54), iconRowCenterYInGrid(cloudInfrastructureGroup, 2)) });
   }
 
-  if (!cicdLeaderLineLayer || cicdLeaderLineLayer.parentElement !== grid) {
-    clearCicdLeaderLines();
-    cicdLeaderLineLayer = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    cicdLeaderLineLayer.classList.add('cicd-pipeline-lines-layer');
-    cicdLeaderLineLayer.setAttribute('aria-hidden', 'true');
-    cicdLeaderLineLayer.innerHTML = `
-      <defs>
-        <marker id="cicd-pipeline-arrowhead" markerWidth="20" markerHeight="20" refX="17" refY="10" orient="auto" markerUnits="userSpaceOnUse">
-          <path class="cicd-pipeline-arrowhead-path" d="M 2 2 L 18 10 L 2 18 z"></path>
-        </marker>
-      </defs>
-    `;
-    grid.appendChild(cicdLeaderLineLayer);
-  }
-
-  cicdLeaderLineLayer.setAttribute('viewBox', `0 0 ${grid.offsetWidth} ${grid.offsetHeight}`);
-  cicdLeaderLineLayer.setAttribute('preserveAspectRatio', 'none');
-  cicdLeaderLineLayer.querySelector('.cicd-pipeline-arrowhead-path')?.setAttribute('fill', color);
-
-  const activePipelineIds = new Set();
-  const defs = cicdLeaderLineLayer.querySelector('defs');
-  const maskIdForPipeline = (id) => `cicd-pipeline-draw-mask-${id.replace(/[^a-z0-9_-]/gi, '-')}`;
-  const straightPathData = (points) => {
-    const [start, ...rest] = points;
-    return [`M ${start.x} ${start.y}`, ...rest.map((point) => `H ${point.x}`)].join(' ');
-  };
-  const setCommonLineAttributes = (element, stroke) => {
-    element.setAttribute('stroke', stroke);
-    if (element.classList.contains('cicd-pipeline-line')) {
-      element.setAttribute('marker-end', 'url(#cicd-pipeline-arrowhead)');
+  const activeRouteIds = new Set(routes.map((route) => route.id));
+  cicdLeaderLines.forEach(({ line, startAnchor, endAnchor }, id) => {
+    if (!activeRouteIds.has(id)) {
+      line.remove();
+      startAnchor.remove();
+      endAnchor.remove();
+      cicdLeaderLines.delete(id);
     }
+  });
+
+  const anchorLayer = ensureCicdLeaderLineAnchorLayer();
+  const positionAnchor = (anchor, point) => {
+    anchor.style.left = `${point.x}px`;
+    anchor.style.top = `${point.y}px`;
   };
-  const clearDrawMask = (id) => {
-    const maskId = maskIdForPipeline(id);
-    cicdLeaderLineLayer.querySelectorAll(`[mask="url(#${maskId})"]`).forEach((element) => element.removeAttribute('mask'));
-    defs?.querySelector(`#${maskId}`)?.remove();
+  const createAnchor = (id, endpoint) => {
+    const anchor = document.createElement('span');
+    anchor.className = 'cicd-leaderline-anchor';
+    anchor.dataset.cicdLeaderLineAnchor = `${id}-${endpoint}`;
+    anchorLayer.appendChild(anchor);
+    return anchor;
   };
-  const addDrawMask = (id, pathData, length) => {
-    if (!defs) return;
-    clearDrawMask(id);
-    const maskId = maskIdForPipeline(id);
-    const mask = document.createElementNS('http://www.w3.org/2000/svg', 'mask');
-    mask.id = maskId;
-    mask.setAttribute('maskUnits', 'userSpaceOnUse');
-    mask.setAttribute('x', '-80');
-    mask.setAttribute('y', '-80');
-    mask.setAttribute('width', String(grid.offsetWidth + 160));
-    mask.setAttribute('height', String(grid.offsetHeight + 160));
 
-    const maskPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    maskPath.classList.add('cicd-pipeline-line-draw-mask');
-    maskPath.setAttribute('d', pathData);
-    maskPath.style.setProperty('--cicd-draw-length', Math.max(1, length));
-    mask.appendChild(maskPath);
-    defs.appendChild(mask);
-
-    const maskUrl = `url(#${maskId})`;
-    const group = cicdLeaderLineLayer.querySelector(`[data-cicd-pipeline-id="${id}"]`);
-    group?.querySelectorAll('.cicd-pipeline-line-outline, .cicd-pipeline-line').forEach((element) => element.setAttribute('mask', maskUrl));
-
-    const finishDraw = () => {
-      group?.querySelectorAll('.cicd-pipeline-line-outline, .cicd-pipeline-line').forEach((element) => element.removeAttribute('mask'));
-      mask.remove();
+  routes.forEach((route) => {
+    const start = toViewportPoint(route.start);
+    const end = toViewportPoint(route.end);
+    let entry = cicdLeaderLines.get(route.id);
+    const lineOptions = {
+      color,
+      size: 9,
+      outline: true,
+      outlineColor,
+      outlineSize: 0.42,
+      startPlug: 'behind',
+      endPlug: 'arrow1',
+      endPlugSize: 1.35,
+      endPlugOutline: true,
+      endPlugOutlineColor: outlineColor,
+      endPlugOutlineSize: 0.3,
+      path: route.path,
+      startSocket: 'right',
+      endSocket: 'left',
+      startSocketGravity: route.path === 'fluid' ? [260, 0] : 'auto',
+      endSocketGravity: route.path === 'fluid' ? [-260, 0] : 'auto',
+      dash: { len: 30, gap: 18, animation: false }
     };
-    maskPath.addEventListener('animationend', finishDraw, { once: true });
-    window.setTimeout(finishDraw, 900);
-  };
-  const ensurePipelineGroup = (id) => {
-    activePipelineIds.add(id);
-    let group = cicdLeaderLineLayer.querySelector(`[data-cicd-pipeline-id="${id}"]`);
-    const isNew = !group;
-    if (!group) {
-      group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-      group.dataset.cicdPipelineId = id;
-      group.classList.add('cicd-pipeline-group');
-      cicdLeaderLineLayer.appendChild(group);
-    }
-    return { group, isNew };
-  };
-  const renderPipelinePath = (id, pathData) => {
-    const { group, isNew } = ensurePipelineGroup(id);
-    let outline = group.querySelector('.cicd-pipeline-line-outline');
-    let path = group.querySelector('.cicd-pipeline-line');
-    if (!outline) {
-      outline = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      outline.classList.add('cicd-pipeline-line-outline', 'cicd-pipeline-line-path');
-      group.appendChild(outline);
-    }
-    if (!path) {
-      path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      path.classList.add('cicd-pipeline-line', 'cicd-pipeline-line-path');
-      group.appendChild(path);
-    }
-    outline.setAttribute('d', pathData);
-    outline.setAttribute('stroke', outlineColor);
-    path.setAttribute('d', pathData);
-    setCommonLineAttributes(path, color);
-    if (isNew) {
-      const length = path.getTotalLength ? path.getTotalLength() : 1;
-      addDrawMask(id, pathData, length);
-    }
-  };
 
-  pipelines.forEach(({ id, points }) => {
-    renderPipelinePath(id, straightPathData(points));
-  });
-
-  routedPipelines.forEach(({ id, pathData }) => {
-    renderPipelinePath(id, pathData);
-  });
-
-  cicdLeaderLineLayer.querySelectorAll('.cicd-pipeline-group').forEach((group) => {
-    if (!activePipelineIds.has(group.dataset.cicdPipelineId)) {
-      clearDrawMask(group.dataset.cicdPipelineId);
-      group.remove();
+    if (!entry) {
+      const startAnchor = createAnchor(route.id, 'start');
+      const endAnchor = createAnchor(route.id, 'end');
+      positionAnchor(startAnchor, start);
+      positionAnchor(endAnchor, end);
+      const line = new LeaderLine(startAnchor, endAnchor, { ...lineOptions, hide: true });
+      entry = { line, startAnchor, endAnchor };
+      cicdLeaderLines.set(route.id, entry);
+      line.show('draw', { duration: 650, timing: [0.58, 0, 0.42, 1] });
+      return;
     }
+
+    positionAnchor(entry.startAnchor, start);
+    positionAnchor(entry.endAnchor, end);
+    entry.line.setOptions(lineOptions);
+    entry.line.position();
   });
 }
 

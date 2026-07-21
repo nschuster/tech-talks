@@ -754,6 +754,21 @@ body {
   filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.34));
 }
 
+.cicd-leaderline-anchor-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 14;
+  pointer-events: none;
+}
+
+.cicd-leaderline-anchor {
+  position: fixed;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
 .cicd-grid-reference > .cicd-pipeline-lines-layer {
   position: absolute;
   inset: 0;
