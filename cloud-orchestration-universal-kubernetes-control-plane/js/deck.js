@@ -259,9 +259,12 @@ function renderCicdLeaderLines() {
   const thirdPartyUpperY = thirdPartyBox ? elementYInGrid(thirdPartyBox, 0.52) : (thirdPartyGroup ? elementYInGrid(thirdPartyGroup, 0.28) : laneY);
   const thirdPartyLowerY = thirdPartyBox ? elementYInGrid(thirdPartyBox, 0.74) : (thirdPartyGroup ? elementYInGrid(thirdPartyGroup, 0.7) : laneY);
   const singlePipelineMode = currentSlide.classList.contains('cicd-antipattern-slide--single-pipeline');
+  const staticBasisMode = currentSlide.classList.contains('cicd-antipattern-slide--single-pipeline-basis');
   const skipPipelineDraw = currentSlide.classList.contains('cicd-antipattern-slide--no-pipeline-draw');
   const currentFragment = deck.getIndices().f ?? -1;
-  const isFragmentVisible = (fragmentIndex) => currentFragment >= fragmentIndex;
+  const showAllPipelines = staticBasisMode;
+  const isFragmentVisible = (fragmentIndex) => showAllPipelines || currentFragment >= fragmentIndex;
+  const allowAllPipelineRoutes = !singlePipelineMode || showAllPipelines;
 
   const sourceToRegistryPoints = columns.slice(0, -1).map((column) => rightEdgePointAtY(column, sourceLaneY));
   const pipelines = [];
@@ -270,10 +273,10 @@ function renderCicdLeaderLines() {
   if (singlePipelineMode || isFragmentVisible(0)) {
     pipelines.push({ id: 'source-to-registry', points: sourceToRegistryPoints });
   }
-  if (!singlePipelineMode && isFragmentVisible(1) && infraCodeItem && kubernetesGroup) {
+  if (allowAllPipelineRoutes && isFragmentVisible(1) && infraCodeItem && kubernetesGroup) {
     pipelines.push({ id: 'infra-to-kubernetes', points: horizontalPipelineAtY(kubernetesUpperY) });
   }
-  if (!singlePipelineMode && isFragmentVisible(2) && infraCodeItem && cloudInfrastructureGroup) {
+  if (allowAllPipelineRoutes && isFragmentVisible(2) && infraCodeItem && cloudInfrastructureGroup) {
     routedPipelines.push({
       id: 'infra-to-cloud',
       segments: routedPipeline(
@@ -282,7 +285,7 @@ function renderCicdLeaderLines() {
       )
     });
   }
-  if (!singlePipelineMode && isFragmentVisible(3) && infraCodeItem && thirdPartyGroup) {
+  if (allowAllPipelineRoutes && isFragmentVisible(3) && infraCodeItem && thirdPartyGroup) {
     routedPipelines.push({
       id: 'infra-to-third-party',
       segments: routedPipeline(
@@ -291,7 +294,7 @@ function renderCicdLeaderLines() {
       )
     });
   }
-  if (!singlePipelineMode && isFragmentVisible(4) && deploymentManifestItem && kubernetesGroup) {
+  if (allowAllPipelineRoutes && isFragmentVisible(4) && deploymentManifestItem && kubernetesGroup) {
     routedPipelines.push({
       id: 'deployment-to-kubernetes',
       segments: routedPipeline(
@@ -300,10 +303,10 @@ function renderCicdLeaderLines() {
       )
     });
   }
-  if (!singlePipelineMode && isFragmentVisible(5) && deploymentManifestItem && cloudInfrastructureGroup) {
+  if (allowAllPipelineRoutes && isFragmentVisible(5) && deploymentManifestItem && cloudInfrastructureGroup) {
     pipelines.push({ id: 'deployment-to-cloud', points: horizontalPipelineAtY(cloudMiddleRowY) });
   }
-  if (!singlePipelineMode && isFragmentVisible(6) && deploymentManifestItem && thirdPartyGroup) {
+  if (allowAllPipelineRoutes && isFragmentVisible(6) && deploymentManifestItem && thirdPartyGroup) {
     routedPipelines.push({
       id: 'deployment-to-third-party',
       segments: routedPipeline(
@@ -312,7 +315,7 @@ function renderCicdLeaderLines() {
       )
     });
   }
-  if (!singlePipelineMode && isFragmentVisible(7) && testSuitesItem && kubernetesGroup) {
+  if (allowAllPipelineRoutes && isFragmentVisible(7) && testSuitesItem && kubernetesGroup) {
     routedPipelines.push({
       id: 'test-to-kubernetes',
       segments: routedPipeline(
@@ -321,7 +324,7 @@ function renderCicdLeaderLines() {
       )
     });
   }
-  if (!singlePipelineMode && isFragmentVisible(8) && testSuitesItem && cloudInfrastructureGroup) {
+  if (allowAllPipelineRoutes && isFragmentVisible(8) && testSuitesItem && cloudInfrastructureGroup) {
     routedPipelines.push({
       id: 'test-to-cloud',
       segments: routedPipeline(
@@ -400,6 +403,10 @@ function renderCicdLeaderLines() {
     }
     return { group, isNew };
   };
+  const shouldAnimatePipelineGroup = (pipelineGroupId) => {
+    if (skipPipelineDraw) return false;
+    return !staticBasisMode || pipelineGroupId.startsWith('source-to-registry-');
+  };
 
   pipelines.forEach(({ id, points }) => {
     const segments = points.slice(0, -1).map((point, index) => [point, points[index + 1], `${id}-${index}`]);
@@ -425,7 +432,7 @@ function renderCicdLeaderLines() {
       });
       outline.setAttribute('stroke', outlineColor);
       setCommonLineAttributes(line, color);
-      if (isNew && !skipPipelineDraw) addDrawMask(group, 'line', attrs, Math.hypot(end.x - start.x, end.y - start.y));
+      if (isNew && shouldAnimatePipelineGroup(segmentId)) addDrawMask(group, 'line', attrs, Math.hypot(end.x - start.x, end.y - start.y));
     });
   });
 
@@ -457,7 +464,7 @@ function renderCicdLeaderLines() {
       });
       outline.setAttribute('stroke', outlineColor);
       setCommonLineAttributes(line, color);
-      if (isNew && !skipPipelineDraw) {
+      if (isNew && shouldAnimatePipelineGroup(segmentId)) {
         const segmentLength = length || (line.getTotalLength ? line.getTotalLength() : 1);
         addDrawMask(group, tagName, attributes, segmentLength);
       }
