@@ -237,12 +237,15 @@ function renderCicdLeaderLines() {
   const kubernetesGroup = currentSlide.querySelector('.cicd-target-group--kubernetes');
   const cloudInfrastructureGroup = currentSlide.querySelector('.cicd-target-group--cloud');
   const thirdPartyGroup = currentSlide.querySelector('.cicd-target-group--third-party');
+  const thirdPartyBox = currentSlide.querySelector('.cicd-target-main-box--third-party');
 
   const sourceLaneY = sourceCodeItem ? centerYInGrid(sourceCodeItem) : laneY;
   const kubernetesUpperY = kubernetesGroup ? elementYInGrid(kubernetesGroup, 0.2) : laneY;
   const kubernetesCenterY = kubernetesGroup ? elementYInGrid(kubernetesGroup, 0.5) : laneY;
   const kubernetesLowerY = kubernetesGroup ? elementYInGrid(kubernetesGroup, 0.92) : laneY;
   const cloudMiddleRowY = cloudInfrastructureGroup ? iconRowCenterYInGrid(cloudInfrastructureGroup, 1) : laneY;
+  const thirdPartyUpperY = thirdPartyBox ? elementYInGrid(thirdPartyBox, 0.6) : (thirdPartyGroup ? elementYInGrid(thirdPartyGroup, 0.32) : laneY);
+  const thirdPartyLowerY = thirdPartyBox ? elementYInGrid(thirdPartyBox, 0.82) : (thirdPartyGroup ? elementYInGrid(thirdPartyGroup, 0.78) : laneY);
 
   const sourceToRegistryPoints = columns.slice(0, -1).map((column) => rightEdgePointAtY(column, sourceLaneY));
   const pipelines = [sourceToRegistryPoints];
@@ -269,13 +272,13 @@ function renderCicdLeaderLines() {
   if (infraCodeItem && thirdPartyGroup) {
     routedPipelines.push(routedPipeline(
       elementYInGrid(infraCodeItem, 0.78),
-      centerYInGrid(thirdPartyGroup)
+      thirdPartyUpperY
     ));
   }
   if (deploymentManifestItem && thirdPartyGroup) {
     routedPipelines.push(routedPipeline(
       elementYInGrid(deploymentManifestItem, 0.72),
-      elementYInGrid(thirdPartyGroup, 0.6)
+      thirdPartyLowerY
     ));
   }
   if (testSuitesItem && cloudInfrastructureGroup) {
