@@ -221,11 +221,23 @@ function renderCicdLeaderLines() {
     const end = { x: points[5].x, y: endY };
     const controlOffset = Math.max(70, (curveEnd.x - curveStart.x) * 0.35);
     return [
-      `M ${start.x} ${start.y}`,
-      `H ${curveStart.x}`,
-      `C ${curveStart.x + controlOffset} ${start.y} ${curveEnd.x - controlOffset} ${endY} ${curveEnd.x} ${endY}`,
-      `H ${end.x}`
-    ].join(' ');
+      {
+        kind: 'line',
+        attributes: { x1: start.x, y1: start.y, x2: curveStart.x, y2: start.y },
+        length: Math.hypot(curveStart.x - start.x, 0)
+      },
+      {
+        kind: 'path',
+        attributes: {
+          d: `M ${curveStart.x} ${start.y} C ${curveStart.x + controlOffset} ${start.y} ${curveEnd.x - controlOffset} ${endY} ${curveEnd.x} ${endY}`
+        }
+      },
+      {
+        kind: 'line',
+        attributes: { x1: curveEnd.x, y1: endY, x2: end.x, y2: endY },
+        length: Math.hypot(end.x - curveEnd.x, 0)
+      }
+    ];
   };
 
   const sourceCodeItem = currentSlide.querySelector('.cicd-file-item--source-code');
@@ -260,7 +272,7 @@ function renderCicdLeaderLines() {
   if (isFragmentVisible(2) && infraCodeItem && cloudInfrastructureGroup) {
     routedPipelines.push({
       id: 'infra-to-cloud',
-      pathData: routedPipeline(
+      segments: routedPipeline(
         elementYInGrid(infraCodeItem, 0.5),
         iconRowCenterYInGrid(cloudInfrastructureGroup, 0)
       )
@@ -269,7 +281,7 @@ function renderCicdLeaderLines() {
   if (isFragmentVisible(3) && infraCodeItem && thirdPartyGroup) {
     routedPipelines.push({
       id: 'infra-to-third-party',
-      pathData: routedPipeline(
+      segments: routedPipeline(
         elementYInGrid(infraCodeItem, 0.78),
         thirdPartyUpperY
       )
@@ -278,7 +290,7 @@ function renderCicdLeaderLines() {
   if (isFragmentVisible(4) && deploymentManifestItem && kubernetesGroup) {
     routedPipelines.push({
       id: 'deployment-to-kubernetes',
-      pathData: routedPipeline(
+      segments: routedPipeline(
         elementYInGrid(deploymentManifestItem, 0.15),
         kubernetesCenterY
       )
@@ -290,7 +302,7 @@ function renderCicdLeaderLines() {
   if (isFragmentVisible(6) && deploymentManifestItem && thirdPartyGroup) {
     routedPipelines.push({
       id: 'deployment-to-third-party',
-      pathData: routedPipeline(
+      segments: routedPipeline(
         elementYInGrid(deploymentManifestItem, 0.72),
         thirdPartyLowerY
       )
@@ -299,7 +311,7 @@ function renderCicdLeaderLines() {
   if (isFragmentVisible(7) && testSuitesItem && kubernetesGroup) {
     routedPipelines.push({
       id: 'test-to-kubernetes',
-      pathData: routedPipeline(
+      segments: routedPipeline(
         elementYInGrid(testSuitesItem, 0.25),
         kubernetesLowerY
       )
@@ -308,7 +320,7 @@ function renderCicdLeaderLines() {
   if (isFragmentVisible(8) && testSuitesItem && cloudInfrastructureGroup) {
     routedPipelines.push({
       id: 'test-to-cloud',
-      pathData: routedPipeline(
+      segments: routedPipeline(
         elementYInGrid(testSuitesItem, 0.54),
         iconRowCenterYInGrid(cloudInfrastructureGroup, 2)
       )
@@ -413,28 +425,39 @@ function renderCicdLeaderLines() {
     });
   });
 
-  routedPipelines.forEach(({ id, pathData }) => {
-    const { group, isNew } = ensurePipelineGroup(id);
-    let outline = group.querySelector('.cicd-pipeline-line-outline');
-    let path = group.querySelector('.cicd-pipeline-line');
-    if (!outline) {
-      outline = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      outline.classList.add('cicd-pipeline-line-outline', 'cicd-pipeline-line-path');
-      group.appendChild(outline);
-    }
-    if (!path) {
-      path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      path.classList.add('cicd-pipeline-line', 'cicd-pipeline-line-path');
-      group.appendChild(path);
-    }
-    outline.setAttribute('d', pathData);
-    outline.setAttribute('stroke', outlineColor);
-    path.setAttribute('d', pathData);
-    setCommonLineAttributes(path, color);
-    if (isNew) {
-      const length = path.getTotalLength ? path.getTotalLength() : 1;
-      addDrawMask(group, 'path', { d: pathData }, length);
-    }
+  routedPipelines.forEach(({ id, segments }) => {
+    const segmentNames = ['start', 'curve', 'end'];
+    segments.forEach(({ kind, attributes, length }, index) => {
+      const segmentId = `${id}-${segmentNames[index] || index}`;
+      const { group, isNew } = ensurePipelineGroup(segmentId);
+      const tagName = kind === 'path' ? 'path' : 'line';
+      let outline = group.querySelector('.cicd-pipeline-line-outline');
+      let line = group.querySelector('.cicd-pipeline-line');
+      if (!outline || outline.tagName.toLowerCase() !== tagName) {
+        outline?.remove();
+        outline = document.createElementNS('http://www.w3.org/2000/svg', tagName);
+        outline.classList.add('cicd-pipeline-line-outline');
+        if (tagName === 'path') outline.classList.add('cicd-pipeline-line-path');
+        group.appendChild(outline);
+      }
+      if (!line || line.tagName.toLowerCase() !== tagName) {
+        line?.remove();
+        line = document.createElementNS('http://www.w3.org/2000/svg', tagName);
+        line.classList.add('cicd-pipeline-line');
+        if (tagName === 'path') line.classList.add('cicd-pipeline-line-path');
+        group.appendChild(line);
+      }
+      Object.entries(attributes).forEach(([name, value]) => {
+        outline.setAttribute(name, value);
+        line.setAttribute(name, value);
+      });
+      outline.setAttribute('stroke', outlineColor);
+      setCommonLineAttributes(line, color);
+      if (isNew) {
+        const segmentLength = length || (line.getTotalLength ? line.getTotalLength() : 1);
+        addDrawMask(group, tagName, attributes, segmentLength);
+      }
+    });
   });
 
   cicdLeaderLineLayer.querySelectorAll('.cicd-pipeline-group').forEach((group) => {
