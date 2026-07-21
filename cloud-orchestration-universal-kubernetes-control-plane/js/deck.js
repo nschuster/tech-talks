@@ -341,17 +341,36 @@ function renderCicdLeaderLines() {
       element.setAttribute('marker-end', 'url(#cicd-pipeline-arrowhead)');
     }
   };
-  const addDrawOverlay = (group, tagName, attributes, length) => {
+  const addDrawMask = (group, tagName, attributes, length) => {
+    const defs = cicdLeaderLineLayer.querySelector('defs');
+    if (!defs) return;
+
+    group.dataset.cicdDrawMaskId && document.getElementById(group.dataset.cicdDrawMaskId)?.remove();
+    const maskId = `cicd-pipeline-draw-mask-${group.dataset.cicdPipelineId.replace(/[^a-z0-9_-]/gi, '-')}`;
+    const mask = document.createElementNS('http://www.w3.org/2000/svg', 'mask');
+    mask.id = maskId;
+    mask.setAttribute('maskUnits', 'userSpaceOnUse');
+    mask.setAttribute('x', '0');
+    mask.setAttribute('y', '0');
+    mask.setAttribute('width', grid.offsetWidth);
+    mask.setAttribute('height', grid.offsetHeight);
+
     const drawLine = document.createElementNS('http://www.w3.org/2000/svg', tagName);
-    drawLine.classList.add('cicd-pipeline-line-draw');
+    drawLine.classList.add('cicd-pipeline-line-draw-mask');
     Object.entries(attributes).forEach(([name, value]) => drawLine.setAttribute(name, value));
-    drawLine.setAttribute('stroke', color);
-    drawLine.setAttribute('marker-end', 'url(#cicd-pipeline-arrowhead)');
     drawLine.style.setProperty('--cicd-draw-length', Math.max(1, length));
-    group.appendChild(drawLine);
-    const removeDrawLine = () => drawLine.remove();
-    drawLine.addEventListener('animationend', removeDrawLine, { once: true });
-    window.setTimeout(removeDrawLine, 900);
+    mask.appendChild(drawLine);
+    defs.appendChild(mask);
+
+    group.dataset.cicdDrawMaskId = maskId;
+    group.setAttribute('mask', `url(#${maskId})`);
+    const finishDraw = () => {
+      group.removeAttribute('mask');
+      delete group.dataset.cicdDrawMaskId;
+      mask.remove();
+    };
+    drawLine.addEventListener('animationend', finishDraw, { once: true });
+    window.setTimeout(finishDraw, 900);
   };
   const ensurePipelineGroup = (id) => {
     activePipelineIds.add(id);
@@ -390,7 +409,7 @@ function renderCicdLeaderLines() {
       });
       outline.setAttribute('stroke', outlineColor);
       setCommonLineAttributes(line, color);
-      if (isNew) addDrawOverlay(group, 'line', attrs, Math.hypot(end.x - start.x, end.y - start.y));
+      if (isNew) addDrawMask(group, 'line', attrs, Math.hypot(end.x - start.x, end.y - start.y));
     });
   });
 
@@ -414,12 +433,15 @@ function renderCicdLeaderLines() {
     setCommonLineAttributes(path, color);
     if (isNew) {
       const length = path.getTotalLength ? path.getTotalLength() : 1;
-      addDrawOverlay(group, 'path', { d: pathData }, length);
+      addDrawMask(group, 'path', { d: pathData }, length);
     }
   });
 
   cicdLeaderLineLayer.querySelectorAll('.cicd-pipeline-group').forEach((group) => {
-    if (!activePipelineIds.has(group.dataset.cicdPipelineId)) group.remove();
+    if (!activePipelineIds.has(group.dataset.cicdPipelineId)) {
+      group.dataset.cicdDrawMaskId && document.getElementById(group.dataset.cicdDrawMaskId)?.remove();
+      group.remove();
+    }
   });
 }
 

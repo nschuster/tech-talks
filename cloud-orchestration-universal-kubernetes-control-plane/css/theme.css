@@ -769,9 +769,10 @@ body {
   animation: cicd-pipeline-dash 1s linear infinite;
 }
 
-.cicd-pipeline-line-draw {
+.cicd-pipeline-line-draw-mask {
   fill: none;
-  stroke-width: 11px;
+  stroke: #ffffff;
+  stroke-width: 19px;
   stroke-linecap: round;
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
@@ -812,7 +813,7 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .cicd-pipeline-line-outline,
   .cicd-pipeline-line,
-  .cicd-pipeline-line-draw {
+  .cicd-pipeline-line-draw-mask {
     animation: none;
   }
 }
