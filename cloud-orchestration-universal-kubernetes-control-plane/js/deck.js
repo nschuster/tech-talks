@@ -166,8 +166,8 @@ function clearCicdLeaderLines() {
   cicdLeaderLineLayer = undefined;
 }
 
-function getCicdLineColor() {
-  return '#1db8f2';
+function getCicdLineColor({ isStatic = false } = {}) {
+  return isStatic ? 'rgba(76, 116, 156, 0.58)' : '#1db8f2';
 }
 
 function renderCicdLeaderLines() {
@@ -179,6 +179,7 @@ function renderCicdLeaderLines() {
   if (!grid || columns.length < 2) return;
 
   const color = getCicdLineColor();
+  const staticColor = getCicdLineColor({ isStatic: true });
   const outlineColor = root.dataset.theme === 'light' ? 'rgba(255, 255, 255, 0.92)' : 'rgba(18, 26, 56, 0.98)';
   const gridRect = grid.getBoundingClientRect();
   const scaleX = gridRect.width / grid.offsetWidth;
@@ -355,6 +356,9 @@ function renderCicdLeaderLines() {
         <marker id="cicd-pipeline-arrowhead" markerWidth="20" markerHeight="20" refX="17" refY="10" orient="auto" markerUnits="userSpaceOnUse">
           <path class="cicd-pipeline-arrowhead-path" d="M 2 2 L 18 10 L 2 18 z"></path>
         </marker>
+        <marker id="cicd-pipeline-arrowhead-static" markerWidth="20" markerHeight="20" refX="17" refY="10" orient="auto" markerUnits="userSpaceOnUse">
+          <path class="cicd-pipeline-arrowhead-path-static" d="M 2 2 L 18 10 L 2 18 z"></path>
+        </marker>
       </defs>
     `;
     grid.appendChild(cicdLeaderLineLayer);
@@ -363,12 +367,14 @@ function renderCicdLeaderLines() {
   cicdLeaderLineLayer.setAttribute('viewBox', `0 0 ${grid.offsetWidth} ${grid.offsetHeight}`);
   cicdLeaderLineLayer.setAttribute('preserveAspectRatio', 'none');
   cicdLeaderLineLayer.querySelector('.cicd-pipeline-arrowhead-path')?.setAttribute('fill', color);
+  cicdLeaderLineLayer.querySelector('.cicd-pipeline-arrowhead-path-static')?.setAttribute('fill', staticColor);
 
   const activePipelineIds = new Set();
   const setCommonLineAttributes = (element, stroke) => {
     element.setAttribute('stroke', stroke);
     if (element.classList.contains('cicd-pipeline-line')) {
-      element.setAttribute('marker-end', 'url(#cicd-pipeline-arrowhead)');
+      const markerId = stroke === staticColor ? 'cicd-pipeline-arrowhead-static' : 'cicd-pipeline-arrowhead';
+      element.setAttribute('marker-end', `url(#${markerId})`);
     }
   };
   const addDrawMask = (group, tagName, attributes, length) => {
@@ -449,7 +455,7 @@ function renderCicdLeaderLines() {
         line.setAttribute(name, value);
       });
       outline.setAttribute('stroke', outlineColor);
-      setCommonLineAttributes(line, color);
+      setCommonLineAttributes(line, shouldDash ? color : staticColor);
       if (isNew && shouldDraw) addDrawMask(group, 'line', attrs, Math.hypot(end.x - start.x, end.y - start.y));
     });
   });
@@ -484,7 +490,7 @@ function renderCicdLeaderLines() {
         line.setAttribute(name, value);
       });
       outline.setAttribute('stroke', outlineColor);
-      setCommonLineAttributes(line, color);
+      setCommonLineAttributes(line, shouldDash ? color : staticColor);
       if (isNew && shouldDraw) {
         const segmentLength = length || (line.getTotalLength ? line.getTotalLength() : 1);
         addDrawMask(group, tagName, attributes, segmentLength);
