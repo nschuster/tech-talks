@@ -782,13 +782,13 @@ body {
   content: "";
   background: radial-gradient(
     circle at 50% 50%,
-    rgba(18, 26, 56, 0.82) 0%,
-    rgba(18, 26, 56, 0.66) 28%,
-    rgba(18, 26, 56, 0.34) 52%,
-    rgba(18, 26, 56, 0.12) 68%,
-    rgba(18, 26, 56, 0) 82%
+    rgba(18, 26, 56, 1) 0%,
+    rgba(18, 26, 56, 1) 42%,
+    rgba(18, 26, 56, 0.92) 54%,
+    rgba(18, 26, 56, 0.46) 70%,
+    rgba(18, 26, 56, 0) 88%
   );
-  filter: blur(22px);
+  filter: blur(18px);
   pointer-events: none;
 }
 
