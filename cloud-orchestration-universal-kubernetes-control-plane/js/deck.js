@@ -300,20 +300,29 @@ function renderCicdLeaderLines() {
     routedPipelines.push({
       id: 'deployment-to-kubernetes',
       segments: routedPipeline(
-        elementYInGrid(deploymentManifestItem, 0.08),
-        kubernetesCenterY
+        elementYInGrid(deploymentManifestItem, 0.12),
+        kubernetesCenterY,
+        { curveStartIndex: 2, curveEndIndex: 4, controlFactor: 0.28 }
       )
     });
   }
   if (allowAllPipelineRoutes && isFragmentVisible(5) && deploymentManifestItem && cloudInfrastructureGroup) {
-    pipelines.push({ id: 'deployment-to-cloud', points: horizontalPipelineAtY(cloudMiddleRowY) });
+    routedPipelines.push({
+      id: 'deployment-to-cloud',
+      segments: routedPipeline(
+        elementYInGrid(deploymentManifestItem, 0.5),
+        cloudMiddleRowY,
+        { curveStartIndex: 2, curveEndIndex: 4, controlFactor: 0.24 }
+      )
+    });
   }
   if (allowAllPipelineRoutes && isFragmentVisible(6) && deploymentManifestItem && thirdPartyGroup) {
     routedPipelines.push({
       id: 'deployment-to-third-party',
       segments: routedPipeline(
-        elementYInGrid(deploymentManifestItem, 0.86),
-        thirdPartyLowerY
+        elementYInGrid(deploymentManifestItem, 0.88),
+        thirdPartyLowerY,
+        { curveStartIndex: 2, curveEndIndex: 4, controlFactor: 0.28 }
       )
     });
   }
