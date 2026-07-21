@@ -184,6 +184,7 @@ function renderCicdLeaderLines() {
   const desiredStateReverseColor = 'rgba(126, 78, 0, 0.58)';
   const desiredStateReverseOffset = 48;
   const desiredStateMutedColor = 'rgba(156, 166, 178, 0.82)';
+  const desiredStateMutedReverseColor = 'rgba(74, 82, 92, 0.62)';
   const outlineColor = root.dataset.theme === 'light' ? 'rgba(255, 255, 255, 0.92)' : 'rgba(18, 26, 56, 0.98)';
   const gridRect = grid.getBoundingClientRect();
   const scaleX = gridRect.width / grid.offsetWidth;
@@ -363,7 +364,7 @@ function renderCicdLeaderLines() {
       segments: [
         {
           kind: 'line',
-          stroke: desiredStateReverseColor,
+          stroke: desiredStateMutedReverseColor,
           attributes: {
             x1: middleBoxEndReverse.x,
             y1: middleBoxEndReverse.y,
@@ -552,7 +553,7 @@ function renderCicdLeaderLines() {
       element.removeAttribute('marker-start');
       element.removeAttribute('marker-end');
       let markerId = 'cicd-pipeline-arrowhead';
-      if (stroke === desiredStateMutedColor) {
+      if (stroke === desiredStateMutedColor || stroke === desiredStateMutedReverseColor) {
         return;
       }
       if (stroke === staticColor) markerId = 'cicd-pipeline-arrowhead-static';
