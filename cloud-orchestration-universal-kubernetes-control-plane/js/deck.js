@@ -45,6 +45,7 @@ const deck = new Reveal({
   hash: true,
   controls: true,
   progress: true,
+  slideNumber: true,
   center: false,
   width: 1920,
   height: 1080,
@@ -580,6 +581,69 @@ function renderCicdLeaderLines() {
       element.setAttribute('marker-end', `url(#${markerId})`);
     }
   };
+  const renderControlPlaneMarkerConnectors = () => {
+    cicdLeaderLineLayer.querySelector('.cicd-control-plane-marker-connectors')?.remove();
+    cicdLeaderLineLayer.querySelectorAll('[id^="cicd-control-plane-marker-connector-gradient-"]').forEach((gradient) => gradient.remove());
+    if (!showNextSlideReversePipelines) return;
+
+    const markers = [...cicdLeaderLineLayer.querySelectorAll('.cicd-control-plane-line-marker')]
+      .map((marker) => ({
+        x: Number.parseFloat(marker.getAttribute('cx')),
+        y: Number.parseFloat(marker.getAttribute('cy')),
+        fill: marker.getAttribute('fill')
+      }))
+      .filter(({ x, y }) => Number.isFinite(x) && Number.isFinite(y));
+    const markerPairs = controlPlaneMarkerCenters
+      .map((centerX) => {
+        const atCenter = markers.filter(({ x }) => Math.abs(x - centerX) < 3);
+        const lightMarker = atCenter.find(({ fill }) => fill === desiredStateMarkerColor);
+        const darkMarker = atCenter.find(({ fill }) => fill === desiredStateMarkerReverseColor);
+        return lightMarker && darkMarker ? { x: centerX, lightMarker, darkMarker } : null;
+      })
+      .filter(Boolean);
+    if (!markerPairs.length) return;
+
+    const defs = cicdLeaderLineLayer.querySelector('defs');
+    if (!defs) return;
+    const connectorGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    connectorGroup.classList.add('cicd-control-plane-marker-connectors');
+
+    markerPairs.forEach(({ x, lightMarker, darkMarker }, index) => {
+      const y1 = Math.min(lightMarker.y, darkMarker.y) + 12;
+      const y2 = Math.max(lightMarker.y, darkMarker.y) - 12;
+      if (y2 <= y1) return;
+      const gradientId = `cicd-control-plane-marker-connector-gradient-${index}`;
+      const gradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+      gradient.id = gradientId;
+      gradient.setAttribute('gradientUnits', 'userSpaceOnUse');
+      gradient.setAttribute('x1', x);
+      gradient.setAttribute('x2', x);
+      gradient.setAttribute('y1', y1);
+      gradient.setAttribute('y2', y2);
+      const lightStop = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+      lightStop.setAttribute('offset', '0%');
+      lightStop.setAttribute('stop-color', desiredStateMarkerColor);
+      const darkStop = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+      darkStop.setAttribute('offset', '100%');
+      darkStop.setAttribute('stop-color', desiredStateMarkerReverseColor);
+      gradient.append(lightStop, darkStop);
+      defs.appendChild(gradient);
+
+      const connector = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      connector.classList.add('cicd-control-plane-marker-connector');
+      connector.setAttribute('x1', x);
+      connector.setAttribute('x2', x);
+      connector.setAttribute('y1', y1);
+      connector.setAttribute('y2', y2);
+      connector.setAttribute('stroke', `url(#${gradientId})`);
+      connectorGroup.appendChild(connector);
+    });
+
+    const firstPrimaryGroup = [...cicdLeaderLineLayer.querySelectorAll('.cicd-pipeline-group')]
+      .find((group) => !group.dataset.cicdPipelineId?.startsWith('reverse-'));
+    cicdLeaderLineLayer.insertBefore(connectorGroup, firstPrimaryGroup || null);
+  };
+
   const addDrawMask = (group, tagName, attributes, length) => {
     const defs = cicdLeaderLineLayer.querySelector('defs');
     if (!defs) return;
@@ -745,6 +809,8 @@ function renderCicdLeaderLines() {
       return aIsReverse - bIsReverse;
     })
     .forEach((group) => cicdLeaderLineLayer.appendChild(group));
+
+  renderControlPlaneMarkerConnectors();
 }
 
 function requestCicdLeaderLineUpdate() {

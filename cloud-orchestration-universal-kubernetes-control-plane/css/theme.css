@@ -1106,6 +1106,12 @@ body {
   stroke-width: 9px;
 }
 
+.cicd-control-plane-marker-connector {
+  stroke-width: 8px;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
 @keyframes cicd-pipeline-dash {
   to {
     stroke-dashoffset: -48;
