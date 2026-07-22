@@ -415,7 +415,7 @@ body {
   background:
     radial-gradient(circle at 18% 18%, rgba(29, 184, 242, 0.22), transparent 34%),
     linear-gradient(90deg, rgba(18, 26, 56, 0.28), rgba(18, 26, 56, 0.58)),
-    url("../assets/backgrounds/GettyImages-1469734409.jpeg") center / cover no-repeat,
+    url("../assets/backgrounds/GettyImages-1469734409.jpeg") center top / contain no-repeat,
     var(--capgemini-dark-blue);
   border: 0;
 }
