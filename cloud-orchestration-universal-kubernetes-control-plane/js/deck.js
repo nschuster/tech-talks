@@ -731,6 +731,15 @@ function renderCicdLeaderLines() {
       group.remove();
     }
   });
+
+  const activePipelineGroups = [...cicdLeaderLineLayer.querySelectorAll('.cicd-pipeline-group')];
+  activePipelineGroups
+    .sort((a, b) => {
+      const aIsReverse = a.dataset.cicdPipelineId?.startsWith('reverse-') ? 0 : 1;
+      const bIsReverse = b.dataset.cicdPipelineId?.startsWith('reverse-') ? 0 : 1;
+      return aIsReverse - bIsReverse;
+    })
+    .forEach((group) => cicdLeaderLineLayer.appendChild(group));
 }
 
 function requestCicdLeaderLineUpdate() {
@@ -742,7 +751,7 @@ function requestCicdLeaderLineUpdate() {
 }
 
 function updateCicdOverlayVideos() {
-  document.querySelectorAll('.cicd-static-pipeline-video-overlay').forEach((video) => {
+  document.querySelectorAll('.cicd-static-pipeline-video-overlay, .cicd-desired-state-background-video').forEach((video) => {
     if (!(video instanceof HTMLVideoElement)) return;
     const isPresent = video.closest('section')?.classList.contains('present');
     if (isPresent) {
