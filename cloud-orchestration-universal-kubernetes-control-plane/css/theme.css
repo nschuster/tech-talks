@@ -182,13 +182,14 @@ body {
 
 .reveal section.limitless-potential-slide .limitless-potential-background-image {
   position: absolute;
-  inset: calc(-1 * var(--limitless-bleed)) calc(-1 * var(--limitless-bleed)) calc(-1 * var(--limitless-bleed)) var(--limitless-left-column);
+  inset: calc(-1 * var(--limitless-bleed)) calc(-0.5 * var(--limitless-bleed)) calc(-1 * var(--limitless-bleed)) var(--limitless-left-column);
   z-index: 0;
   content: "";
   background:
     radial-gradient(circle at 18% 18%, rgba(29, 184, 242, 0.22), transparent 34%),
     linear-gradient(90deg, rgba(18, 26, 56, 0.28), rgba(18, 26, 56, 0.58)),
-    url("../assets/backgrounds/GettyImages-1469734409.jpeg") center / cover no-repeat;
+    url("../assets/backgrounds/GettyImages-1469734409.jpeg") center / contain no-repeat,
+    var(--capgemini-dark-blue);
   border-left: 1px solid rgba(255, 255, 255, 0.16);
   box-shadow: -36px 0 72px rgba(18, 26, 56, 0.62);
 }
@@ -206,6 +207,32 @@ body {
   transform-origin: center;
 }
 
+.reveal section.limitless-potential-slide .limitless-potential-video-matte {
+  position: absolute;
+  top: 50%;
+  left: calc(var(--limitless-left-column) / 2);
+  z-index: 0;
+  width: min(22rem, calc(var(--limitless-left-column) * 0.74));
+  aspect-ratio: 1;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 50% 48%, rgba(18, 26, 56, 0.28), rgba(18, 26, 56, 0.62) 58%, rgba(18, 26, 56, 0) 72%);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.reveal section.limitless-potential-slide .limitless-potential-kubernetes-icon {
+  position: absolute;
+  top: 50%;
+  left: calc(var(--limitless-left-column) / 2);
+  z-index: 1;
+  width: min(19rem, calc(var(--limitless-left-column) * 0.62));
+  height: auto;
+  filter: drop-shadow(0 24px 48px rgba(18, 26, 56, 0.62));
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
 .reveal section.limitless-potential-slide h2,
 .reveal section.limitless-potential-slide .slide-subtitle {
   position: relative;
@@ -218,7 +245,8 @@ body {
   background:
     radial-gradient(circle at 18% 18%, rgba(29, 184, 242, 0.18), transparent 34%),
     linear-gradient(90deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.44)),
-    url("../assets/backgrounds/GettyImages-1469734409.jpeg") center / cover no-repeat;
+    url("../assets/backgrounds/GettyImages-1469734409.jpeg") center / contain no-repeat,
+    var(--capgemini-white);
   border-left-color: rgba(7, 16, 37, 0.14);
   box-shadow: -36px 0 72px rgba(0, 88, 171, 0.16);
 }
