@@ -163,6 +163,48 @@ body {
   font-weight: 500;
 }
 
+.reveal section.limitless-potential-slide {
+  padding-left: calc(25% + 3.5rem) !important;
+  background: var(--capgemini-dark-blue);
+}
+
+.reveal section.limitless-potential-slide::before {
+  position: absolute;
+  inset: 0 0 0 25%;
+  z-index: 0;
+  content: "";
+  background:
+    radial-gradient(circle at 22% 20%, rgba(29, 184, 242, 0.18), transparent 34%),
+    linear-gradient(135deg, rgba(18, 26, 56, 0.95), rgba(7, 16, 37, 0.98));
+  border-left: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: -36px 0 72px rgba(18, 26, 56, 0.62);
+}
+
+.reveal section.limitless-potential-slide .limitless-potential-background-video {
+  position: absolute;
+  inset: 0 auto 0 0;
+  z-index: 0;
+  width: 25%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.92;
+}
+
+.reveal section.limitless-potential-slide h2,
+.reveal section.limitless-potential-slide .slide-subtitle {
+  position: relative;
+  z-index: 1;
+  max-width: 1210px;
+}
+
+:root[data-theme="light"] .limitless-potential-slide::before {
+  background:
+    radial-gradient(circle at 22% 20%, rgba(29, 184, 242, 0.18), transparent 34%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(236, 246, 255, 0.98));
+  border-left-color: rgba(7, 16, 37, 0.14);
+  box-shadow: -36px 0 72px rgba(0, 88, 171, 0.16);
+}
+
 .title-slide,
 .section-divider,
 .team-slide,

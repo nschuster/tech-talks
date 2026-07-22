@@ -822,7 +822,7 @@ function requestCicdLeaderLineUpdate() {
 }
 
 function updateCicdOverlayVideos() {
-  document.querySelectorAll('.cicd-static-pipeline-video-overlay, .cicd-desired-state-background-video').forEach((video) => {
+  document.querySelectorAll('.cicd-static-pipeline-video-overlay, .cicd-desired-state-background-video, .limitless-potential-background-video').forEach((video) => {
     if (!(video instanceof HTMLVideoElement)) return;
     const isPresent = video.closest('section')?.classList.contains('present');
     if (isPresent) {
