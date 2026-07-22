@@ -185,6 +185,8 @@ function renderCicdLeaderLines() {
   const desiredStateReverseOffset = 48;
   const desiredStateMutedColor = 'rgba(156, 166, 178, 0.82)';
   const desiredStateMutedReverseColor = 'rgba(74, 82, 92, 0.62)';
+  const desiredStateMarkerColor = '#9ca6b2';
+  const desiredStateMarkerReverseColor = '#4a525c';
   const outlineColor = root.dataset.theme === 'light' ? 'rgba(255, 255, 255, 0.92)' : 'rgba(18, 26, 56, 0.98)';
   const gridRect = grid.getBoundingClientRect();
   const scaleX = gridRect.width / grid.offsetWidth;
@@ -713,8 +715,11 @@ function renderCicdLeaderLines() {
             marker.setAttribute('cx', x);
             marker.setAttribute('cy', y);
             marker.setAttribute('r', '12');
-            marker.setAttribute('fill', segmentStroke);
-            marker.setAttribute('stroke', segmentStroke);
+            const markerColor = segmentStroke === desiredStateMutedReverseColor
+              ? desiredStateMarkerReverseColor
+              : desiredStateMarkerColor;
+            marker.setAttribute('fill', markerColor);
+            marker.removeAttribute('stroke');
             group.appendChild(marker);
           });
       }
