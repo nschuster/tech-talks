@@ -280,7 +280,8 @@ function renderCicdLeaderLines() {
   const showAllPipelines = staticBasisMode && !nextSlideBaseMode;
   const isFragmentVisible = (fragmentIndex) => showAllPipelines || currentFragment >= fragmentIndex;
   const allowAllPipelineRoutes = !singlePipelineMode || showAllPipelines;
-  const showNextSlideControlPlanePipelines = nextSlideBaseMode && isFragmentVisible(0);
+  const showNextSlideControlPlanePipelines = nextSlideBaseMode;
+  const showNextSlideReversePipelines = nextSlideBaseMode && isFragmentVisible(0);
 
   const sourceToRegistryPoints = columns.slice(0, -1).map((column) => rightEdgePointAtY(column, sourceLaneY));
   const controlPlaneMarkerCenters = [...currentSlide.querySelectorAll('.cicd-control-plane-icon-card')]
@@ -350,57 +351,59 @@ function renderCicdLeaderLines() {
         ]
       });
     };
-    routedPipelines.push({
-      id: 'reverse-desired-state-middle-to-source',
-      segments: [
-        {
-          kind: 'line',
-          stroke: desiredStateReverseColor,
-          attributes: {
-            x1: middleBoxStartReverse.x,
-            y1: middleBoxStartReverse.y,
-            x2: desiredStateReversePoints[0].x,
-            y2: desiredStateReversePoints[0].y
-          },
-          length: Math.hypot(middleBoxStartReverse.x - desiredStateReversePoints[0].x, 0)
-        }
-      ]
-    });
-    routedPipelines.push({
-      id: 'reverse-desired-state-control-plane-crossing',
-      segments: [
-        {
-          kind: 'line',
-          stroke: desiredStateMutedReverseColor,
-          attributes: {
-            x1: middleBoxEndReverse.x,
-            y1: middleBoxEndReverse.y,
-            x2: middleBoxStartReverse.x,
-            y2: middleBoxStartReverse.y
-          },
-          length: Math.hypot(middleBoxEndReverse.x - middleBoxStartReverse.x, 0)
-        }
-      ]
-    });
-    routedPipelines.push({
-      id: 'reverse-cloud-infrastructure-to-desired-state-middle',
-      segments: [
-        {
-          kind: 'line',
-          stroke: desiredStateReverseColor,
-          attributes: {
-            x1: rightColumnStartReverse.x,
-            y1: middleBoxEndReverse.y,
-            x2: middleBoxEndReverse.x,
-            y2: middleBoxEndReverse.y
-          },
-          length: Math.hypot(rightColumnStartReverse.x - middleBoxEndReverse.x, 0)
-        }
-      ]
-    });
-    branchBackToControlPlane('reverse-registry-to-desired-state-middle', registryBranchY);
-    branchBackToControlPlane('reverse-kubernetes-to-desired-state-middle', kubernetesCenterY);
-    branchBackToControlPlane('reverse-third-party-to-desired-state-middle', thirdPartyUpperY);
+    if (showNextSlideReversePipelines) {
+      routedPipelines.push({
+        id: 'reverse-desired-state-middle-to-source',
+        segments: [
+          {
+            kind: 'line',
+            stroke: desiredStateReverseColor,
+            attributes: {
+              x1: middleBoxStartReverse.x,
+              y1: middleBoxStartReverse.y,
+              x2: desiredStateReversePoints[0].x,
+              y2: desiredStateReversePoints[0].y
+            },
+            length: Math.hypot(middleBoxStartReverse.x - desiredStateReversePoints[0].x, 0)
+          }
+        ]
+      });
+      routedPipelines.push({
+        id: 'reverse-desired-state-control-plane-crossing',
+        segments: [
+          {
+            kind: 'line',
+            stroke: desiredStateMutedReverseColor,
+            attributes: {
+              x1: middleBoxEndReverse.x,
+              y1: middleBoxEndReverse.y,
+              x2: middleBoxStartReverse.x,
+              y2: middleBoxStartReverse.y
+            },
+            length: Math.hypot(middleBoxEndReverse.x - middleBoxStartReverse.x, 0)
+          }
+        ]
+      });
+      routedPipelines.push({
+        id: 'reverse-cloud-infrastructure-to-desired-state-middle',
+        segments: [
+          {
+            kind: 'line',
+            stroke: desiredStateReverseColor,
+            attributes: {
+              x1: rightColumnStartReverse.x,
+              y1: middleBoxEndReverse.y,
+              x2: middleBoxEndReverse.x,
+              y2: middleBoxEndReverse.y
+            },
+            length: Math.hypot(rightColumnStartReverse.x - middleBoxEndReverse.x, 0)
+          }
+        ]
+      });
+      branchBackToControlPlane('reverse-registry-to-desired-state-middle', registryBranchY);
+      branchBackToControlPlane('reverse-kubernetes-to-desired-state-middle', kubernetesCenterY);
+      branchBackToControlPlane('reverse-third-party-to-desired-state-middle', thirdPartyUpperY);
+    }
     routedPipelines.push({
       id: 'desired-state-to-middle-box',
       segments: [
