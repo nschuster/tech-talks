@@ -348,8 +348,11 @@ body {
   align-items: stretch;
   justify-items: stretch;
   gap: 0;
+  width: calc(100% + 5rem) !important;
+  height: calc(100% + 5rem) !important;
+  margin: -2.5rem 0 0 -2.5rem;
   padding: 0 !important;
-  overflow: hidden;
+  overflow: visible;
   background: var(--capgemini-dark-blue);
 }
 
@@ -368,8 +371,7 @@ body {
   border-right: 2px solid rgba(255, 255, 255, 0.22);
 }
 
-.key-benefits-left-pane span,
-.key-benefits-lower-column span {
+.key-benefits-left-pane span {
   color: rgba(255, 255, 255, 0.72);
   font-size: 0.55em;
   font-weight: 700;
@@ -404,16 +406,18 @@ body {
 
 .key-benefits-heading-block {
   max-width: 1120px;
-  text-shadow: 0 8px 34px rgba(18, 26, 56, 0.74);
+  text-shadow: none;
 }
 
 .reveal section.key-benefits-slide h2 {
   max-width: 1120px;
   font-size: 1.34em;
+  text-shadow: none;
 }
 
 .reveal section.key-benefits-slide .slide-subtitle {
   max-width: 980px;
+  text-shadow: none;
 }
 
 .key-benefits-lower-pane {
@@ -425,10 +429,13 @@ body {
 
 .key-benefits-lower-column {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
   min-width: 0;
   min-height: 0;
+  padding: 2.4rem 2.2rem;
+  background: var(--capgemini-dark-blue);
   border-top: 2px solid rgba(255, 255, 255, 0.24);
   border-right: 2px solid rgba(255, 255, 255, 0.22);
 }
@@ -437,20 +444,30 @@ body {
   border-right: 0;
 }
 
-.key-benefits-lower-column--one {
-  background: color-mix(in srgb, var(--capgemini-blue) 68%, var(--capgemini-dark-blue));
+.reveal section.key-benefits-slide .key-benefits-lower-column h3 {
+  margin: 0 0 1.1rem;
+  color: var(--capgemini-light-blue);
+  font-size: 0.54em;
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-shadow: none;
 }
 
-.key-benefits-lower-column--two {
-  background: color-mix(in srgb, var(--capgemini-light-blue) 50%, var(--capgemini-dark-blue));
+.reveal section.key-benefits-slide .key-benefits-lower-column p {
+  margin: 0;
+  color: var(--capgemini-white);
+  font-size: 0.38em;
+  font-weight: 400;
+  line-height: 1.36;
+  text-align: left;
+  text-shadow: none;
 }
 
-.key-benefits-lower-column--three {
-  background: color-mix(in srgb, var(--capgemini-turquoise) 52%, var(--capgemini-dark-blue));
-}
-
-:root[data-theme="light"] .key-benefits-left-pane {
-  background: var(--capgemini-blue);
+:root[data-theme="light"] .key-benefits-left-pane,
+:root[data-theme="light"] .key-benefits-lower-column {
+  background: var(--capgemini-dark-blue);
 }
 
 :root[data-theme="light"] .key-benefits-upper-pane {
