@@ -414,11 +414,7 @@ body {
   min-height: 0;
   padding: calc(var(--key-benefits-bleed) + 3rem) calc(var(--key-benefits-bleed) + 3.5rem) 3rem 3.5rem;
   overflow: hidden;
-  background:
-    radial-gradient(circle at 18% 18%, rgba(29, 184, 242, 0.22), transparent 34%),
-    linear-gradient(90deg, rgba(18, 26, 56, 0.28), rgba(18, 26, 56, 0.58)),
-    url("../assets/backgrounds/GettyImages-1469734409.jpeg") center top / cover no-repeat,
-    var(--capgemini-dark-blue);
+  background: url("../assets/backgrounds/GettyImages-1469734409.jpeg") center top / cover no-repeat var(--capgemini-dark-blue);
   border: 0;
 }
 
@@ -511,11 +507,7 @@ body {
 }
 
 :root[data-theme="light"] .key-benefits-upper-pane {
-  background:
-    radial-gradient(circle at 18% 18%, rgba(29, 184, 242, 0.18), transparent 34%),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.44)),
-    url("../assets/backgrounds/GettyImages-1469734409.jpeg") center top / cover no-repeat,
-    var(--capgemini-white);
+  background: url("../assets/backgrounds/GettyImages-1469734409.jpeg") center top / cover no-repeat var(--capgemini-white);
 }
 
 .reveal section.content-split-orientation-slide {
@@ -553,7 +545,41 @@ body {
 }
 
 .content-split-orientation-pane--right {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+  justify-content: stretch;
+  gap: 1.1rem;
+  padding: 1.1rem;
   background: color-mix(in srgb, var(--capgemini-light-blue) 38%, var(--capgemini-dark-blue));
+}
+
+.content-split-right-column {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 0;
+  background: rgba(18, 26, 56, 0.16);
+}
+
+.content-split-right-column--boxes {
+  flex-direction: column;
+  gap: 1.1rem;
+  background: transparent;
+}
+
+.content-split-target-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  flex: 1 1 0;
+  min-height: 0;
+  border: 4px solid var(--capgemini-white);
+  background: rgba(18, 26, 56, 0.22);
+  color: var(--capgemini-white);
+  box-sizing: border-box;
 }
 
 :root[data-theme="light"] .content-split-orientation-pane--left {
@@ -563,6 +589,16 @@ body {
 
 :root[data-theme="light"] .content-split-orientation-pane--right {
   background: color-mix(in srgb, var(--capgemini-light-blue) 42%, var(--capgemini-white));
+  color: var(--capgemini-dark-blue);
+}
+
+:root[data-theme="light"] .content-split-right-column {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+:root[data-theme="light"] .content-split-target-box {
+  border-color: rgba(0, 0, 0, 0.45);
+  background: rgba(255, 255, 255, 0.28);
   color: var(--capgemini-dark-blue);
 }
 
