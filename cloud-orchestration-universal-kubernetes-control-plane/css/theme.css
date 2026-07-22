@@ -549,27 +549,54 @@ body {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   align-items: stretch;
   justify-content: stretch;
-  gap: 1.1rem;
-  padding: 1.1rem;
+  gap: 1.4rem;
+  padding: 1.15rem;
   background: color-mix(in srgb, var(--capgemini-light-blue) 38%, var(--capgemini-dark-blue));
 }
 
 .content-split-right-column {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
   min-width: 0;
   min-height: 0;
+  padding: 1.05rem;
   background: rgba(18, 26, 56, 0.16);
+  box-sizing: border-box;
+}
+
+.content-split-right-column h3 {
+  margin: 0;
+  color: var(--capgemini-white);
+  font-size: 0.55em;
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: 0.085em;
+  text-transform: uppercase;
+}
+
+.content-split-right-column h3::after {
+  display: block;
+  width: 100%;
+  height: 0.16rem;
+  margin-top: 0.65rem;
+  content: "";
+  background: var(--capgemini-gradient-element);
 }
 
 .content-split-right-column--boxes {
-  flex-direction: column;
-  gap: 1.1rem;
+  gap: 0.95rem;
   background: transparent;
+  padding: 0;
+}
+
+.content-split-right-column--boxes h3 {
+  flex: 0 0 auto;
 }
 
 .content-split-target-box {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -580,7 +607,119 @@ body {
   background: rgba(18, 26, 56, 0.22);
   color: var(--capgemini-white);
   box-sizing: border-box;
+  padding: 1.15rem 1rem 0.85rem 5.5rem;
 }
+
+.content-split-box-badge {
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4.6rem;
+  height: 4.6rem;
+  border: 4px solid var(--capgemini-white);
+  background: var(--capgemini-white);
+  box-sizing: border-box;
+}
+
+.content-split-box-badge img {
+  display: block;
+  width: 72%;
+  height: 72%;
+  object-fit: contain;
+}
+
+.content-split-compute-glyph {
+  position: relative;
+  display: block;
+  width: 2.6rem;
+  height: 2.05rem;
+  border: 0.24rem solid var(--capgemini-dark-blue);
+  border-radius: 0.28rem;
+}
+
+.content-split-compute-glyph::before,
+.content-split-compute-glyph::after {
+  position: absolute;
+  content: "";
+  background: var(--capgemini-dark-blue);
+}
+
+.content-split-compute-glyph::before {
+  left: 0.36rem;
+  right: 0.36rem;
+  bottom: -0.78rem;
+  height: 0.24rem;
+  box-shadow: 0 0.34rem 0 var(--capgemini-dark-blue);
+}
+
+.content-split-compute-glyph::after {
+  top: 0.38rem;
+  left: 0.42rem;
+  width: 0.34rem;
+  height: 0.34rem;
+  border-radius: 50%;
+  box-shadow: 0.58rem 0 0 var(--capgemini-dark-blue), 1.16rem 0 0 var(--capgemini-dark-blue);
+}
+
+.content-split-resource-grid {
+  display: grid;
+  width: 100%;
+  max-width: 14.5rem;
+  margin-left: auto;
+  gap: 0.72rem;
+  align-items: center;
+  justify-items: center;
+}
+
+.content-split-resource-grid--generic,
+.content-split-resource-grid--provider {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.content-split-resource-grid img {
+  display: block;
+  width: 2.65rem;
+  height: 2.65rem;
+  object-fit: contain;
+}
+
+.resource-glyph {
+  display: block;
+  width: 2.65rem;
+  height: 2.65rem;
+}
+
+.resource-glyph--container {
+  border: 0.23rem solid var(--capgemini-white);
+  border-radius: 0.28rem;
+  background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.95) 0 0.18rem, transparent 0.18rem 0.56rem);
+  box-shadow: inset 0 0 0 0.24rem rgba(18, 26, 56, 0.35);
+}
+
+.resource-glyph--server {
+  position: relative;
+  border: 0.23rem solid var(--capgemini-white);
+  border-radius: 0.22rem;
+  background: linear-gradient(var(--capgemini-white) 0 0) 50% 34% / 72% 0.2rem no-repeat,
+    linear-gradient(var(--capgemini-white) 0 0) 50% 66% / 72% 0.2rem no-repeat;
+}
+
+.resource-glyph--server::before,
+.resource-glyph--server::after {
+  position: absolute;
+  right: 0.42rem;
+  width: 0.28rem;
+  height: 0.28rem;
+  border-radius: 50%;
+  content: "";
+  background: var(--capgemini-light-blue);
+}
+
+.resource-glyph--server::before { top: 0.52rem; }
+.resource-glyph--server::after { bottom: 0.52rem; }
 
 :root[data-theme="light"] .content-split-orientation-pane--left {
   background: color-mix(in srgb, var(--capgemini-blue) 48%, var(--capgemini-white));
@@ -596,8 +735,12 @@ body {
   background: rgba(255, 255, 255, 0.2);
 }
 
+:root[data-theme="light"] .content-split-right-column h3 {
+  color: var(--capgemini-dark-blue);
+}
+
 :root[data-theme="light"] .content-split-target-box {
-  border-color: rgba(0, 0, 0, 0.45);
+  border-color: var(--capgemini-white);
   background: rgba(255, 255, 255, 0.28);
   color: var(--capgemini-dark-blue);
 }
