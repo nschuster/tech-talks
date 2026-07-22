@@ -166,7 +166,7 @@ body {
 .reveal section.limitless-potential-slide {
   --limitless-left-column: 25%;
   --limitless-bleed: 12rem;
-  --limitless-icon-y: 49%;
+  --limitless-icon-y: 50%;
 
   padding-left: calc(var(--limitless-left-column) + 3.5rem) !important;
   padding-bottom: 2.25rem !important;
@@ -285,7 +285,7 @@ body {
   min-height: 78px;
   padding: 0 0.52rem;
   color: var(--capgemini-white);
-  font-size: 0.46em;
+  font-size: 0.552em;
   font-weight: 700;
   font-stretch: condensed;
   letter-spacing: -0.005em;
