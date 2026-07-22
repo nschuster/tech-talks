@@ -285,7 +285,7 @@ body {
   display: flex;
   align-items: center;
   min-height: 78px;
-  padding: 0 0.52rem;
+  padding: 0 0.52rem 0 0.9rem;
   color: var(--capgemini-white);
   font-size: 0.552em;
   font-weight: 700;
