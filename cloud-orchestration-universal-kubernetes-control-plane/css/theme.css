@@ -598,7 +598,7 @@ body {
   align-items: center;
   justify-content: center;
   width: 100%;
-  flex: 0 0 12.23rem;
+  flex: 0 0 11.72rem;
   min-height: 0;
   border: 4px solid var(--capgemini-white);
   background: rgba(18, 26, 56, 0.22);
@@ -667,7 +667,7 @@ body {
   height: max-content;
   max-width: none;
   margin: auto;
-  gap: 0.18rem;
+  gap: 0.36rem;
   align-items: center;
   justify-items: center;
   align-content: center;
