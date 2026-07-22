@@ -235,7 +235,8 @@ body {
 
 .reveal section.limitless-potential-slide h2,
 .reveal section.limitless-potential-slide .slide-subtitle,
-.reveal section.limitless-potential-slide .limitless-potential-copy {
+.reveal section.limitless-potential-slide .limitless-potential-copy,
+.reveal section.limitless-potential-slide .limitless-potential-grid {
   position: relative;
   z-index: 1;
   max-width: 1210px;
@@ -243,12 +244,45 @@ body {
 }
 
 .reveal section.limitless-potential-slide .limitless-potential-copy {
-  max-width: 1030px;
+  max-width: 1120px;
   margin-top: 1.25rem;
   color: rgba(255, 255, 255, 0.92);
-  font-size: 0.43em;
+  font-size: 0.56em;
   font-weight: 400;
-  line-height: 1.42;
+  line-height: 1.28;
+}
+
+.reveal section.limitless-potential-slide .limitless-potential-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.62rem;
+  width: min(1120px, calc(100% - 0.5rem));
+  margin-top: 1.2rem;
+}
+
+.reveal section.limitless-potential-slide .limitless-potential-box {
+  min-height: 180px;
+  overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 18px;
+  background: rgba(18, 26, 56, 0.5);
+  box-shadow: 0 18px 46px rgba(18, 26, 56, 0.28);
+  backdrop-filter: blur(2px);
+}
+
+.reveal section.limitless-potential-slide .limitless-potential-box-heading {
+  display: flex;
+  align-items: center;
+  min-height: 64px;
+  padding: 0 0.46rem;
+  color: var(--capgemini-white);
+  font-size: 0.29em;
+  font-weight: 700;
+  letter-spacing: 0.055em;
+  line-height: 1.08;
+  text-transform: uppercase;
+  background: linear-gradient(100deg, var(--capgemini-blue) 0%, var(--capgemini-light-blue) 48%, var(--capgemini-turquoise) 100%);
+  text-shadow: 0 3px 12px rgba(18, 26, 56, 0.38);
 }
 
 :root[data-theme="light"] .limitless-potential-slide .limitless-potential-background-image {
