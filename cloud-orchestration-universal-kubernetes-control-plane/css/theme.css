@@ -164,30 +164,46 @@ body {
 }
 
 .reveal section.limitless-potential-slide {
-  padding-left: calc(25% + 3.5rem) !important;
+  --limitless-left-column: 25%;
+  --limitless-bleed: 12rem;
+
+  padding-left: calc(var(--limitless-left-column) + 3.5rem) !important;
+  overflow: visible;
   background: var(--capgemini-dark-blue);
 }
 
 .reveal section.limitless-potential-slide::before {
   position: absolute;
-  inset: 0 0 0 25%;
+  inset: calc(-1 * var(--limitless-bleed));
+  z-index: -1;
+  content: "";
+  background: var(--capgemini-dark-blue);
+}
+
+.reveal section.limitless-potential-slide .limitless-potential-background-image {
+  position: absolute;
+  inset: calc(-1 * var(--limitless-bleed)) calc(-1 * var(--limitless-bleed)) calc(-1 * var(--limitless-bleed)) var(--limitless-left-column);
   z-index: 0;
   content: "";
   background:
-    radial-gradient(circle at 22% 20%, rgba(29, 184, 242, 0.18), transparent 34%),
-    linear-gradient(135deg, rgba(18, 26, 56, 0.95), rgba(7, 16, 37, 0.98));
+    radial-gradient(circle at 18% 18%, rgba(29, 184, 242, 0.22), transparent 34%),
+    linear-gradient(90deg, rgba(18, 26, 56, 0.28), rgba(18, 26, 56, 0.58)),
+    url("../assets/backgrounds/GettyImages-1469734409.jpeg") center / cover no-repeat;
   border-left: 1px solid rgba(255, 255, 255, 0.16);
   box-shadow: -36px 0 72px rgba(18, 26, 56, 0.62);
 }
 
 .reveal section.limitless-potential-slide .limitless-potential-background-video {
   position: absolute;
-  inset: 0 auto 0 0;
+  top: 50%;
+  left: calc((var(--limitless-left-column) / 2) - 1rem);
   z-index: 0;
-  width: 25%;
-  height: 100%;
+  width: calc(100% + (2 * var(--limitless-bleed)));
+  height: calc(var(--limitless-left-column) + (2 * var(--limitless-bleed)));
   object-fit: cover;
   opacity: 0.92;
+  transform: translate(-50%, -50%) rotate(90deg);
+  transform-origin: center;
 }
 
 .reveal section.limitless-potential-slide h2,
@@ -195,12 +211,14 @@ body {
   position: relative;
   z-index: 1;
   max-width: 1210px;
+  text-shadow: 0 8px 34px rgba(18, 26, 56, 0.74);
 }
 
-:root[data-theme="light"] .limitless-potential-slide::before {
+:root[data-theme="light"] .limitless-potential-slide .limitless-potential-background-image {
   background:
-    radial-gradient(circle at 22% 20%, rgba(29, 184, 242, 0.18), transparent 34%),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(236, 246, 255, 0.98));
+    radial-gradient(circle at 18% 18%, rgba(29, 184, 242, 0.18), transparent 34%),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.44)),
+    url("../assets/backgrounds/GettyImages-1469734409.jpeg") center / cover no-repeat;
   border-left-color: rgba(7, 16, 37, 0.14);
   box-shadow: -36px 0 72px rgba(0, 88, 171, 0.16);
 }
