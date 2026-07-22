@@ -802,13 +802,18 @@ function renderCicdLeaderLines() {
   });
 
   const activePipelineGroups = [...cicdLeaderLineLayer.querySelectorAll('.cicd-pipeline-group')];
-  activePipelineGroups
-    .sort((a, b) => {
-      const aIsReverse = a.dataset.cicdPipelineId?.startsWith('reverse-') ? 0 : 1;
-      const bIsReverse = b.dataset.cicdPipelineId?.startsWith('reverse-') ? 0 : 1;
-      return aIsReverse - bIsReverse;
-    })
-    .forEach((group) => cicdLeaderLineLayer.appendChild(group));
+  const orderedPipelineGroups = activePipelineGroups.sort((a, b) => {
+    const aIsReverse = a.dataset.cicdPipelineId?.startsWith('reverse-') ? 0 : 1;
+    const bIsReverse = b.dataset.cicdPipelineId?.startsWith('reverse-') ? 0 : 1;
+    return aIsReverse - bIsReverse;
+  });
+  const currentPipelineGroupOrder = [...cicdLeaderLineLayer.children]
+    .filter((child) => child.classList?.contains('cicd-pipeline-group'));
+  const pipelineOrderChanged = currentPipelineGroupOrder.length !== orderedPipelineGroups.length ||
+    orderedPipelineGroups.some((group, index) => currentPipelineGroupOrder[index] !== group);
+  if (pipelineOrderChanged) {
+    orderedPipelineGroups.forEach((group) => cicdLeaderLineLayer.appendChild(group));
+  }
 
   renderControlPlaneMarkerConnectors();
 }
