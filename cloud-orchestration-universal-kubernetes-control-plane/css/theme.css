@@ -598,7 +598,7 @@ body {
   align-items: center;
   justify-content: center;
   width: 100%;
-  flex: 0 0 14.85rem;
+  flex: 0 0 13.42rem;
   min-height: 0;
   border: 4px solid var(--capgemini-white);
   background: rgba(18, 26, 56, 0.22);
@@ -676,8 +676,8 @@ body {
 
 .content-split-resource-grid--generic,
 .content-split-resource-grid--provider {
-  grid-template-columns: repeat(6, 1.82rem);
-  grid-template-rows: repeat(3, 1.82rem);
+  grid-template-columns: repeat(6, 2.25rem);
+  grid-template-rows: repeat(3, 2.25rem);
 }
 
 .content-split-resource-grid--generic > :first-child,
@@ -687,46 +687,46 @@ body {
 
 .content-split-resource-grid img {
   display: block;
-  width: 1.82rem;
-  height: 1.82rem;
+  width: 2.25rem;
+  height: 2.25rem;
   object-fit: contain;
 }
 
 .resource-glyph {
   display: block;
-  width: 1.82rem;
-  height: 1.82rem;
+  width: 2.25rem;
+  height: 2.25rem;
   box-sizing: border-box;
 }
 
 .resource-glyph--container {
-  border: 0.23rem solid var(--capgemini-white);
-  border-radius: 0.28rem;
-  background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.95) 0 0.18rem, transparent 0.18rem 0.56rem);
-  box-shadow: inset 0 0 0 0.24rem rgba(18, 26, 56, 0.35);
+  border: 0.28rem solid var(--capgemini-white);
+  border-radius: 0.35rem;
+  background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.95) 0 0.22rem, transparent 0.22rem 0.69rem);
+  box-shadow: inset 0 0 0 0.3rem rgba(18, 26, 56, 0.35);
 }
 
 .resource-glyph--server {
   position: relative;
-  border: 0.23rem solid var(--capgemini-white);
-  border-radius: 0.22rem;
-  background: linear-gradient(var(--capgemini-white) 0 0) 50% 34% / 72% 0.2rem no-repeat,
-    linear-gradient(var(--capgemini-white) 0 0) 50% 66% / 72% 0.2rem no-repeat;
+  border: 0.28rem solid var(--capgemini-white);
+  border-radius: 0.27rem;
+  background: linear-gradient(var(--capgemini-white) 0 0) 50% 34% / 72% 0.25rem no-repeat,
+    linear-gradient(var(--capgemini-white) 0 0) 50% 66% / 72% 0.25rem no-repeat;
 }
 
 .resource-glyph--server::before,
 .resource-glyph--server::after {
   position: absolute;
-  right: 0.42rem;
-  width: 0.28rem;
-  height: 0.28rem;
+  right: 0.52rem;
+  width: 0.35rem;
+  height: 0.35rem;
   border-radius: 50%;
   content: "";
   background: var(--capgemini-light-blue);
 }
 
-.resource-glyph--server::before { top: 0.52rem; }
-.resource-glyph--server::after { bottom: 0.52rem; }
+.resource-glyph--server::before { top: 0.64rem; }
+.resource-glyph--server::after { bottom: 0.64rem; }
 
 :root[data-theme="light"] .content-split-orientation-pane--left {
   background: color-mix(in srgb, var(--capgemini-blue) 48%, var(--capgemini-white));
