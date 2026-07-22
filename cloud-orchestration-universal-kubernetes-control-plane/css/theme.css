@@ -44,6 +44,16 @@
   --capgemini-deep-red: #8f3237;
   --capgemini-purple: #71609e;
 
+  /* Capgemini design element: dark blue 0%, blue 30%, light blue 70%, turquoise 100%. */
+  --capgemini-gradient-element-angle: 100deg;
+  --capgemini-gradient-element: linear-gradient(
+    var(--capgemini-gradient-element-angle),
+    var(--capgemini-dark-blue) 0%,
+    var(--capgemini-blue) 30%,
+    var(--capgemini-light-blue) 70%,
+    var(--capgemini-turquoise) 100%
+  );
+
   --color-bg: var(--capgemini-dark-blue);
   --color-text: var(--capgemini-white);
   --color-heading-primary: var(--capgemini-white);
@@ -294,7 +304,7 @@ body {
   line-height: 0.95;
   text-transform: uppercase;
   white-space: nowrap;
-  background: linear-gradient(100deg, var(--capgemini-blue) 0%, var(--capgemini-light-blue) 48%, var(--capgemini-turquoise) 100%);
+  background: var(--capgemini-gradient-element);
   text-shadow: 0 3px 12px rgba(18, 26, 56, 0.38);
 }
 
