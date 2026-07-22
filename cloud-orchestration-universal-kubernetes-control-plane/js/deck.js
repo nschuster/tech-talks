@@ -277,9 +277,10 @@ function renderCicdLeaderLines() {
   const nextSlideBaseMode = currentSlide.classList.contains('cicd-antipattern-slide--next-slide-base');
   const skipPipelineDraw = currentSlide.classList.contains('cicd-antipattern-slide--no-pipeline-draw');
   const currentFragment = deck.getIndices().f ?? -1;
-  const showAllPipelines = staticBasisMode;
+  const showAllPipelines = staticBasisMode && !nextSlideBaseMode;
   const isFragmentVisible = (fragmentIndex) => showAllPipelines || currentFragment >= fragmentIndex;
   const allowAllPipelineRoutes = !singlePipelineMode || showAllPipelines;
+  const showNextSlideControlPlanePipelines = nextSlideBaseMode && isFragmentVisible(0);
 
   const sourceToRegistryPoints = columns.slice(0, -1).map((column) => rightEdgePointAtY(column, sourceLaneY));
   const controlPlaneMarkerCenters = [...currentSlide.querySelectorAll('.cicd-control-plane-icon-card')]
@@ -290,7 +291,7 @@ function renderCicdLeaderLines() {
   if (singlePipelineMode || isFragmentVisible(0)) {
     pipelines.push({ id: 'source-to-registry', points: sourceToRegistryPoints });
   }
-  if (nextSlideBaseMode && infraCodeItem) {
+  if (showNextSlideControlPlanePipelines && infraCodeItem) {
     const infraDefinitionStart = rightEdgePointAtY(columns[0], elementYInGrid(infraCodeItem, 0.5));
     const secondPipelineStepStart = sourceToRegistryPoints[1] || sourceToRegistryPoints[sourceToRegistryPoints.length - 1];
     const controlX = infraDefinitionStart.x + Math.max(80, (secondPipelineStepStart.x - infraDefinitionStart.x) * 0.58);
@@ -306,7 +307,7 @@ function renderCicdLeaderLines() {
       ]
     });
   }
-  if (nextSlideBaseMode && deploymentManifestItem) {
+  if (showNextSlideControlPlanePipelines && deploymentManifestItem) {
     const desiredStateY = elementYInGrid(deploymentManifestItem, 0.5);
     const desiredStatePoints = horizontalPipelineAtY(desiredStateY);
     const middleBoxStart = desiredStatePoints[1];
@@ -708,7 +709,9 @@ function renderCicdLeaderLines() {
             marker.classList.add('cicd-control-plane-line-marker');
             marker.setAttribute('cx', x);
             marker.setAttribute('cy', y);
-            marker.setAttribute('r', '8');
+            marker.setAttribute('r', '12');
+            marker.setAttribute('fill', segmentStroke);
+            marker.setAttribute('stroke', segmentStroke);
             group.appendChild(marker);
           });
       }

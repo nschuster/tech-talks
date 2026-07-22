@@ -723,10 +723,10 @@ body {
   z-index: 16;
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 34px;
   color: var(--capgemini-white);
   font-family: var(--font-display);
-  font-size: 0.32em;
+  font-size: 0.46em;
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -736,13 +736,13 @@ body {
 .reveal section.cicd-antipattern-slide--next-slide-base .cicd-pipeline-legend-item {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 14px;
 }
 
 .reveal section.cicd-antipattern-slide--next-slide-base .cicd-pipeline-legend-swatch {
   display: inline-block;
-  width: 30px;
-  height: 30px;
+  width: 42px;
+  height: 42px;
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.26);
 }
 
@@ -1098,9 +1098,7 @@ body {
 }
 
 .cicd-control-plane-line-marker {
-  fill: rgba(156, 166, 178, 0.98);
-  stroke: var(--capgemini-dark-blue);
-  stroke-width: 4px;
+  stroke-width: 2px;
   vector-effect: non-scaling-stroke;
 }
 
