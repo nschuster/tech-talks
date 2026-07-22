@@ -166,7 +166,7 @@ body {
 .reveal section.limitless-potential-slide {
   --limitless-left-column: 25%;
   --limitless-bleed: 12rem;
-  --limitless-icon-y: 44%;
+  --limitless-icon-y: 47%;
 
   padding-left: calc(var(--limitless-left-column) + 3.5rem) !important;
   padding-bottom: 2.25rem !important;
@@ -258,7 +258,7 @@ body {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   grid-template-rows: repeat(2, minmax(0, 1fr));
-  flex: 1 1 auto;
+  flex: 0 0 12em;
   gap: 1rem;
   align-self: stretch;
   width: 100%;
@@ -279,14 +279,14 @@ body {
 .reveal section.limitless-potential-slide .limitless-potential-box-heading {
   display: flex;
   align-items: center;
-  min-height: 106px;
+  min-height: 110px;
   padding: 0 0.58rem;
   color: var(--capgemini-white);
-  font-size: 0.56em;
+  font-size: 0.62em;
   font-weight: 700;
   font-stretch: condensed;
-  letter-spacing: -0.075em;
-  line-height: 0.86;
+  letter-spacing: -0.035em;
+  line-height: 0.9;
   text-transform: uppercase;
   background: linear-gradient(100deg, var(--capgemini-blue) 0%, var(--capgemini-light-blue) 48%, var(--capgemini-turquoise) 100%);
   text-shadow: 0 3px 12px rgba(18, 26, 56, 0.38);
@@ -294,8 +294,8 @@ body {
 
 .reveal section.limitless-potential-slide .limitless-potential-box-heading span {
   display: block;
-  width: 119%;
-  transform: scaleX(0.84);
+  width: 109%;
+  transform: scaleX(0.92);
   transform-origin: left center;
 }
 
