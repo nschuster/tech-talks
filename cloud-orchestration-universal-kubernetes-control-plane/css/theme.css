@@ -405,21 +405,6 @@ body {
   min-height: 0;
 }
 
-.key-benefits-right-pane::before {
-  position: absolute;
-  inset: 0 auto 0 0;
-  z-index: 4;
-  width: var(--key-benefits-pane-separator);
-  content: "";
-  background: linear-gradient(
-    180deg,
-    var(--capgemini-dark-blue) 0%,
-    var(--capgemini-blue) 30%,
-    var(--capgemini-light-blue) 70%,
-    var(--capgemini-turquoise) 100%
-  );
-}
-
 .key-benefits-upper-pane {
   position: relative;
   display: flex;
@@ -435,6 +420,22 @@ body {
     url("../assets/backgrounds/GettyImages-1469734409.jpeg") center top / cover no-repeat,
     var(--capgemini-dark-blue);
   border: 0;
+}
+
+.key-benefits-upper-pane::before {
+  position: absolute;
+  inset: 0 auto 0 0;
+  z-index: 1;
+  width: var(--key-benefits-pane-separator);
+  content: "";
+  background: linear-gradient(
+    180deg,
+    var(--capgemini-turquoise) 0%,
+    var(--capgemini-light-blue) 30%,
+    var(--capgemini-blue) 70%,
+    var(--capgemini-dark-blue) 100%
+  );
+  pointer-events: none;
 }
 
 .key-benefits-heading-block {
