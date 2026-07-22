@@ -344,7 +344,7 @@ body {
 .reveal section.key-benefits-slide {
   --key-benefits-left-column: 25%;
   --key-benefits-bleed: 12rem;
-  --key-benefits-pane-separator: 18px;
+  --key-benefits-pane-separator: 24px;
 
   display: grid !important;
   grid-template-columns: calc(var(--key-benefits-left-column) + var(--key-benefits-bleed)) 1fr;
@@ -422,9 +422,9 @@ body {
   border: 0;
 }
 
-.key-benefits-upper-pane::before {
+.key-benefits-left-pane::after {
   position: absolute;
-  inset: 0 auto 0 0;
+  inset: 0 0 0 auto;
   z-index: 1;
   width: var(--key-benefits-pane-separator);
   content: "";
