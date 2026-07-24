@@ -922,29 +922,27 @@ function renderContentSplitCones() {
     const bottom = rect(bottomIcon);
     const topPoint = (xRatio, yRatio) => toPane(top.left + top.width * xRatio, top.top + top.height * yRatio);
     const bottomPoint = (xRatio, yRatio) => toPane(bottom.left + bottom.width * xRatio, bottom.top + bottom.height * yRatio);
+    const start = topPoint(0.5, 0.58);
+    const end = bottomPoint(0.5, 0.42);
+    const dy = end.y - start.y;
     const routes = [
-      { start: topPoint(0.28, 0.86), end: bottomPoint(0.04, 0.36), side: -1.08 },
-      { start: topPoint(0.48, 0.94), end: bottomPoint(0.5, 0.04), side: 0.82 },
-      { start: topPoint(0.72, 0.86), end: bottomPoint(0.96, 0.38), side: 1.12 },
-      { start: topPoint(0.22, 0.68), end: bottomPoint(0.08, 0.64), side: 1.36 },
-      { start: topPoint(0.78, 0.68), end: bottomPoint(0.92, 0.68), side: -1.32 }
-    ];
-    const makePath = ({ start, end, side }, index, halo = false) => {
+      { c1x: -210, c1y: 0.12, c2x: -155, c2y: 0.66 },
+      { c1x: -128, c1y: 0.33, c2x: 210, c2y: 0.18 },
+      { c1x: 92, c1y: 0.07, c2x: -235, c2y: 0.84 },
+      { c1x: 190, c1y: 0.38, c2x: 122, c2y: 0.72 },
+      { c1x: 34, c1y: 0.62, c2x: -72, c2y: 0.28 }
+    ].map((route) => ({
+      start,
+      end,
+      c1: { x: start.x + route.c1x, y: start.y + dy * route.c1y },
+      c2: { x: end.x + route.c2x, y: start.y + dy * route.c2y }
+    }));
+    const makePath = ({ start, end, c1, c2 }, index, halo = false) => {
       const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       path.classList.add('content-split-entangled-line');
       if (halo) path.classList.add('content-split-entangled-line--halo');
       path.setAttribute('data-entangled-line', `${index + 1}`);
       if (halo) path.setAttribute('data-entangled-line-halo', `${index + 1}`);
-      const dy = end.y - start.y;
-      const wide = Math.max(112, Math.min(190, dy * 0.64));
-      const c1 = {
-        x: start.x + wide * side,
-        y: start.y + dy * 0.24
-      };
-      const c2 = {
-        x: end.x - wide * side,
-        y: end.y - dy * 0.22
-      };
       path.setAttribute('d', `M ${start.x.toFixed(1)} ${start.y.toFixed(1)} C ${c1.x.toFixed(1)} ${c1.y.toFixed(1)}, ${c2.x.toFixed(1)} ${c2.y.toFixed(1)}, ${end.x.toFixed(1)} ${end.y.toFixed(1)}`);
       return path;
     };
