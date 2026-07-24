@@ -844,6 +844,7 @@ function renderContentSplitCones() {
   const boxes = [...currentSlide.querySelectorAll('.content-split-target-box')];
   const workloadIcons = [...currentSlide.querySelectorAll('.content-split-kubernetes-resource-icon--deploy, .content-split-kubernetes-resource-icon--svc')];
   const crdIcons = [...currentSlide.querySelectorAll('.content-split-kubernetes-resource-icon--crd')];
+  const compositeCrdIcon = currentSlide.querySelector('.content-split-composite-resource-icon');
   if (!pane || !k8sIcon || !crossplaneIcon || boxes.length < 4 || workloadIcons.length < 2 || !crdIcons.length) return;
 
   if (!contentSplitConeLayer || contentSplitConeLayer.closest('section') !== currentSlide) {
@@ -988,6 +989,47 @@ function renderContentSplitCones() {
     const lines = routes.map((route, index) => makePath(route, index));
     return [...halos, ...lines];
   };
+  const xrLeaderLines = ({ sourceIcons, targetIcon }) => {
+    if (!targetIcon || sourceIcons.length < 6) return [];
+    const target = rect(targetIcon);
+    const targetPoint = (yRatio) => toPane(target.left + target.width * 0.08, target.top + target.height * yRatio);
+    const pairs = [sourceIcons.slice(0, 2), sourceIcons.slice(2, 4), sourceIcons.slice(4, 6)];
+    const targets = [targetPoint(0.26), targetPoint(0.5), targetPoint(0.74)];
+    const colors = [crossplaneRed, crossplaneYellow, crossplaneGreen];
+    const routes = pairs.map((pair, index) => {
+      const source = unionRect(pair);
+      const start = toPane(source.right, source.top + (source.bottom - source.top) / 2);
+      const end = targets[index];
+      const dx = end.x - start.x;
+      return [
+        start,
+        { x: start.x + dx * 0.28, y: start.y },
+        { x: start.x + dx * 0.58, y: end.y },
+        end
+      ];
+    });
+    routes.forEach((route, index) => {
+      defs.appendChild(entangledLineGradient({
+        id: `content-split-xr-leader-gradient-${index + 1}`,
+        start: route[0],
+        end: route.at(-1),
+        endColor: colors[index]
+      }));
+    });
+    const smoothPath = (points) => `M ${points[0].x.toFixed(1)} ${points[0].y.toFixed(1)} C ${points[1].x.toFixed(1)} ${points[1].y.toFixed(1)}, ${points[2].x.toFixed(1)} ${points[2].y.toFixed(1)}, ${points[3].x.toFixed(1)} ${points[3].y.toFixed(1)}`;
+    const makePath = (points, index, halo = false) => {
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.classList.add('content-split-xr-leader-line', 'content-split-svg-fragment--3');
+      if (halo) path.classList.add('content-split-xr-leader-line--halo');
+      path.setAttribute(halo ? 'data-xr-leader-halo' : 'data-xr-leader-line', `${index + 1}`);
+      if (!halo) path.style.stroke = `url(#content-split-xr-leader-gradient-${index + 1})`;
+      path.setAttribute('d', smoothPath(points));
+      return path;
+    };
+    const halos = routes.map((route, index) => makePath(route, index, true));
+    const lines = routes.map((route, index) => makePath(route, index));
+    return [...halos, ...lines];
+  };
   const cone = ({ source, target, direction, id }) => {
     const centerX = source.left + source.width / 2;
     const centerY = source.top + source.height / 2;
@@ -1019,7 +1061,8 @@ function renderContentSplitCones() {
     coneElement.classList.add('content-split-svg-fragment--1');
   });
   const entangled = entangledLines({ topIcon: k8sIcon, bottomIcon: crossplaneIcon });
-  contentSplitConeLayer.replaceChildren(defs, ...cones, ...entangled);
+  const xrLeaders = xrLeaderLines({ sourceIcons: crdIcons, targetIcon: compositeCrdIcon });
+  contentSplitConeLayer.replaceChildren(defs, ...cones, ...entangled, ...xrLeaders);
 }
 
 function requestContentSplitConeUpdate() {
@@ -1060,8 +1103,14 @@ deck.on('slidechanged', () => {
   requestCicdLeaderLineUpdate();
   requestContentSplitConeUpdate();
 });
-deck.on('fragmentshown', requestCicdLeaderLineUpdate);
-deck.on('fragmenthidden', requestCicdLeaderLineUpdate);
+deck.on('fragmentshown', () => {
+  requestCicdLeaderLineUpdate();
+  requestContentSplitConeUpdate();
+});
+deck.on('fragmenthidden', () => {
+  requestCicdLeaderLineUpdate();
+  requestContentSplitConeUpdate();
+});
 deck.on('resize', () => {
   requestCicdLeaderLineUpdate();
   requestContentSplitConeUpdate();

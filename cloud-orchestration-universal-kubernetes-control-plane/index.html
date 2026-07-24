@@ -88,9 +88,26 @@
 <p class="slide-subtitle">Content window orientation</p>
 <div class="content-split-orientation-window" aria-label="Content window split into one-third left and two-thirds right sections">
 <div class="content-split-orientation-pane content-split-orientation-pane--left fragment fade-in" data-fragment-index="2">
+<div class="content-split-managed-resource-block">
+<h3>MANAGED RESSOURCES (MR)</h3>
+<p class="content-split-managed-resources-copy">Crossplane extends Kubernetes management capabilities through providers that offer a controller and a set of Custom Resource Definitions (CRDs), mapping each API object of an external system as a Kubernetes resource.</p>
+<pre class="content-split-managed-resources-code"><code class="language-yaml" data-trim>---
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: VPC
+metadata:
+  name: example-vpc
+spec:
+  forProvider:
+    region: eu-central-1
+    enableDnsHostNames: true
+    enableDnsSupport: true
+    cidrBlock: 10.40.0.0/16</code></pre>
+</div>
+<div class="content-split-composite-resource-block fragment fade-in" data-fragment-index="3">
 <h3>COMPOSITE RESSOURCES (XR)</h3>
 <p class="content-split-managed-resources-copy">Crossplane's composite resources enable the management of complex infrastructure by combining multiple resources into a single, cohesive unit with any choosen level of abstraction.</p>
 <div class="content-split-composite-resource-icon-wrap" aria-label="Kubernetes Custom Resource Definition icon for composite resources"><img class="content-split-composite-resource-icon" src="assets/icons/kubernetes/crd.svg" alt="Kubernetes Custom Resource Definition"/></div>
+</div>
 </div>
 <div class="content-split-orientation-pane content-split-orientation-pane--right">
 <div class="content-split-right-column content-split-right-column--exposure">
