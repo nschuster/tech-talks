@@ -88,23 +88,13 @@
 <p class="slide-subtitle">Content window orientation</p>
 <div class="content-split-orientation-window" aria-label="Content window split into one-third left and two-thirds right sections">
 <div class="content-split-orientation-pane content-split-orientation-pane--left fragment fade-in" data-fragment-index="2">
-<h3>MANAGED RESSOURCES (MR)</h3>
-<p class="content-split-managed-resources-copy">Crossplane extends Kubernetes management capabilities through providers that offer a controller and a set of Custom Resource Definitions (CRDs), mapping each API object of an external system as a Kubernetes resource.</p>
-<pre class="content-split-managed-resources-code"><code class="language-yaml" data-trim>---
-apiVersion: ec2.aws.upbound.io/v1beta1
-kind: VPC
-metadata:
-  name: example-vpc
-spec:
-  forProvider:
-    region: eu-central-1
-    enableDnsHostNames: true
-    enableDnsSupport: true
-    cidrBlock: 10.40.0.0/16</code></pre>
+<h3>COMPOSITE RESSOURCES (XR)</h3>
+<p class="content-split-managed-resources-copy">Crossplane's composite resources enable the management of complex infrastructure by combining multiple resources into a single, cohesive unit with any choosen level of abstraction.</p>
+<div class="content-split-composite-resource-icon-wrap" aria-label="Kubernetes Custom Resource Definition icon for composite resources"><img class="content-split-composite-resource-icon" src="assets/icons/kubernetes/crd.svg" alt="Kubernetes Custom Resource Definition"/></div>
 </div>
 <div class="content-split-orientation-pane content-split-orientation-pane--right">
 <div class="content-split-right-column content-split-right-column--exposure">
-<h3 class="fragment fade-in" data-fragment-index="1">EXPOSURE</h3>
+<h3>EXPOSURE</h3>
 <div class="content-split-kubernetes-resource-stack" aria-label="Kubernetes resource icons">
 <img class="content-split-kubernetes-resource-icon content-split-kubernetes-resource-icon--deploy" src="assets/icons/kubernetes/deploy.svg" alt="Kubernetes Deployment"/>
 <img class="content-split-kubernetes-resource-icon content-split-kubernetes-resource-icon--svc" src="assets/icons/kubernetes/svc.svg" alt="Kubernetes Service"/>
@@ -117,14 +107,14 @@ spec:
 </div>
 </div>
 <div class="content-split-right-column content-split-right-column--abstraction">
-<h3 class="fragment fade-in" data-fragment-index="1">ABSTRACTION</h3>
+<h3>ABSTRACTION</h3>
 <div class="content-split-abstraction-icon-stack" aria-label="Kubernetes and Crossplane abstraction layer icons">
 <span class="content-split-abstraction-icon content-split-abstraction-icon--kubernetes"><img class="content-split-abstraction-icon-image content-split-abstraction-icon-image--dark" src="assets/icons/kubernetes-light.svg" alt="Kubernetes"/><img class="content-split-abstraction-icon-image content-split-abstraction-icon-image--light" src="assets/icons/kubernetes-dark.svg" alt="Kubernetes"/></span>
 <span class="content-split-abstraction-icon content-split-abstraction-icon--crossplane fragment fade-in" data-fragment-index="1"><img class="content-split-abstraction-icon-image content-split-abstraction-icon-image--dark" src="assets/icons/crossplane-light.svg" alt="Crossplane"/><img class="content-split-abstraction-icon-image content-split-abstraction-icon-image--light" src="assets/icons/crossplane-dark.svg" alt="Crossplane"/></span>
 </div>
 </div>
 <div class="content-split-right-column content-split-right-column--boxes" aria-label="Four right-side target boxes">
-<h3 class="fragment fade-in" data-fragment-index="1">ORCHESTRATION</h3>
+<h3>ORCHESTRATION</h3>
 <div class="content-split-target-box content-split-target-box--compute" aria-label="Generic compute resources">
 <div class="content-split-box-badge" aria-hidden="true"><span class="content-split-compute-glyph"></span></div>
 <div class="content-split-resource-grid content-split-resource-grid--generic" aria-label="Containers and servers">

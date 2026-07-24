@@ -673,6 +673,25 @@ body {
   color: #e6f7ff;
 }
 
+.content-split-composite-resource-icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 2.15rem auto 0;
+  width: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.content-split-composite-resource-icon {
+  display: block;
+  width: min(15.8rem, 82%);
+  height: auto;
+  max-height: 21.5rem;
+  object-fit: contain;
+  filter: drop-shadow(0 0.65rem 1.35rem rgba(0, 0, 0, 0.28));
+}
+
 .content-split-managed-resources-code .hljs-attr,
 .content-split-managed-resources-code .hljs-attribute {
   color: #1db8f2;
