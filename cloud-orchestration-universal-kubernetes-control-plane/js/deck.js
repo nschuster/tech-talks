@@ -843,6 +843,7 @@ function renderContentSplitCones() {
   const crossplaneIcon = currentSlide.querySelector('.content-split-abstraction-icon--crossplane');
   const boxes = [...currentSlide.querySelectorAll('.content-split-target-box')];
   const workloadIcons = [...currentSlide.querySelectorAll('.content-split-kubernetes-resource-icon--deploy, .content-split-kubernetes-resource-icon--svc')];
+  const resourceIconTargets = [...currentSlide.querySelectorAll('.content-split-kubernetes-resource-stack > img, .content-split-kubernetes-resource-stack > span')];
   const crdIcons = [...currentSlide.querySelectorAll('.content-split-kubernetes-resource-icon--crd')];
   const compositeCrdIcon = currentSlide.querySelector('.content-split-composite-resource-icon');
   if (!pane || !k8sIcon || !crossplaneIcon || boxes.length < 4 || workloadIcons.length < 2 || !crdIcons.length) return;
@@ -990,38 +991,45 @@ function renderContentSplitCones() {
     return [...halos, ...lines];
   };
   const xrLeaderLines = ({ sourceIcons, targetIcon }) => {
-    if (!targetIcon || sourceIcons.length < 6) return [];
+    if (!targetIcon || sourceIcons.length < 8) return [];
     const target = rect(targetIcon);
     const targetPoint = (yRatio) => toPane(target.left + target.width * 0.08, target.top + target.height * yRatio);
-    const pairs = [sourceIcons.slice(0, 2), sourceIcons.slice(2, 4), sourceIcons.slice(4, 6)];
-    const targets = [targetPoint(0.26), targetPoint(0.5), targetPoint(0.74)];
-    const colors = [crossplaneRed, crossplaneYellow, crossplaneGreen];
-    const routes = pairs.map((pair, index) => {
-      const source = unionRect(pair);
-      const start = toPane(source.right, source.top + (source.bottom - source.top) / 2);
-      const end = targets[index];
+    const leaderSources = sourceIcons
+      .map((element, index) => ({ element, sourceIndex: index + 1 }))
+      .filter(({ sourceIndex }) => sourceIndex !== 3 && sourceIndex !== 6);
+    const targetRatios = [0.16, 0.3, 0.43, 0.57, 0.7, 0.84];
+    const colors = [kubernetesBlue, kubernetesBlue, crossplaneRed, crossplaneYellow, crossplaneGreen, crossplaneGreen];
+    const routes = leaderSources.map(({ element, sourceIndex }, index) => {
+      const source = rect(element);
+      const start = toPane(source.right, source.top + source.height * 0.5);
+      const end = targetPoint(targetRatios[index]);
       const dx = end.x - start.x;
-      return [
-        start,
-        { x: start.x + dx * 0.28, y: start.y },
-        { x: start.x + dx * 0.58, y: end.y },
-        end
-      ];
+      const verticalNudge = index % 2 === 0 ? -8 : 8;
+      return {
+        sourceIndex,
+        color: colors[index],
+        points: [
+          start,
+          { x: start.x + dx * 0.32, y: start.y + verticalNudge },
+          { x: start.x + dx * 0.62, y: end.y - verticalNudge },
+          end
+        ]
+      };
     });
-    routes.forEach((route, index) => {
+    routes.forEach(({ points, color }, index) => {
       defs.appendChild(entangledLineGradient({
         id: `content-split-xr-leader-gradient-${index + 1}`,
-        start: route[0],
-        end: route.at(-1),
-        endColor: colors[index]
+        start: points[0],
+        end: points.at(-1),
+        endColor: color
       }));
     });
     const smoothPath = (points) => `M ${points[0].x.toFixed(1)} ${points[0].y.toFixed(1)} C ${points[1].x.toFixed(1)} ${points[1].y.toFixed(1)}, ${points[2].x.toFixed(1)} ${points[2].y.toFixed(1)}, ${points[3].x.toFixed(1)} ${points[3].y.toFixed(1)}`;
-    const makePath = (points, index, halo = false) => {
+    const makePath = ({ points, sourceIndex }, index, halo = false) => {
       const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       path.classList.add('content-split-xr-leader-line', 'content-split-svg-fragment--3');
       if (halo) path.classList.add('content-split-xr-leader-line--halo');
-      path.setAttribute(halo ? 'data-xr-leader-halo' : 'data-xr-leader-line', `${index + 1}`);
+      path.setAttribute(halo ? 'data-xr-leader-halo' : 'data-xr-leader-line', `${sourceIndex}`);
       if (!halo) path.style.stroke = `url(#content-split-xr-leader-gradient-${index + 1})`;
       path.setAttribute('d', smoothPath(points));
       return path;
@@ -1061,7 +1069,7 @@ function renderContentSplitCones() {
     coneElement.classList.add('content-split-svg-fragment--1');
   });
   const entangled = entangledLines({ topIcon: k8sIcon, bottomIcon: crossplaneIcon });
-  const xrLeaders = xrLeaderLines({ sourceIcons: crdIcons, targetIcon: compositeCrdIcon });
+  const xrLeaders = xrLeaderLines({ sourceIcons: resourceIconTargets, targetIcon: compositeCrdIcon });
   contentSplitConeLayer.replaceChildren(defs, ...cones, ...entangled, ...xrLeaders);
 }
 

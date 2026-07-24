@@ -704,9 +704,9 @@ body {
 
 .content-split-composite-resource-icon {
   display: block;
-  width: min(15.8rem, 82%);
+  width: min(13.9rem, 74%);
   height: auto;
-  max-height: 21.5rem;
+  max-height: 18.6rem;
   object-fit: contain;
   filter: drop-shadow(0 0.65rem 1.35rem rgba(0, 0, 0, 0.28));
 }
@@ -911,19 +911,21 @@ body {
 .content-split-xr-leader-line {
   fill: none;
   stroke: #69cdbb;
-  stroke-linecap: round;
+  stroke-linecap: butt;
   stroke-linejoin: round;
-  stroke-width: 0.24rem;
-  opacity: 0.92;
+  stroke-dasharray: 30 18;
+  stroke-width: 0.22rem;
+  opacity: 0.94;
   vector-effect: non-scaling-stroke;
   shape-rendering: geometricPrecision;
+  animation: cicd-pipeline-dash 1s linear infinite;
   filter: drop-shadow(0 0 0.28rem rgba(105, 205, 187, 0.42));
 }
 
 .content-split-xr-leader-line--halo {
-  stroke: rgba(18, 26, 56, 0.74);
-  stroke-width: 0.38rem;
-  opacity: 0.78;
+  stroke: rgba(18, 26, 56, 0.78);
+  stroke-width: 0.36rem;
+  opacity: 0.8;
   filter: blur(0.02rem);
 }
 
@@ -2091,7 +2093,8 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .cicd-pipeline-line-outline,
   .cicd-pipeline-line,
-  .cicd-pipeline-line-draw-mask {
+  .cicd-pipeline-line-draw-mask,
+  .content-split-xr-leader-line {
     animation: none;
   }
 }
