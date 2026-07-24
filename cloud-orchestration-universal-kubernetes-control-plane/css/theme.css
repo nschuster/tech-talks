@@ -550,6 +550,7 @@ body {
 
 .content-split-orientation-pane--right {
   --content-split-box-gap: 1.55rem;
+  position: relative;
   grid-column: 1;
   grid-row: 1;
   display: grid;
@@ -579,6 +580,8 @@ body {
 }
 
 .content-split-right-column {
+  position: relative;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -599,10 +602,10 @@ body {
 .content-split-orientation-pane--left h3 {
   margin: 0;
   color: var(--capgemini-white);
-  font-size: 0.72em;
+  font-size: 0.82em;
   line-height: 1;
   font-weight: 800;
-  letter-spacing: 0.035em;
+  letter-spacing: 0.045em;
   text-transform: uppercase;
   white-space: nowrap;
 }
@@ -617,7 +620,7 @@ body {
 .content-split-right-column--abstraction h3,
 .content-split-right-column--exposure h3 {
   flex: 0 0 auto;
-  padding: 1.05rem 1.05rem 0;
+  padding: 1.22rem 1.2rem 0.22rem;
 }
 
 .content-split-abstraction-icon-stack {
@@ -635,8 +638,8 @@ body {
   justify-self: center;
   align-self: center;
   flex: 0 0 11.18rem;
-  width: 8.6rem;
-  height: 8.6rem;
+  width: 10.45rem;
+  height: 10.45rem;
 }
 
 .content-split-abstraction-icon--kubernetes {
@@ -649,8 +652,8 @@ body {
 
 .content-split-abstraction-icon-image {
   display: block;
-  width: 72%;
-  height: 72%;
+  width: 90%;
+  height: 90%;
   object-fit: contain;
 }
 
@@ -667,48 +670,49 @@ body {
 }
 
 .content-split-kubernetes-resource-stack {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: repeat(8, minmax(0, 1fr));
+  align-items: center;
+  justify-items: center;
   flex: 1 1 0;
   margin-top: var(--content-split-box-gap);
   min-height: 0;
-}
-
-.content-split-kubernetes-resource-group {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  justify-self: center;
-  align-self: center;
-  flex: 0 0 11.18rem;
-  gap: 0.54rem;
 }
 
 .content-split-abstraction-icon-stack .content-split-abstraction-icon--crossplane {
   margin-top: calc((var(--content-split-box-gap) * 1.5) + 12.3rem);
 }
 
-.content-split-kubernetes-resource-stack .content-split-kubernetes-resource-group:nth-child(n + 2),
 .content-split-target-box--aws,
 .content-split-target-box--gcp {
   margin-top: auto;
 }
 
-.content-split-kubernetes-resource-group--workloads,
-.content-split-kubernetes-resource-group--crd {
-  flex-direction: column;
-}
-
-.content-split-kubernetes-resource-group img {
+.content-split-kubernetes-resource-icon {
   display: block;
-  width: 4.6rem;
-  height: 4.6rem;
+  width: 4.2rem;
+  height: 4.2rem;
   object-fit: contain;
 }
 
-.content-split-kubernetes-resource-group--crd img {
-  width: 3.55rem;
-  height: 3.55rem;
+.content-split-cone-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.content-split-cone {
+  fill: rgba(29, 184, 242, 0.16);
+  stroke: rgba(255, 255, 255, 0.35);
+  stroke-width: 1.5;
+}
+
+.content-split-cone--crossplane {
+  fill: rgba(0, 213, 208, 0.13);
 }
 
 .content-split-target-box {

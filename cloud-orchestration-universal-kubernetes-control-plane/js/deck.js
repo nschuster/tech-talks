@@ -94,6 +94,7 @@ let brandingLayer;
 let capgeminiLogo;
 let confidentialityPatch;
 let cicdLeaderLineLayer;
+let contentSplitConeLayer;
 
 function getConfidentialityPatch() {
   return CONFIDENTIALITY_PATCHES[CONFIDENTIALITY_LEVEL] || CONFIDENTIALITY_PATCHES.SEC1;
@@ -160,6 +161,7 @@ function setTheme(theme) {
   updateMenuThemeButton(theme);
   updateBranding();
   requestCicdLeaderLineUpdate();
+  requestContentSplitConeUpdate();
 }
 
 function clearCicdLeaderLines() {
@@ -826,6 +828,81 @@ function requestCicdLeaderLineUpdate() {
   window.setTimeout(renderCicdLeaderLines, 420);
 }
 
+function renderContentSplitCones() {
+  const currentSlide = deck.getCurrentSlide();
+  if (!currentSlide?.classList.contains('content-split-orientation-slide')) {
+    contentSplitConeLayer?.remove();
+    contentSplitConeLayer = undefined;
+    return;
+  }
+
+  const pane = currentSlide.querySelector('.content-split-orientation-pane--right');
+  const k8sIcon = currentSlide.querySelector('.content-split-abstraction-icon--kubernetes');
+  const crossplaneIcon = currentSlide.querySelector('.content-split-abstraction-icon--crossplane');
+  const boxes = [...currentSlide.querySelectorAll('.content-split-target-box')];
+  const workloadIcons = [...currentSlide.querySelectorAll('.content-split-kubernetes-resource-icon--deploy, .content-split-kubernetes-resource-icon--svc')];
+  const crdIcons = [...currentSlide.querySelectorAll('.content-split-kubernetes-resource-icon--crd')];
+  if (!pane || !k8sIcon || !crossplaneIcon || boxes.length < 3 || workloadIcons.length < 2 || !crdIcons.length) return;
+
+  if (!contentSplitConeLayer || contentSplitConeLayer.closest('section') !== currentSlide) {
+    contentSplitConeLayer?.remove();
+    contentSplitConeLayer = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    contentSplitConeLayer.classList.add('content-split-cone-layer');
+    contentSplitConeLayer.setAttribute('aria-hidden', 'true');
+    pane.prepend(contentSplitConeLayer);
+  }
+
+  const paneRect = pane.getBoundingClientRect();
+  const scaleX = paneRect.width / pane.offsetWidth;
+  const scaleY = paneRect.height / pane.offsetHeight;
+  const toPane = (x, y) => ({
+    x: (x - paneRect.left) / scaleX,
+    y: (y - paneRect.top) / scaleY
+  });
+  const unionRect = (elements) => {
+    const rects = elements.map((element) => element.getBoundingClientRect());
+    return {
+      left: Math.min(...rects.map((rect) => rect.left)),
+      right: Math.max(...rects.map((rect) => rect.right)),
+      top: Math.min(...rects.map((rect) => rect.top)),
+      bottom: Math.max(...rects.map((rect) => rect.bottom))
+    };
+  };
+  const rect = (element) => element.getBoundingClientRect();
+  const cone = ({ source, target, direction, className = '' }) => {
+    const sourcePoint = direction === 'left'
+      ? toPane(source.left, source.top + source.height / 2)
+      : toPane(source.right, source.top + source.height / 2);
+    const targetTop = direction === 'left'
+      ? toPane(target.right, target.top)
+      : toPane(target.left, target.top);
+    const targetBottom = direction === 'left'
+      ? toPane(target.right, target.bottom)
+      : toPane(target.left, target.bottom);
+    const polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+    polygon.classList.add('content-split-cone');
+    if (className) polygon.classList.add(className);
+    polygon.setAttribute('points', `${sourcePoint.x},${sourcePoint.y} ${targetTop.x},${targetTop.y} ${targetBottom.x},${targetBottom.y}`);
+    return polygon;
+  };
+
+  contentSplitConeLayer.setAttribute('viewBox', `0 0 ${pane.offsetWidth} ${pane.offsetHeight}`);
+  contentSplitConeLayer.replaceChildren(
+    cone({ source: rect(k8sIcon), target: rect(boxes[0]), direction: 'left' }),
+    cone({ source: rect(k8sIcon), target: unionRect(workloadIcons), direction: 'right' }),
+    cone({ source: rect(crossplaneIcon), target: unionRect(boxes.slice(1)), direction: 'left', className: 'content-split-cone--crossplane' }),
+    cone({ source: rect(crossplaneIcon), target: unionRect(crdIcons), direction: 'right', className: 'content-split-cone--crossplane' })
+  );
+}
+
+function requestContentSplitConeUpdate() {
+  window.requestAnimationFrame(() => {
+    window.requestAnimationFrame(renderContentSplitCones);
+  });
+  window.setTimeout(renderContentSplitCones, 160);
+  window.setTimeout(renderContentSplitCones, 420);
+}
+
 function updateCicdOverlayVideos() {
   document.querySelectorAll('.cicd-static-pipeline-video-overlay, .cicd-desired-state-background-video, .limitless-potential-background-video').forEach((video) => {
     if (!(video instanceof HTMLVideoElement)) return;
@@ -848,18 +925,29 @@ deck.on('ready', () => {
   updateBranding();
   updateCicdOverlayVideos();
   requestCicdLeaderLineUpdate();
+  requestContentSplitConeUpdate();
 });
 deck.on('slidechanged', () => {
   updateBranding();
   updateCicdOverlayVideos();
   requestCicdLeaderLineUpdate();
+  requestContentSplitConeUpdate();
 });
 deck.on('fragmentshown', requestCicdLeaderLineUpdate);
 deck.on('fragmenthidden', requestCicdLeaderLineUpdate);
-deck.on('resize', requestCicdLeaderLineUpdate);
+deck.on('resize', () => {
+  requestCicdLeaderLineUpdate();
+  requestContentSplitConeUpdate();
+});
 deck.on('overviewshown', clearCicdLeaderLines);
-deck.on('overviewhidden', requestCicdLeaderLineUpdate);
-window.addEventListener('resize', requestCicdLeaderLineUpdate);
+deck.on('overviewhidden', () => {
+  requestCicdLeaderLineUpdate();
+  requestContentSplitConeUpdate();
+});
+window.addEventListener('resize', () => {
+  requestCicdLeaderLineUpdate();
+  requestContentSplitConeUpdate();
+});
 document.addEventListener('menu-ready', () => updateMenuThemeButton(root.dataset.theme || 'dark'));
 document.addEventListener('click', (event) => {
   const target = event.target instanceof Element ? event.target : event.target?.parentElement;
