@@ -872,6 +872,10 @@ function renderContentSplitCones() {
   };
   const rect = (element) => element.getBoundingClientRect();
   const coneFillColor = '#19375d';
+  const rootStyles = getComputedStyle(root);
+  const crossplaneRed = rootStyles.getPropertyValue('--crossplane-red').trim() || '#e4867f';
+  const crossplaneYellow = rootStyles.getPropertyValue('--crossplane-yellow').trim() || '#f7cf5a';
+  const crossplaneGreen = rootStyles.getPropertyValue('--crossplane-green').trim() || '#69cdbb';
   const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
   const gradient = ({ id, sourceX, targetX, y }) => {
     const gradientElement = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
@@ -894,6 +898,46 @@ function renderContentSplitCones() {
 
     gradientElement.append(start, end);
     return gradientElement;
+  };
+  const entangledGradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+  entangledGradient.id = 'content-split-entangled-gradient';
+  entangledGradient.setAttribute('gradientUnits', 'userSpaceOnUse');
+  entangledGradient.setAttribute('x1', '0');
+  entangledGradient.setAttribute('y1', '0');
+  entangledGradient.setAttribute('x2', '0');
+  entangledGradient.setAttribute('y2', pane.offsetHeight);
+  [
+    ['0%', crossplaneRed],
+    ['50%', crossplaneYellow],
+    ['100%', crossplaneGreen]
+  ].forEach(([offset, color]) => {
+    const stop = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+    stop.setAttribute('offset', offset);
+    stop.setAttribute('stop-color', color);
+    entangledGradient.appendChild(stop);
+  });
+  defs.appendChild(entangledGradient);
+  const entangledLines = ({ topIcon, bottomIcon }) => {
+    const top = rect(topIcon);
+    const bottom = rect(bottomIcon);
+    const start = toPane(top.left + top.width / 2, top.bottom - top.height * 0.06);
+    const end = toPane(bottom.left + bottom.width / 2, bottom.top + bottom.height * 0.06);
+    const height = end.y - start.y;
+    const offsets = [-34, 0, 34];
+    return offsets.map((offset, index) => {
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.classList.add('content-split-entangled-line');
+      path.setAttribute('data-entangled-line', `${index + 1}`);
+      const phase = index - 1;
+      const d = [
+        `M ${start.x + offset * 0.18} ${start.y}`,
+        `C ${start.x + offset * 1.18 + phase * 22} ${start.y + height * 0.14}, ${end.x - offset * 1.05 - phase * 30} ${start.y + height * 0.25}, ${end.x - offset * 0.35} ${start.y + height * 0.38}`,
+        `C ${start.x - offset * 1.1 + phase * 28} ${start.y + height * 0.53}, ${end.x + offset * 1.25 - phase * 18} ${start.y + height * 0.67}, ${start.x + offset * 0.42} ${start.y + height * 0.78}`,
+        `C ${end.x - offset * 0.95 - phase * 24} ${start.y + height * 0.9}, ${end.x + offset * 0.16} ${end.y - height * 0.06}, ${end.x + offset * 0.18} ${end.y}`
+      ].join(' ');
+      path.setAttribute('d', d);
+      return path;
+    });
   };
   const cone = ({ source, target, direction, id }) => {
     const centerX = source.left + source.width / 2;
@@ -922,7 +966,8 @@ function renderContentSplitCones() {
     cone({ source: rect(crossplaneIcon), target: unionRect(boxes.slice(1)), direction: 'left', id: 'content-split-cone-crossplane-boxes' }),
     cone({ source: rect(crossplaneIcon), target: unionRect(crdIcons), direction: 'right', id: 'content-split-cone-crossplane-crds' })
   ];
-  contentSplitConeLayer.replaceChildren(defs, ...cones);
+  const entangled = entangledLines({ topIcon: k8sIcon, bottomIcon: crossplaneIcon });
+  contentSplitConeLayer.replaceChildren(defs, ...cones, ...entangled);
 }
 
 function requestContentSplitConeUpdate() {
