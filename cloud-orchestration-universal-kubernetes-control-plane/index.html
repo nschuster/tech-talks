@@ -87,7 +87,7 @@
 <h2>Universal Kubernetes Control Plane</h2>
 <p class="slide-subtitle">Content window orientation</p>
 <div class="content-split-orientation-window" aria-label="Content window split into one-third left and two-thirds right sections">
-<div class="content-split-orientation-pane content-split-orientation-pane--left">
+<div class="content-split-orientation-pane content-split-orientation-pane--left fragment fade-in" data-fragment-index="2">
 <h3>MANAGED RESSOURCES (MR)</h3>
 <p class="content-split-managed-resources-copy">Crossplane extends Kubernetes management capabilities through providers that offer a controller and a set of Custom Resource Definitions (CRDs), mapping each API object of an external system as a Kubernetes resource.</p>
 <pre class="content-split-managed-resources-code"><code class="language-yaml" data-trim>---
@@ -104,27 +104,27 @@ spec:
 </div>
 <div class="content-split-orientation-pane content-split-orientation-pane--right">
 <div class="content-split-right-column content-split-right-column--exposure">
-<h3>EXPOSURE</h3>
+<h3 class="fragment fade-in" data-fragment-index="1">EXPOSURE</h3>
 <div class="content-split-kubernetes-resource-stack" aria-label="Kubernetes resource icons">
 <img class="content-split-kubernetes-resource-icon content-split-kubernetes-resource-icon--deploy" src="assets/icons/kubernetes/deploy.svg" alt="Kubernetes Deployment"/>
 <img class="content-split-kubernetes-resource-icon content-split-kubernetes-resource-icon--svc" src="assets/icons/kubernetes/svc.svg" alt="Kubernetes Service"/>
-<span class="content-split-crd-icon-wrap"><img class="content-split-kubernetes-resource-icon content-split-kubernetes-resource-icon--crd" src="assets/icons/kubernetes/crd.svg" alt="Kubernetes Custom Resource Definition"/><img class="content-split-crd-crossplane-badge" src="assets/icons/crossplane-light.svg" alt="Crossplane CRD marker"/></span>
-<span class="content-split-crd-icon-wrap"><img class="content-split-kubernetes-resource-icon content-split-kubernetes-resource-icon--crd" src="assets/icons/kubernetes/crd.svg" alt="Kubernetes Custom Resource Definition"/><img class="content-split-crd-crossplane-badge" src="assets/icons/crossplane-light.svg" alt="Crossplane CRD marker"/></span>
-<span class="content-split-crd-icon-wrap"><img class="content-split-kubernetes-resource-icon content-split-kubernetes-resource-icon--crd" src="assets/icons/kubernetes/crd.svg" alt="Kubernetes Custom Resource Definition"/><img class="content-split-crd-crossplane-badge" src="assets/icons/crossplane-light.svg" alt="Crossplane CRD marker"/></span>
-<span class="content-split-crd-icon-wrap"><img class="content-split-kubernetes-resource-icon content-split-kubernetes-resource-icon--crd" src="assets/icons/kubernetes/crd.svg" alt="Kubernetes Custom Resource Definition"/><img class="content-split-crd-crossplane-badge" src="assets/icons/crossplane-light.svg" alt="Crossplane CRD marker"/></span>
-<span class="content-split-crd-icon-wrap"><img class="content-split-kubernetes-resource-icon content-split-kubernetes-resource-icon--crd" src="assets/icons/kubernetes/crd.svg" alt="Kubernetes Custom Resource Definition"/><img class="content-split-crd-crossplane-badge" src="assets/icons/crossplane-light.svg" alt="Crossplane CRD marker"/></span>
-<span class="content-split-crd-icon-wrap"><img class="content-split-kubernetes-resource-icon content-split-kubernetes-resource-icon--crd" src="assets/icons/kubernetes/crd.svg" alt="Kubernetes Custom Resource Definition"/><img class="content-split-crd-crossplane-badge" src="assets/icons/crossplane-light.svg" alt="Crossplane CRD marker"/></span>
+<span class="content-split-crd-icon-wrap fragment fade-in" data-fragment-index="1"><img class="content-split-kubernetes-resource-icon content-split-kubernetes-resource-icon--crd" src="assets/icons/kubernetes/crd.svg" alt="Kubernetes Custom Resource Definition"/><img class="content-split-crd-crossplane-badge" src="assets/icons/crossplane-light.svg" alt="Crossplane CRD marker"/></span>
+<span class="content-split-crd-icon-wrap fragment fade-in" data-fragment-index="1"><img class="content-split-kubernetes-resource-icon content-split-kubernetes-resource-icon--crd" src="assets/icons/kubernetes/crd.svg" alt="Kubernetes Custom Resource Definition"/><img class="content-split-crd-crossplane-badge" src="assets/icons/crossplane-light.svg" alt="Crossplane CRD marker"/></span>
+<span class="content-split-crd-icon-wrap fragment fade-in" data-fragment-index="1"><img class="content-split-kubernetes-resource-icon content-split-kubernetes-resource-icon--crd" src="assets/icons/kubernetes/crd.svg" alt="Kubernetes Custom Resource Definition"/><img class="content-split-crd-crossplane-badge" src="assets/icons/crossplane-light.svg" alt="Crossplane CRD marker"/></span>
+<span class="content-split-crd-icon-wrap fragment fade-in" data-fragment-index="1"><img class="content-split-kubernetes-resource-icon content-split-kubernetes-resource-icon--crd" src="assets/icons/kubernetes/crd.svg" alt="Kubernetes Custom Resource Definition"/><img class="content-split-crd-crossplane-badge" src="assets/icons/crossplane-light.svg" alt="Crossplane CRD marker"/></span>
+<span class="content-split-crd-icon-wrap fragment fade-in" data-fragment-index="1"><img class="content-split-kubernetes-resource-icon content-split-kubernetes-resource-icon--crd" src="assets/icons/kubernetes/crd.svg" alt="Kubernetes Custom Resource Definition"/><img class="content-split-crd-crossplane-badge" src="assets/icons/crossplane-light.svg" alt="Crossplane CRD marker"/></span>
+<span class="content-split-crd-icon-wrap fragment fade-in" data-fragment-index="1"><img class="content-split-kubernetes-resource-icon content-split-kubernetes-resource-icon--crd" src="assets/icons/kubernetes/crd.svg" alt="Kubernetes Custom Resource Definition"/><img class="content-split-crd-crossplane-badge" src="assets/icons/crossplane-light.svg" alt="Crossplane CRD marker"/></span>
 </div>
 </div>
 <div class="content-split-right-column content-split-right-column--abstraction">
-<h3>ABSTRACTION</h3>
+<h3 class="fragment fade-in" data-fragment-index="1">ABSTRACTION</h3>
 <div class="content-split-abstraction-icon-stack" aria-label="Kubernetes and Crossplane abstraction layer icons">
 <span class="content-split-abstraction-icon content-split-abstraction-icon--kubernetes"><img class="content-split-abstraction-icon-image content-split-abstraction-icon-image--dark" src="assets/icons/kubernetes-light.svg" alt="Kubernetes"/><img class="content-split-abstraction-icon-image content-split-abstraction-icon-image--light" src="assets/icons/kubernetes-dark.svg" alt="Kubernetes"/></span>
-<span class="content-split-abstraction-icon content-split-abstraction-icon--crossplane"><img class="content-split-abstraction-icon-image content-split-abstraction-icon-image--dark" src="assets/icons/crossplane-light.svg" alt="Crossplane"/><img class="content-split-abstraction-icon-image content-split-abstraction-icon-image--light" src="assets/icons/crossplane-dark.svg" alt="Crossplane"/></span>
+<span class="content-split-abstraction-icon content-split-abstraction-icon--crossplane fragment fade-in" data-fragment-index="1"><img class="content-split-abstraction-icon-image content-split-abstraction-icon-image--dark" src="assets/icons/crossplane-light.svg" alt="Crossplane"/><img class="content-split-abstraction-icon-image content-split-abstraction-icon-image--light" src="assets/icons/crossplane-dark.svg" alt="Crossplane"/></span>
 </div>
 </div>
 <div class="content-split-right-column content-split-right-column--boxes" aria-label="Four right-side target boxes">
-<h3>ORCHESTRATION</h3>
+<h3 class="fragment fade-in" data-fragment-index="1">ORCHESTRATION</h3>
 <div class="content-split-target-box content-split-target-box--compute" aria-label="Generic compute resources">
 <div class="content-split-box-badge" aria-hidden="true"><span class="content-split-compute-glyph"></span></div>
 <div class="content-split-resource-grid content-split-resource-grid--generic" aria-label="Containers and servers">
@@ -147,7 +147,7 @@ spec:
 <span class="resource-glyph resource-glyph--container"></span>
 </div>
 </div>
-<div class="content-split-target-box content-split-target-box--aws" aria-label="AWS resources">
+<div class="content-split-target-box content-split-target-box--aws fragment fade-in" data-fragment-index="1" aria-label="AWS resources">
 <div class="content-split-box-badge"><img src="assets/icons/aws-dark.svg" alt="AWS" /></div>
 <div class="content-split-resource-grid content-split-resource-grid--provider" aria-label="AWS service icons">
 <img src="assets/icons/aws/EC2.svg" alt="AWS EC2" />
@@ -169,7 +169,7 @@ spec:
 <img src="assets/icons/aws/EFS.svg" alt="AWS EFS" />
 </div>
 </div>
-<div class="content-split-target-box content-split-target-box--gcp" aria-label="GCP resources">
+<div class="content-split-target-box content-split-target-box--gcp fragment fade-in" data-fragment-index="1" aria-label="GCP resources">
 <div class="content-split-box-badge"><img src="assets/icons/gcp-dark.svg" alt="GCP" /></div>
 <div class="content-split-resource-grid content-split-resource-grid--provider" aria-label="GCP service icons">
 <img src="assets/icons/gcp/Compute-Engine.svg" alt="GCP Compute Engine" />
@@ -191,7 +191,7 @@ spec:
 <img src="assets/icons/gcp/Dataplex.svg" alt="GCP Dataplex" />
 </div>
 </div>
-<div class="content-split-target-box content-split-target-box--third-party" aria-label="Third-party integrations">
+<div class="content-split-target-box content-split-target-box--third-party fragment fade-in" data-fragment-index="1" aria-label="Third-party integrations">
 <div class="content-split-box-badge"><img src="assets/icons/third-party-dark.svg" alt="Third-party" /></div>
 <div class="content-split-resource-grid content-split-resource-grid--ellipsis" aria-label="Anything else">
 <span class="content-split-resource-ellipsis-dot"></span>

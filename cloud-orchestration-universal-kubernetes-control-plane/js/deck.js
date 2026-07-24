@@ -910,8 +910,8 @@ function renderContentSplitCones() {
     gradientElement.setAttribute('y2', end.y);
     [
       ['0%', kubernetesBlue],
-      ['38%', kubernetesBlue],
-      ['78%', endColor],
+      ['24%', kubernetesBlue],
+      ['62%', endColor],
       ['100%', endColor]
     ].forEach(([offset, color]) => {
       const stop = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
@@ -979,7 +979,8 @@ function renderContentSplitCones() {
       if (halo) path.classList.add('content-split-entangled-line--halo');
       path.setAttribute('data-entangled-line', `${index + 1}`);
       if (halo) path.setAttribute('data-entangled-line-halo', `${index + 1}`);
-      if (!halo) path.setAttribute('stroke', `url(#content-split-entangled-gradient-${index + 1})`);
+      path.classList.add('content-split-svg-fragment--1');
+      if (!halo) path.style.stroke = `url(#content-split-entangled-gradient-${index + 1})`;
       path.setAttribute('d', smoothPath(points));
       return path;
     };
@@ -1014,6 +1015,9 @@ function renderContentSplitCones() {
     cone({ source: rect(crossplaneIcon), target: unionRect(boxes.slice(1)), direction: 'left', id: 'content-split-cone-crossplane-boxes' }),
     cone({ source: rect(crossplaneIcon), target: unionRect(crdIcons), direction: 'right', id: 'content-split-cone-crossplane-crds' })
   ];
+  cones.slice(2).forEach((coneElement) => {
+    coneElement.classList.add('content-split-svg-fragment--1');
+  });
   const entangled = entangledLines({ topIcon: k8sIcon, bottomIcon: crossplaneIcon });
   contentSplitConeLayer.replaceChildren(defs, ...cones, ...entangled);
 }

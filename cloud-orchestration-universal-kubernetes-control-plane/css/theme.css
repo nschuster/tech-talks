@@ -642,7 +642,7 @@ body {
 .content-split-managed-resources-code {
   margin: 1.25rem 0 0;
   padding: 0.78rem 0.82rem;
-  border: 2px solid rgba(29, 184, 242, 0.55);
+  border: 0;
   border-radius: 0.58rem;
   background: linear-gradient(145deg, rgba(5, 12, 30, 0.96), rgba(18, 26, 56, 0.92));
   color: var(--capgemini-white);
@@ -815,12 +815,12 @@ body {
 
 .content-split-crd-crossplane-badge {
   position: absolute;
-  right: -0.16rem;
-  bottom: -0.14rem;
+  right: -0.28rem;
+  bottom: -0.24rem;
   display: block;
-  width: 1.42rem;
-  height: 1.42rem;
-  padding: 0.12rem;
+  width: 1.92rem;
+  height: 1.92rem;
+  padding: 0.14rem;
   border-radius: 50%;
   background: rgba(18, 26, 56, 0.88);
   box-shadow: 0 0 0 0.08rem rgba(255, 255, 255, 0.82), 0 0.18rem 0.42rem rgba(0, 0, 0, 0.32);
@@ -859,6 +859,15 @@ body {
   stroke-width: 0.44rem;
   opacity: 0.82;
   filter: blur(0.02rem);
+}
+
+.content-split-svg-fragment--1 {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.content-split-orientation-slide:has(.content-split-crd-icon-wrap.visible) .content-split-svg-fragment--1 {
+  opacity: 1;
 }
 
 .content-split-target-box {
