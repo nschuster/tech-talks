@@ -869,30 +869,59 @@ function renderContentSplitCones() {
     };
   };
   const rect = (element) => element.getBoundingClientRect();
-  const cone = ({ source, target, direction, className = '' }) => {
-    const sourcePoint = direction === 'left'
-      ? toPane(source.left, source.top + source.height / 2)
-      : toPane(source.right, source.top + source.height / 2);
+  const coneFillColor = '#19375d';
+  const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+  const gradient = ({ id, sourceX, targetX, y }) => {
+    const gradientElement = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+    gradientElement.id = id;
+    gradientElement.setAttribute('gradientUnits', 'userSpaceOnUse');
+    gradientElement.setAttribute('x1', sourceX);
+    gradientElement.setAttribute('y1', y);
+    gradientElement.setAttribute('x2', targetX);
+    gradientElement.setAttribute('y2', y);
+
+    const start = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+    start.setAttribute('offset', '0%');
+    start.setAttribute('stop-color', coneFillColor);
+    start.setAttribute('stop-opacity', '0.78');
+
+    const end = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+    end.setAttribute('offset', '100%');
+    end.setAttribute('stop-color', coneFillColor);
+    end.setAttribute('stop-opacity', '0');
+
+    gradientElement.append(start, end);
+    return gradientElement;
+  };
+  const cone = ({ source, target, direction, id }) => {
+    const centerY = source.top + source.height / 2;
+    const sourceInset = source.width * 0.18;
+    const sourceX = direction === 'left' ? source.left + sourceInset : source.right - sourceInset;
+    const sourceTop = toPane(sourceX, centerY - source.height * 0.4);
+    const sourceBottom = toPane(sourceX, centerY + source.height * 0.4);
     const targetTop = direction === 'left'
       ? toPane(target.right, target.top)
       : toPane(target.left, target.top);
     const targetBottom = direction === 'left'
       ? toPane(target.right, target.bottom)
       : toPane(target.left, target.bottom);
+    const targetX = direction === 'left' ? targetTop.x : targetTop.x;
     const polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
     polygon.classList.add('content-split-cone');
-    if (className) polygon.classList.add(className);
-    polygon.setAttribute('points', `${sourcePoint.x},${sourcePoint.y} ${targetTop.x},${targetTop.y} ${targetBottom.x},${targetBottom.y}`);
+    polygon.setAttribute('fill', `url(#${id})`);
+    polygon.setAttribute('points', `${sourceTop.x},${sourceTop.y} ${sourceBottom.x},${sourceBottom.y} ${targetBottom.x},${targetBottom.y} ${targetTop.x},${targetTop.y}`);
+    defs.appendChild(gradient({ id, sourceX: sourceTop.x, targetX, y: (sourceTop.y + sourceBottom.y) / 2 }));
     return polygon;
   };
 
   contentSplitConeLayer.setAttribute('viewBox', `0 0 ${pane.offsetWidth} ${pane.offsetHeight}`);
-  contentSplitConeLayer.replaceChildren(
-    cone({ source: rect(k8sIcon), target: rect(boxes[0]), direction: 'left' }),
-    cone({ source: rect(k8sIcon), target: unionRect(workloadIcons), direction: 'right' }),
-    cone({ source: rect(crossplaneIcon), target: unionRect(boxes.slice(1)), direction: 'left', className: 'content-split-cone--crossplane' }),
-    cone({ source: rect(crossplaneIcon), target: unionRect(crdIcons), direction: 'right', className: 'content-split-cone--crossplane' })
-  );
+  const cones = [
+    cone({ source: rect(k8sIcon), target: rect(boxes[0]), direction: 'left', id: 'content-split-cone-k8s-box' }),
+    cone({ source: rect(k8sIcon), target: unionRect(workloadIcons), direction: 'right', id: 'content-split-cone-k8s-resources' }),
+    cone({ source: rect(crossplaneIcon), target: unionRect(boxes.slice(1)), direction: 'left', id: 'content-split-cone-crossplane-boxes' }),
+    cone({ source: rect(crossplaneIcon), target: unionRect(crdIcons), direction: 'right', id: 'content-split-cone-crossplane-crds' })
+  ];
+  contentSplitConeLayer.replaceChildren(defs, ...cones);
 }
 
 function requestContentSplitConeUpdate() {

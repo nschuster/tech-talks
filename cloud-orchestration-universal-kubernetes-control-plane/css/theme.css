@@ -690,8 +690,8 @@ body {
 
 .content-split-kubernetes-resource-icon {
   display: block;
-  width: 4.2rem;
-  height: 4.2rem;
+  width: 4.55rem;
+  height: 4.55rem;
   object-fit: contain;
 }
 
@@ -706,13 +706,7 @@ body {
 }
 
 .content-split-cone {
-  fill: rgba(29, 184, 242, 0.16);
-  stroke: rgba(255, 255, 255, 0.35);
-  stroke-width: 1.5;
-}
-
-.content-split-cone--crossplane {
-  fill: rgba(0, 213, 208, 0.13);
+  stroke: none;
 }
 
 .content-split-target-box {
