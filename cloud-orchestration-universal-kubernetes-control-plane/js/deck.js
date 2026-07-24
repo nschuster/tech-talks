@@ -920,24 +920,37 @@ function renderContentSplitCones() {
   const entangledLines = ({ topIcon, bottomIcon }) => {
     const top = rect(topIcon);
     const bottom = rect(bottomIcon);
-    const start = toPane(top.left + top.width / 2, top.bottom - top.height * 0.06);
-    const end = toPane(bottom.left + bottom.width / 2, bottom.top + bottom.height * 0.06);
-    const height = end.y - start.y;
-    const offsets = [-34, 0, 34];
-    return offsets.map((offset, index) => {
+    const topPoint = (xRatio, yRatio) => toPane(top.left + top.width * xRatio, top.top + top.height * yRatio);
+    const bottomPoint = (xRatio, yRatio) => toPane(bottom.left + bottom.width * xRatio, bottom.top + bottom.height * yRatio);
+    const routes = [
+      { start: topPoint(0.28, 0.86), end: bottomPoint(0.04, 0.36), side: -1.08 },
+      { start: topPoint(0.48, 0.94), end: bottomPoint(0.5, 0.04), side: 0.82 },
+      { start: topPoint(0.72, 0.86), end: bottomPoint(0.96, 0.38), side: 1.12 },
+      { start: topPoint(0.22, 0.68), end: bottomPoint(0.08, 0.64), side: 1.36 },
+      { start: topPoint(0.78, 0.68), end: bottomPoint(0.92, 0.68), side: -1.32 }
+    ];
+    const makePath = ({ start, end, side }, index, halo = false) => {
       const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       path.classList.add('content-split-entangled-line');
+      if (halo) path.classList.add('content-split-entangled-line--halo');
       path.setAttribute('data-entangled-line', `${index + 1}`);
-      const phase = index - 1;
-      const d = [
-        `M ${start.x + offset * 0.18} ${start.y}`,
-        `C ${start.x + offset * 1.18 + phase * 22} ${start.y + height * 0.14}, ${end.x - offset * 1.05 - phase * 30} ${start.y + height * 0.25}, ${end.x - offset * 0.35} ${start.y + height * 0.38}`,
-        `C ${start.x - offset * 1.1 + phase * 28} ${start.y + height * 0.53}, ${end.x + offset * 1.25 - phase * 18} ${start.y + height * 0.67}, ${start.x + offset * 0.42} ${start.y + height * 0.78}`,
-        `C ${end.x - offset * 0.95 - phase * 24} ${start.y + height * 0.9}, ${end.x + offset * 0.16} ${end.y - height * 0.06}, ${end.x + offset * 0.18} ${end.y}`
-      ].join(' ');
-      path.setAttribute('d', d);
+      if (halo) path.setAttribute('data-entangled-line-halo', `${index + 1}`);
+      const dy = end.y - start.y;
+      const wide = Math.max(112, Math.min(190, dy * 0.64));
+      const c1 = {
+        x: start.x + wide * side,
+        y: start.y + dy * 0.24
+      };
+      const c2 = {
+        x: end.x - wide * side,
+        y: end.y - dy * 0.22
+      };
+      path.setAttribute('d', `M ${start.x.toFixed(1)} ${start.y.toFixed(1)} C ${c1.x.toFixed(1)} ${c1.y.toFixed(1)}, ${c2.x.toFixed(1)} ${c2.y.toFixed(1)}, ${end.x.toFixed(1)} ${end.y.toFixed(1)}`);
       return path;
-    });
+    };
+    const halos = routes.map((route, index) => makePath(route, index, true));
+    const lines = routes.map((route, index) => makePath(route, index));
+    return [...halos, ...lines];
   };
   const cone = ({ source, target, direction, id }) => {
     const centerX = source.left + source.width / 2;
