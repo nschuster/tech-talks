@@ -927,15 +927,15 @@ function renderContentSplitCones() {
     const dy = end.y - start.y;
     const curvePoint = (xOffset, yRatio) => ({ x: start.x + xOffset, y: start.y + dy * yRatio });
     const routes = [
-      [start, curvePoint(-92, 0.16), curvePoint(32, 0.38), curvePoint(-58, 0.62), curvePoint(28, 0.82), end],
-      [start, curvePoint(-34, 0.12), curvePoint(96, 0.28), curvePoint(-82, 0.52), curvePoint(52, 0.74), end],
-      [start, curvePoint(62, 0.14), curvePoint(-98, 0.36), curvePoint(92, 0.58), curvePoint(-24, 0.78), end],
-      [start, curvePoint(96, 0.2), curvePoint(-26, 0.42), curvePoint(-104, 0.64), curvePoint(74, 0.86), end],
-      [start, curvePoint(-68, 0.22), curvePoint(82, 0.44), curvePoint(-32, 0.66), curvePoint(-86, 0.8), end]
+      [start, curvePoint(-48, 0.16), curvePoint(-68, 0.38), curvePoint(-46, 0.62), curvePoint(-18, 0.82), end],
+      [start, curvePoint(-22, 0.12), curvePoint(44, 0.28), curvePoint(26, 0.52), curvePoint(54, 0.74), end],
+      [start, curvePoint(42, 0.14), curvePoint(-32, 0.36), curvePoint(56, 0.58), curvePoint(12, 0.78), end],
+      [start, curvePoint(72, 0.2), curvePoint(38, 0.42), curvePoint(-24, 0.64), curvePoint(58, 0.86), end],
+      [start, curvePoint(-36, 0.22), curvePoint(24, 0.44), curvePoint(-10, 0.66), curvePoint(-54, 0.8), end]
     ];
     const smoothPath = (points) => {
       const commandParts = [`M ${points[0].x.toFixed(1)} ${points[0].y.toFixed(1)}`];
-      const tension = 0.86;
+      const tension = 1.08;
       for (let index = 0; index < points.length - 1; index += 1) {
         const p0 = points[Math.max(0, index - 1)];
         const p1 = points[index];
