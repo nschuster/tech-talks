@@ -90,17 +90,17 @@
 <div class="content-split-orientation-pane content-split-orientation-pane--left">
 <h3>MANAGED RESSOURCES (MR)</h3>
 <p class="content-split-managed-resources-copy">Crossplane extends Kubernetes management capabilities through providers that offer a controller and a set of Custom Resource Definitions (CRDs), mapping each API object of an external system as a Kubernetes resource.</p>
-<pre class="content-split-managed-resources-code"><code>---
-apiVersion: ec2.aws.upbound.io/v1beta1
-kind: VPC
-metadata:
-  name: example-vpc
-spec:
-  forProvider:
-    region: eu-central-1
-    enableDnsHostNames: true
-    enableDnsSupport: true
-    cidrBlock: 10.40.0.0/16</code></pre>
+<pre class="content-split-managed-resources-code"><code class="language-yaml"><span class="yaml-marker">---</span>
+<span class="yaml-key">apiVersion</span><span class="yaml-punctuation">:</span> <span class="yaml-string">ec2.aws.upbound.io/v1beta1</span>
+<span class="yaml-key">kind</span><span class="yaml-punctuation">:</span> <span class="yaml-type">VPC</span>
+<span class="yaml-key">metadata</span><span class="yaml-punctuation">:</span>
+  <span class="yaml-key">name</span><span class="yaml-punctuation">:</span> <span class="yaml-string">example-vpc</span>
+<span class="yaml-key">spec</span><span class="yaml-punctuation">:</span>
+  <span class="yaml-key">forProvider</span><span class="yaml-punctuation">:</span>
+    <span class="yaml-key">region</span><span class="yaml-punctuation">:</span> <span class="yaml-string">eu-central-1</span>
+    <span class="yaml-key">enableDnsHostNames</span><span class="yaml-punctuation">:</span> <span class="yaml-boolean">true</span>
+    <span class="yaml-key">enableDnsSupport</span><span class="yaml-punctuation">:</span> <span class="yaml-boolean">true</span>
+    <span class="yaml-key">cidrBlock</span><span class="yaml-punctuation">:</span> <span class="yaml-number">10.40.0.0/16</span></code></pre>
 </div>
 <div class="content-split-orientation-pane content-split-orientation-pane--right">
 <div class="content-split-right-column content-split-right-column--exposure">

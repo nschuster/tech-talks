@@ -553,10 +553,10 @@ body {
   grid-column: 1;
   grid-row: 1;
   display: grid;
-  grid-template-columns: minmax(0, 3fr) minmax(0, 4fr) minmax(0, 3fr);
+  grid-template-columns: minmax(0, 3.15fr) minmax(0, 3.55fr) minmax(0, 2.15fr);
   align-items: stretch;
   justify-content: stretch;
-  gap: 1.4rem;
+  gap: 1.12rem;
   padding: 0;
 }
 
@@ -621,7 +621,8 @@ body {
   margin: 1.25rem 0 0;
   padding: 0.78rem 0.86rem;
   border: 2px solid rgba(29, 184, 242, 0.55);
-  background: rgba(5, 12, 30, 0.92);
+  border-radius: 0.58rem;
+  background: linear-gradient(145deg, rgba(5, 12, 30, 0.96), rgba(18, 26, 56, 0.92));
   color: var(--capgemini-white);
   box-sizing: border-box;
   overflow: hidden;
@@ -632,6 +633,44 @@ body {
   letter-spacing: 0;
   text-transform: none;
   white-space: pre;
+  box-shadow: 0 0.55rem 1.6rem rgba(0, 0, 0, 0.18);
+}
+
+.content-split-managed-resources-code code {
+  display: block;
+  color: inherit;
+  font: inherit;
+  line-height: inherit;
+  white-space: inherit;
+}
+
+.content-split-managed-resources-code .yaml-marker,
+.content-split-managed-resources-code .yaml-punctuation {
+  color: #9ca6b2;
+}
+
+.content-split-managed-resources-code .yaml-key {
+  color: #1db8f2;
+  font-weight: 700;
+}
+
+.content-split-managed-resources-code .yaml-string {
+  color: #e6f7ff;
+}
+
+.content-split-managed-resources-code .yaml-type {
+  color: #00d5d0;
+  font-weight: 700;
+}
+
+.content-split-managed-resources-code .yaml-boolean {
+  color: #feb100;
+  font-weight: 700;
+}
+
+.content-split-managed-resources-code .yaml-number {
+  color: #a7f3d0;
+  font-weight: 700;
 }
 
 .content-split-right-column--boxes {
@@ -674,6 +713,7 @@ body {
   flex: 0 0 11.18rem;
   width: 10.45rem;
   height: 10.45rem;
+  transform: translateX(3rem);
 }
 
 .content-split-abstraction-icon--kubernetes {
