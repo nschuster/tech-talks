@@ -927,27 +927,39 @@ function renderContentSplitCones() {
     const dy = end.y - start.y;
     const curvePoint = (xOffset, yRatio) => ({ x: start.x + xOffset, y: start.y + dy * yRatio });
     const routes = [
-      [curvePoint(-270, 0.08), curvePoint(-245, 0.28), curvePoint(-32, 0.34), curvePoint(195, 0.44), curvePoint(240, 0.64), curvePoint(38, 0.72)],
-      [curvePoint(-110, 0.05), curvePoint(238, 0.12), curvePoint(155, 0.31), curvePoint(-255, 0.48), curvePoint(-204, 0.68), curvePoint(12, 0.78)],
-      [curvePoint(138, 0.1), curvePoint(302, 0.27), curvePoint(46, 0.38), curvePoint(-305, 0.54), curvePoint(-94, 0.82), curvePoint(76, 0.7)],
-      [curvePoint(232, 0.18), curvePoint(116, 0.34), curvePoint(-168, 0.4), curvePoint(-278, 0.58), curvePoint(142, 0.66), curvePoint(208, 0.88)],
-      [curvePoint(-42, 0.14), curvePoint(-310, 0.36), curvePoint(-126, 0.5), curvePoint(286, 0.62), curvePoint(188, 0.8), curvePoint(-28, 0.86)]
-    ].map((controlPoints) => ({ start, end, controlPoints }));
-    const makePath = ({ start, end, controlPoints }, index, halo = false) => {
+      [start, curvePoint(-235, 0.16), curvePoint(80, 0.38), curvePoint(-145, 0.62), curvePoint(72, 0.82), end],
+      [start, curvePoint(-86, 0.12), curvePoint(245, 0.28), curvePoint(-205, 0.52), curvePoint(132, 0.74), end],
+      [start, curvePoint(156, 0.14), curvePoint(-250, 0.36), curvePoint(230, 0.58), curvePoint(-58, 0.78), end],
+      [start, curvePoint(245, 0.2), curvePoint(-62, 0.42), curvePoint(-265, 0.64), curvePoint(188, 0.86), end],
+      [start, curvePoint(-170, 0.22), curvePoint(210, 0.44), curvePoint(-76, 0.66), curvePoint(-220, 0.8), end]
+    ];
+    const smoothPath = (points) => {
+      const commandParts = [`M ${points[0].x.toFixed(1)} ${points[0].y.toFixed(1)}`];
+      const tension = 0.86;
+      for (let index = 0; index < points.length - 1; index += 1) {
+        const p0 = points[Math.max(0, index - 1)];
+        const p1 = points[index];
+        const p2 = points[index + 1];
+        const p3 = points[Math.min(points.length - 1, index + 2)];
+        const c1 = {
+          x: p1.x + ((p2.x - p0.x) / 6) * tension,
+          y: p1.y + ((p2.y - p0.y) / 6) * tension
+        };
+        const c2 = {
+          x: p2.x - ((p3.x - p1.x) / 6) * tension,
+          y: p2.y - ((p3.y - p1.y) / 6) * tension
+        };
+        commandParts.push(`C ${c1.x.toFixed(1)} ${c1.y.toFixed(1)}, ${c2.x.toFixed(1)} ${c2.y.toFixed(1)}, ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`);
+      }
+      return commandParts.join(' ');
+    };
+    const makePath = (points, index, halo = false) => {
       const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       path.classList.add('content-split-entangled-line');
       if (halo) path.classList.add('content-split-entangled-line--halo');
       path.setAttribute('data-entangled-line', `${index + 1}`);
       if (halo) path.setAttribute('data-entangled-line-halo', `${index + 1}`);
-      const [c1, c2, c3, c4, c5, c6] = controlPoints;
-      const midA = curvePoint(index % 2 === 0 ? 44 : -52, 0.37 + index * 0.025);
-      const midB = curvePoint(index % 2 === 0 ? -58 : 66, 0.68 - index * 0.018);
-      path.setAttribute('d', [
-        `M ${start.x.toFixed(1)} ${start.y.toFixed(1)}`,
-        `C ${c1.x.toFixed(1)} ${c1.y.toFixed(1)}, ${c2.x.toFixed(1)} ${c2.y.toFixed(1)}, ${midA.x.toFixed(1)} ${midA.y.toFixed(1)}`,
-        `C ${c3.x.toFixed(1)} ${c3.y.toFixed(1)}, ${c4.x.toFixed(1)} ${c4.y.toFixed(1)}, ${midB.x.toFixed(1)} ${midB.y.toFixed(1)}`,
-        `C ${c5.x.toFixed(1)} ${c5.y.toFixed(1)}, ${c6.x.toFixed(1)} ${c6.y.toFixed(1)}, ${end.x.toFixed(1)} ${end.y.toFixed(1)}`
-      ].join(' '));
+      path.setAttribute('d', smoothPath(points));
       return path;
     };
     const halos = routes.map((route, index) => makePath(route, index, true));
