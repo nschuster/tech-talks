@@ -641,7 +641,7 @@ body {
 
 .content-split-managed-resources-code {
   margin: 1.25rem 0 0;
-  padding: 0.7rem 0.76rem;
+  padding: 0.78rem 0.82rem;
   border: 2px solid rgba(29, 184, 242, 0.55);
   border-radius: 0.58rem;
   background: linear-gradient(145deg, rgba(5, 12, 30, 0.96), rgba(18, 26, 56, 0.92));
@@ -649,7 +649,7 @@ body {
   box-sizing: border-box;
   overflow: hidden;
   font-family: "Ubuntu Mono", "Cascadia Mono", "SFMono-Regular", Consolas, monospace;
-  font-size: 0.47em;
+  font-size: 0.54em;
   font-weight: 500;
   line-height: 1.23;
   letter-spacing: -0.012em;
@@ -795,9 +795,37 @@ body {
 
 .content-split-kubernetes-resource-icon {
   display: block;
-  width: 4.55rem;
-  height: 4.55rem;
+  width: 4.72rem;
+  height: 4.72rem;
   object-fit: contain;
+}
+
+.content-split-kubernetes-resource-icon--deploy,
+.content-split-kubernetes-resource-icon--svc {
+  width: 5.15rem;
+  height: 5.15rem;
+}
+
+.content-split-crd-icon-wrap {
+  position: relative;
+  display: block;
+  width: 4.72rem;
+  height: 4.72rem;
+}
+
+.content-split-crd-crossplane-badge {
+  position: absolute;
+  right: -0.16rem;
+  bottom: -0.14rem;
+  display: block;
+  width: 1.42rem;
+  height: 1.42rem;
+  padding: 0.12rem;
+  border-radius: 50%;
+  background: rgba(18, 26, 56, 0.88);
+  box-shadow: 0 0 0 0.08rem rgba(255, 255, 255, 0.82), 0 0.18rem 0.42rem rgba(0, 0, 0, 0.32);
+  object-fit: contain;
+  box-sizing: border-box;
 }
 
 .content-split-cone-layer {
@@ -816,14 +844,14 @@ body {
 
 .content-split-entangled-line {
   fill: none;
-  stroke: url(#content-split-entangled-gradient);
+  stroke: #3f67d5;
   stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-width: 0.26rem;
-  opacity: 0.86;
+  stroke-width: 0.3rem;
+  opacity: 0.96;
   vector-effect: non-scaling-stroke;
   shape-rendering: geometricPrecision;
-  filter: drop-shadow(0 0 0.32rem rgba(105, 205, 187, 0.42));
+  filter: drop-shadow(0 0 0.34rem rgba(63, 103, 213, 0.38));
 }
 
 .content-split-entangled-line--halo {

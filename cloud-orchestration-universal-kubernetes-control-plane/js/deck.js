@@ -876,6 +876,7 @@ function renderContentSplitCones() {
   const crossplaneRed = rootStyles.getPropertyValue('--crossplane-red').trim() || '#e4867f';
   const crossplaneYellow = rootStyles.getPropertyValue('--crossplane-yellow').trim() || '#f7cf5a';
   const crossplaneGreen = rootStyles.getPropertyValue('--crossplane-green').trim() || '#69cdbb';
+  const kubernetesBlue = '#3f67d5';
   const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
   const gradient = ({ id, sourceX, targetX, y }) => {
     const gradientElement = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
@@ -899,24 +900,27 @@ function renderContentSplitCones() {
     gradientElement.append(start, end);
     return gradientElement;
   };
-  const entangledGradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
-  entangledGradient.id = 'content-split-entangled-gradient';
-  entangledGradient.setAttribute('gradientUnits', 'userSpaceOnUse');
-  entangledGradient.setAttribute('x1', '0');
-  entangledGradient.setAttribute('y1', '0');
-  entangledGradient.setAttribute('x2', '0');
-  entangledGradient.setAttribute('y2', pane.offsetHeight);
-  [
-    ['0%', crossplaneRed],
-    ['50%', crossplaneYellow],
-    ['100%', crossplaneGreen]
-  ].forEach(([offset, color]) => {
-    const stop = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
-    stop.setAttribute('offset', offset);
-    stop.setAttribute('stop-color', color);
-    entangledGradient.appendChild(stop);
-  });
-  defs.appendChild(entangledGradient);
+  const entangledLineGradient = ({ id, start, end, endColor }) => {
+    const gradientElement = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+    gradientElement.id = id;
+    gradientElement.setAttribute('gradientUnits', 'userSpaceOnUse');
+    gradientElement.setAttribute('x1', start.x);
+    gradientElement.setAttribute('y1', start.y);
+    gradientElement.setAttribute('x2', end.x);
+    gradientElement.setAttribute('y2', end.y);
+    [
+      ['0%', kubernetesBlue],
+      ['38%', kubernetesBlue],
+      ['78%', endColor],
+      ['100%', endColor]
+    ].forEach(([offset, color]) => {
+      const stop = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+      stop.setAttribute('offset', offset);
+      stop.setAttribute('stop-color', color);
+      gradientElement.appendChild(stop);
+    });
+    return gradientElement;
+  };
   const entangledLines = ({ topIcon, bottomIcon }) => {
     const top = rect(topIcon);
     const bottom = rect(bottomIcon);
@@ -926,13 +930,29 @@ function renderContentSplitCones() {
     const end = bottomPoint(0.62, 0.58);
     const dy = end.y - start.y;
     const curvePoint = (xOffset, yRatio) => ({ x: start.x + xOffset, y: start.y + dy * yRatio });
-    const routes = [
-      [start, curvePoint(-48, 0.16), curvePoint(-68, 0.38), curvePoint(-46, 0.62), curvePoint(-18, 0.82), end],
-      [start, curvePoint(-22, 0.12), curvePoint(44, 0.28), curvePoint(26, 0.52), curvePoint(54, 0.74), end],
-      [start, curvePoint(42, 0.14), curvePoint(-32, 0.36), curvePoint(56, 0.58), curvePoint(12, 0.78), end],
-      [start, curvePoint(72, 0.2), curvePoint(38, 0.42), curvePoint(-24, 0.64), curvePoint(58, 0.86), end],
-      [start, curvePoint(-36, 0.22), curvePoint(24, 0.44), curvePoint(-10, 0.66), curvePoint(-54, 0.8), end]
+    const endPoints = [
+      bottomPoint(0.46, 0.33),
+      bottomPoint(0.61, 0.38),
+      bottomPoint(0.68, 0.52),
+      bottomPoint(0.58, 0.66),
+      bottomPoint(0.44, 0.73)
     ];
+    const endColors = [crossplaneRed, crossplaneYellow, crossplaneYellow, crossplaneGreen, crossplaneGreen];
+    const routes = [
+      [start, curvePoint(-48, 0.16), curvePoint(-68, 0.38), curvePoint(-46, 0.62), curvePoint(-18, 0.82), endPoints[0]],
+      [start, curvePoint(-22, 0.12), curvePoint(44, 0.28), curvePoint(26, 0.52), curvePoint(54, 0.74), endPoints[1]],
+      [start, curvePoint(42, 0.14), curvePoint(-32, 0.36), curvePoint(56, 0.58), curvePoint(12, 0.78), endPoints[2]],
+      [start, curvePoint(72, 0.2), curvePoint(38, 0.42), curvePoint(-24, 0.64), curvePoint(58, 0.86), endPoints[3]],
+      [start, curvePoint(-36, 0.22), curvePoint(24, 0.44), curvePoint(-10, 0.66), curvePoint(-54, 0.8), endPoints[4]]
+    ];
+    routes.forEach((route, index) => {
+      defs.appendChild(entangledLineGradient({
+        id: `content-split-entangled-gradient-${index + 1}`,
+        start,
+        end: route.at(-1),
+        endColor: endColors[index]
+      }));
+    });
     const smoothPath = (points) => {
       const commandParts = [`M ${points[0].x.toFixed(1)} ${points[0].y.toFixed(1)}`];
       const tension = 1.08;
@@ -959,6 +979,7 @@ function renderContentSplitCones() {
       if (halo) path.classList.add('content-split-entangled-line--halo');
       path.setAttribute('data-entangled-line', `${index + 1}`);
       if (halo) path.setAttribute('data-entangled-line-halo', `${index + 1}`);
+      if (!halo) path.setAttribute('stroke', `url(#content-split-entangled-gradient-${index + 1})`);
       path.setAttribute('d', smoothPath(points));
       return path;
     };
