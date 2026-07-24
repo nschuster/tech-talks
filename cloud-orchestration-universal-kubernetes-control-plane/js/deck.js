@@ -1,5 +1,7 @@
 import Reveal from '../node_modules/reveal.js/dist/reveal.mjs';
+import RevealHighlight from '../node_modules/reveal.js/dist/plugin/highlight.mjs';
 import '../node_modules/reveal.js-menu/menu.css';
+import '../node_modules/reveal.js/dist/plugin/highlight/monokai.css';
 import '../css/menu-overrides.css';
 import RevealMenu from '../node_modules/reveal.js-menu/plugin.js';
 
@@ -82,7 +84,7 @@ const deck = new Reveal({
       }
     ]
   },
-  plugins: [RevealMenu]
+  plugins: [RevealMenu, RevealHighlight]
 });
 
 deck.initialize();
@@ -896,8 +898,8 @@ function renderContentSplitCones() {
   const cone = ({ source, target, direction, id }) => {
     const centerX = source.left + source.width / 2;
     const centerY = source.top + source.height / 2;
-    const sourceTop = toPane(centerX, centerY - source.height * 0.25);
-    const sourceBottom = toPane(centerX, centerY + source.height * 0.25);
+    const sourceTop = toPane(centerX, centerY - source.height * 0.128);
+    const sourceBottom = toPane(centerX, centerY + source.height * 0.128);
     const targetTop = direction === 'left'
       ? toPane(target.right, target.top)
       : toPane(target.left, target.top);

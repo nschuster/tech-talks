@@ -524,7 +524,7 @@ body {
   width: 100%;
   flex: 1;
   min-height: 0;
-  margin-top: 1.4rem;
+  margin-top: 2.05rem;
 }
 
 .content-split-orientation-pane {
@@ -553,10 +553,10 @@ body {
   grid-column: 1;
   grid-row: 1;
   display: grid;
-  grid-template-columns: minmax(0, 3.15fr) minmax(0, 3.55fr) minmax(0, 2.15fr);
+  grid-template-columns: minmax(0, 3fr) minmax(0, 4fr) minmax(0, 3fr);
   align-items: stretch;
   justify-content: stretch;
-  gap: 1.12rem;
+  gap: 1.4rem;
   padding: 0;
 }
 
@@ -605,6 +605,17 @@ body {
   letter-spacing: 0.045em;
   text-transform: uppercase;
   white-space: nowrap;
+  padding-top: 0.28rem;
+}
+
+.content-split-orientation-pane--left h3 {
+  width: max-content;
+  max-width: 100%;
+  background: linear-gradient(90deg, #2f6fed 0%, #6f4bf2 54%, #00d5d0 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
 }
 
 .content-split-managed-resources-copy {
@@ -639,38 +650,37 @@ body {
 .content-split-managed-resources-code code {
   display: block;
   color: inherit;
+  background: transparent !important;
   font: inherit;
   line-height: inherit;
+  max-height: none;
+  padding: 0;
   white-space: inherit;
 }
 
-.content-split-managed-resources-code .yaml-marker,
-.content-split-managed-resources-code .yaml-punctuation {
-  color: #9ca6b2;
+.content-split-managed-resources-code code.hljs {
+  color: #e6f7ff;
 }
 
-.content-split-managed-resources-code .yaml-key {
+.content-split-managed-resources-code .hljs-attr,
+.content-split-managed-resources-code .hljs-attribute {
   color: #1db8f2;
   font-weight: 700;
 }
 
-.content-split-managed-resources-code .yaml-string {
+.content-split-managed-resources-code .hljs-string {
   color: #e6f7ff;
 }
 
-.content-split-managed-resources-code .yaml-type {
-  color: #00d5d0;
-  font-weight: 700;
-}
-
-.content-split-managed-resources-code .yaml-boolean {
+.content-split-managed-resources-code .hljs-literal,
+.content-split-managed-resources-code .hljs-number {
   color: #feb100;
   font-weight: 700;
 }
 
-.content-split-managed-resources-code .yaml-number {
-  color: #a7f3d0;
-  font-weight: 700;
+.content-split-managed-resources-code .hljs-meta,
+.content-split-managed-resources-code .hljs-bullet {
+  color: #9ca6b2;
 }
 
 .content-split-right-column--boxes {
@@ -684,7 +694,7 @@ body {
 .content-split-right-column--exposure h3 {
   flex: 0 0 auto;
   width: 100%;
-  padding: 0;
+  padding: 0.28rem 0 0;
 }
 
 .content-split-right-column--boxes h3 {
