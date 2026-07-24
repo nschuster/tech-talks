@@ -617,8 +617,25 @@ body {
   text-transform: none;
 }
 
+.content-split-managed-resources-code {
+  margin: 1.25rem 0 0;
+  padding: 0.78rem 0.86rem;
+  border: 2px solid rgba(29, 184, 242, 0.55);
+  background: rgba(5, 12, 30, 0.92);
+  color: var(--capgemini-white);
+  box-sizing: border-box;
+  overflow: hidden;
+  font-family: "Ubuntu Mono", "Cascadia Mono", "SFMono-Regular", Consolas, monospace;
+  font-size: 0.34em;
+  font-weight: 500;
+  line-height: 1.34;
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: pre;
+}
+
 .content-split-right-column--boxes {
-  gap: var(--content-split-box-gap);
+  gap: 0;
   background: transparent;
   padding: 0;
 }
@@ -700,9 +717,15 @@ body {
   margin-top: calc((var(--content-split-box-gap) * 1.5) + 12.3rem);
 }
 
+.content-split-target-box--compute {
+  margin-top: var(--content-split-box-gap);
+  margin-bottom: 3.05rem;
+}
+
 .content-split-target-box--aws,
-.content-split-target-box--gcp {
-  margin-top: auto;
+.content-split-target-box--gcp,
+.content-split-target-box--third-party {
+  margin-top: 1.05rem;
 }
 
 .content-split-kubernetes-resource-icon {
@@ -742,7 +765,7 @@ body {
 }
 
 .content-split-target-box--third-party {
-  flex-basis: 4.25rem;
+  flex-basis: 3.65rem;
 }
 
 .content-split-box-badge {
@@ -819,15 +842,15 @@ body {
 }
 
 .content-split-resource-grid--ellipsis {
-  grid-template-columns: repeat(3, 2.4rem);
-  grid-template-rows: 2.4rem;
-  gap: 0.82rem;
+  grid-template-columns: repeat(3, 0.5rem);
+  grid-template-rows: 0.5rem;
+  gap: 0.42rem;
 }
 
 .content-split-resource-ellipsis-dot {
   display: block;
-  width: 1.08rem;
-  height: 1.08rem;
+  width: 0.28rem;
+  height: 0.28rem;
   border-radius: 50%;
   background: var(--capgemini-white);
 }

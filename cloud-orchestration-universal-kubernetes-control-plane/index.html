@@ -90,6 +90,17 @@
 <div class="content-split-orientation-pane content-split-orientation-pane--left">
 <h3>MANAGED RESSOURCES (MR)</h3>
 <p class="content-split-managed-resources-copy">Crossplane extends Kubernetes management capabilities through providers that offer a controller and a set of Custom Resource Definitions (CRDs), mapping each API object of an external system as a Kubernetes resource.</p>
+<pre class="content-split-managed-resources-code"><code>---
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: VPC
+metadata:
+  name: example-vpc
+spec:
+  forProvider:
+    region: eu-central-1
+    enableDnsHostNames: true
+    enableDnsSupport: true
+    cidrBlock: 10.40.0.0/16</code></pre>
 </div>
 <div class="content-split-orientation-pane content-split-orientation-pane--right">
 <div class="content-split-right-column content-split-right-column--exposure">
