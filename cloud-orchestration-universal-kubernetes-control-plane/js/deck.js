@@ -842,7 +842,7 @@ function renderContentSplitCones() {
   const boxes = [...currentSlide.querySelectorAll('.content-split-target-box')];
   const workloadIcons = [...currentSlide.querySelectorAll('.content-split-kubernetes-resource-icon--deploy, .content-split-kubernetes-resource-icon--svc')];
   const crdIcons = [...currentSlide.querySelectorAll('.content-split-kubernetes-resource-icon--crd')];
-  if (!pane || !k8sIcon || !crossplaneIcon || boxes.length < 3 || workloadIcons.length < 2 || !crdIcons.length) return;
+  if (!pane || !k8sIcon || !crossplaneIcon || boxes.length < 4 || workloadIcons.length < 2 || !crdIcons.length) return;
 
   if (!contentSplitConeLayer || contentSplitConeLayer.closest('section') !== currentSlide) {
     contentSplitConeLayer?.remove();
@@ -894,18 +894,17 @@ function renderContentSplitCones() {
     return gradientElement;
   };
   const cone = ({ source, target, direction, id }) => {
+    const centerX = source.left + source.width / 2;
     const centerY = source.top + source.height / 2;
-    const sourceInset = source.width * 0.18;
-    const sourceX = direction === 'left' ? source.left + sourceInset : source.right - sourceInset;
-    const sourceTop = toPane(sourceX, centerY - source.height * 0.4);
-    const sourceBottom = toPane(sourceX, centerY + source.height * 0.4);
+    const sourceTop = toPane(centerX, centerY - source.height * 0.25);
+    const sourceBottom = toPane(centerX, centerY + source.height * 0.25);
     const targetTop = direction === 'left'
       ? toPane(target.right, target.top)
       : toPane(target.left, target.top);
     const targetBottom = direction === 'left'
       ? toPane(target.right, target.bottom)
       : toPane(target.left, target.bottom);
-    const targetX = direction === 'left' ? targetTop.x : targetTop.x;
+    const targetX = targetTop.x;
     const polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
     polygon.classList.add('content-split-cone');
     polygon.setAttribute('fill', `url(#${id})`);
