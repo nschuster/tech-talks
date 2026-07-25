@@ -100,7 +100,6 @@ let contentSplitConeLayer;
 let contentSplitConeUpdateFrame;
 let contentSplitConeUpdateTimeout;
 let controlsSlideNumber;
-const contentSplitDrawnXrLeaderIdsBySlide = new WeakMap();
 
 function getConfidentialityPatch() {
   return CONFIDENTIALITY_PATCHES[CONFIDENTIALITY_LEVEL] || CONFIDENTIALITY_PATCHES.SEC1;
@@ -865,10 +864,6 @@ function renderContentSplitCones() {
     contentSplitConeLayer = undefined;
     return;
   }
-  if (contentSplitConeLayer?.closest('section') === currentSlide && contentSplitConeLayer.querySelector('.content-split-xr-leader-group--drawing')) {
-    return;
-  }
-
   const pane = currentSlide.querySelector('.content-split-orientation-pane--right');
   const k8sIcon = currentSlide.querySelector('.content-split-abstraction-icon--kubernetes');
   const crossplaneIcon = currentSlide.querySelector('.content-split-abstraction-icon--crossplane');
@@ -1062,36 +1057,6 @@ function renderContentSplitCones() {
     const smoothPath = (points) => `M ${points[0].x.toFixed(1)} ${points[0].y.toFixed(1)} C ${points[1].x.toFixed(1)} ${points[1].y.toFixed(1)}, ${points[2].x.toFixed(1)} ${points[2].y.toFixed(1)}, ${points[3].x.toFixed(1)} ${points[3].y.toFixed(1)}`;
     const outlineColor = root.dataset.theme === 'light' ? 'rgba(255, 255, 255, 0.92)' : 'rgba(18, 26, 56, 0.98)';
     const lineColor = getCicdLineColor();
-    const shouldDrawNow = targetIcon.closest('.content-split-composite-resource-block')?.classList.contains('visible');
-    const drawnIds = contentSplitDrawnXrLeaderIdsBySlide.get(currentSlide) || new Set();
-    contentSplitDrawnXrLeaderIdsBySlide.set(currentSlide, drawnIds);
-    const addDrawAnimation = (group, id, d) => {
-      if (drawnIds.has(id)) return;
-      const maskId = `content-split-xr-leader-draw-mask-${id.replace(/[^a-z0-9_-]/gi, '-')}`;
-      const mask = document.createElementNS('http://www.w3.org/2000/svg', 'mask');
-      mask.id = maskId;
-      mask.setAttribute('maskUnits', 'userSpaceOnUse');
-      mask.setAttribute('x', '0');
-      mask.setAttribute('y', '0');
-      mask.setAttribute('width', pane.offsetWidth);
-      mask.setAttribute('height', pane.offsetHeight);
-      const drawPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      drawPath.classList.add('content-split-xr-leader-draw-mask');
-      drawPath.setAttribute('d', d);
-      mask.appendChild(drawPath);
-      drawPath.style.setProperty('--cicd-draw-length', Math.max(1, drawPath.getTotalLength ? drawPath.getTotalLength() : 1));
-      defs.appendChild(mask);
-      group.classList.add('content-split-xr-leader-group--drawing');
-      group.setAttribute('mask', `url(#${maskId})`);
-      const finishDraw = () => {
-        group.removeAttribute('mask');
-        group.classList.remove('content-split-xr-leader-group--drawing');
-        drawnIds.add(id);
-        mask.remove();
-      };
-      drawPath.addEventListener('animationend', finishDraw, { once: true });
-      window.setTimeout(finishDraw, 900);
-    };
     return routes.map((route) => {
       const d = smoothPath(route.points);
       const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
@@ -1109,7 +1074,6 @@ function renderContentSplitCones() {
       line.setAttribute('marker-end', 'url(#content-split-xr-leader-arrowhead)');
       line.setAttribute('d', d);
       group.append(outline, line);
-      if (shouldDrawNow) addDrawAnimation(group, `source-${route.sourceIndex}`, d);
       return group;
     });
   };
