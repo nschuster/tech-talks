@@ -538,10 +538,10 @@ function renderCicdLeaderLines() {
     cicdLeaderLineLayer.setAttribute('aria-hidden', 'true');
     cicdLeaderLineLayer.innerHTML = `
       <defs>
-        <marker id="cicd-pipeline-arrowhead" viewBox="-8 -8 16 16" markerWidth="20" markerHeight="20" refX="4" refY="0" orient="auto" markerUnits="userSpaceOnUse">
+        <marker id="cicd-pipeline-arrowhead" viewBox="-8 -8 16 16" markerWidth="30" markerHeight="30" refX="4" refY="0" orient="auto" markerUnits="userSpaceOnUse">
           <polygon class="cicd-pipeline-arrowhead-path" points="-4,-8 4,0 -4,8 -7,5 -2,0 -7,-5"></polygon>
         </marker>
-        <marker id="cicd-pipeline-arrowhead-static" viewBox="-8 -8 16 16" markerWidth="20" markerHeight="20" refX="4" refY="0" orient="auto" markerUnits="userSpaceOnUse">
+        <marker id="cicd-pipeline-arrowhead-static" viewBox="-8 -8 16 16" markerWidth="30" markerHeight="30" refX="4" refY="0" orient="auto" markerUnits="userSpaceOnUse">
           <polygon class="cicd-pipeline-arrowhead-path-static" points="-4,-8 4,0 -4,8 -7,5 -2,0 -7,-5"></polygon>
         </marker>
         <marker id="cicd-pipeline-arrowhead-desired" viewBox="-8 -8 16 16" markerWidth="30" markerHeight="30" refX="4" refY="0" orient="auto" markerUnits="userSpaceOnUse">
@@ -550,7 +550,7 @@ function renderCicdLeaderLines() {
         <marker id="cicd-pipeline-arrowhead-desired-reverse" viewBox="-8 -8 16 16" markerWidth="30" markerHeight="30" refX="4" refY="0" orient="auto" markerUnits="userSpaceOnUse">
           <polygon class="cicd-pipeline-arrowhead-path-desired-reverse" points="-4,-8 4,0 -4,8 -7,5 -2,0 -7,-5"></polygon>
         </marker>
-        <marker id="cicd-pipeline-arrowhead-muted" viewBox="-8 -8 16 16" markerWidth="20" markerHeight="20" refX="4" refY="0" orient="auto" markerUnits="userSpaceOnUse">
+        <marker id="cicd-pipeline-arrowhead-muted" viewBox="-8 -8 16 16" markerWidth="30" markerHeight="30" refX="4" refY="0" orient="auto" markerUnits="userSpaceOnUse">
           <polygon class="cicd-pipeline-arrowhead-path-muted" points="-4,-8 4,0 -4,8 -7,5 -2,0 -7,-5"></polygon>
         </marker>
       </defs>
@@ -886,8 +886,8 @@ function renderContentSplitCones() {
   const xrArrowMarker = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
   xrArrowMarker.id = 'content-split-xr-leader-arrowhead';
   xrArrowMarker.setAttribute('viewBox', '-8 -8 16 16');
-  xrArrowMarker.setAttribute('markerWidth', '20');
-  xrArrowMarker.setAttribute('markerHeight', '20');
+  xrArrowMarker.setAttribute('markerWidth', '30');
+  xrArrowMarker.setAttribute('markerHeight', '30');
   xrArrowMarker.setAttribute('refX', '4');
   xrArrowMarker.setAttribute('refY', '0');
   xrArrowMarker.setAttribute('orient', 'auto');
@@ -1051,31 +1051,24 @@ function renderContentSplitCones() {
     };
     const outlineColor = root.dataset.theme === 'light' ? 'rgba(255, 255, 255, 0.92)' : 'rgba(18, 26, 56, 0.98)';
     const lineColor = getCicdLineColor();
+    const shouldDrawNow = targetIcon.closest('.content-split-composite-resource-block')?.classList.contains('visible');
     const drawnIds = contentSplitDrawnXrLeaderIdsBySlide.get(currentSlide) || new Set();
     contentSplitDrawnXrLeaderIdsBySlide.set(currentSlide, drawnIds);
-    const addDrawMask = (group, id, d, length) => {
+    const addDrawAnimation = (group, id, length) => {
       if (drawnIds.has(id)) return;
       drawnIds.add(id);
-      const maskId = `content-split-xr-draw-mask-${id}`;
-      const mask = document.createElementNS('http://www.w3.org/2000/svg', 'mask');
-      mask.id = maskId;
-      mask.setAttribute('maskUnits', 'userSpaceOnUse');
-      mask.setAttribute('x', '0');
-      mask.setAttribute('y', '0');
-      mask.setAttribute('width', pane.offsetWidth);
-      mask.setAttribute('height', pane.offsetHeight);
-      const drawLine = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      drawLine.classList.add('cicd-pipeline-line-draw-mask');
-      drawLine.setAttribute('d', d);
-      drawLine.style.setProperty('--cicd-draw-length', Math.max(1, length));
-      mask.appendChild(drawLine);
-      defs.appendChild(mask);
-      group.setAttribute('mask', `url(#${maskId})`);
+      const paths = [...group.querySelectorAll('.content-split-xr-leader-line')];
+      paths.forEach((path) => {
+        path.style.setProperty('--xr-draw-length', Math.max(1, length));
+        path.classList.add('content-split-xr-leader-line--drawing');
+      });
       const finishDraw = () => {
-        group.removeAttribute('mask');
-        mask.remove();
+        paths.forEach((path) => {
+          path.classList.remove('content-split-xr-leader-line--drawing');
+          path.style.removeProperty('--xr-draw-length');
+        });
       };
-      drawLine.addEventListener('animationend', finishDraw, { once: true });
+      paths.at(-1)?.addEventListener('animationend', finishDraw, { once: true });
       window.setTimeout(finishDraw, 900);
     };
     return routes.map((route) => {
@@ -1095,7 +1088,7 @@ function renderContentSplitCones() {
       line.setAttribute('marker-end', 'url(#content-split-xr-leader-arrowhead)');
       line.setAttribute('d', d);
       group.append(outline, line);
-      addDrawMask(group, `source-${route.sourceIndex}`, d, cubicLength(route.points));
+      if (shouldDrawNow) addDrawAnimation(group, `source-${route.sourceIndex}`, cubicLength(route.points));
       return group;
     });
   };

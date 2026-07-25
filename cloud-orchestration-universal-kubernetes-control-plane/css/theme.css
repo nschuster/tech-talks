@@ -946,6 +946,12 @@ body {
   stroke-width: 9px;
 }
 
+.content-split-xr-leader-line--drawing {
+  stroke-dasharray: var(--xr-draw-length);
+  stroke-dashoffset: var(--xr-draw-length);
+  animation: cicd-pipeline-draw 760ms cubic-bezier(0.58, 0, 0.42, 1) forwards;
+}
+
 .content-split-svg-fragment--3 {
   opacity: 0;
   transition: opacity 0.2s ease;
