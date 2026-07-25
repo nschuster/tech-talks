@@ -693,6 +693,7 @@ body {
 }
 
 .content-split-composite-resource-icon-wrap {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -702,7 +703,25 @@ body {
   min-height: 0;
 }
 
+.content-split-composite-resource-video {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 0;
+  width: min(26rem, 118%);
+  height: min(26rem, 118%);
+  object-fit: cover;
+  object-position: center;
+  transform: translate(-50%, -50%);
+  mix-blend-mode: screen;
+  opacity: 1;
+  filter: brightness(1.18) contrast(1.24) saturate(1.18);
+  pointer-events: none;
+}
+
 .content-split-composite-resource-icon {
+  position: relative;
+  z-index: 1;
   display: block;
   width: min(13.9rem, 74%);
   height: auto;
@@ -910,23 +929,20 @@ body {
 
 .content-split-xr-leader-line {
   fill: none;
-  stroke: #69cdbb;
   stroke-linecap: butt;
   stroke-linejoin: round;
   stroke-dasharray: 30 18;
-  stroke-width: 0.22rem;
-  opacity: 0.94;
   vector-effect: non-scaling-stroke;
   shape-rendering: geometricPrecision;
   animation: cicd-pipeline-dash 1s linear infinite;
-  filter: drop-shadow(0 0 0.28rem rgba(105, 205, 187, 0.42));
 }
 
 .content-split-xr-leader-line--halo {
-  stroke: rgba(18, 26, 56, 0.78);
-  stroke-width: 0.36rem;
-  opacity: 0.8;
-  filter: blur(0.02rem);
+  stroke-width: 17px;
+}
+
+.content-split-xr-leader-line:not(.content-split-xr-leader-line--halo) {
+  stroke-width: 9px;
 }
 
 .content-split-svg-fragment--3 {

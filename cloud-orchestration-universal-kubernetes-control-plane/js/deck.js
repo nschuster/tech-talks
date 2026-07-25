@@ -97,6 +97,7 @@ let capgeminiLogo;
 let confidentialityPatch;
 let cicdLeaderLineLayer;
 let contentSplitConeLayer;
+const contentSplitDrawnXrLeaderIdsBySlide = new WeakMap();
 
 function getConfidentialityPatch() {
   return CONFIDENTIALITY_PATCHES[CONFIDENTIALITY_LEVEL] || CONFIDENTIALITY_PATCHES.SEC1;
@@ -998,7 +999,6 @@ function renderContentSplitCones() {
       .map((element, index) => ({ element, sourceIndex: index + 1 }))
       .filter(({ sourceIndex }) => sourceIndex !== 3 && sourceIndex !== 6);
     const targetRatios = [0.16, 0.3, 0.43, 0.57, 0.7, 0.84];
-    const colors = [kubernetesBlue, kubernetesBlue, crossplaneRed, crossplaneYellow, crossplaneGreen, crossplaneGreen];
     const routes = leaderSources.map(({ element, sourceIndex }, index) => {
       const source = rect(element);
       const start = toPane(source.right, source.top + source.height * 0.5);
@@ -1007,7 +1007,6 @@ function renderContentSplitCones() {
       const verticalNudge = index % 2 === 0 ? -8 : 8;
       return {
         sourceIndex,
-        color: colors[index],
         points: [
           start,
           { x: start.x + dx * 0.32, y: start.y + verticalNudge },
@@ -1016,27 +1015,72 @@ function renderContentSplitCones() {
         ]
       };
     });
-    routes.forEach(({ points, color }, index) => {
-      defs.appendChild(entangledLineGradient({
-        id: `content-split-xr-leader-gradient-${index + 1}`,
-        start: points[0],
-        end: points.at(-1),
-        endColor: color
-      }));
-    });
     const smoothPath = (points) => `M ${points[0].x.toFixed(1)} ${points[0].y.toFixed(1)} C ${points[1].x.toFixed(1)} ${points[1].y.toFixed(1)}, ${points[2].x.toFixed(1)} ${points[2].y.toFixed(1)}, ${points[3].x.toFixed(1)} ${points[3].y.toFixed(1)}`;
-    const makePath = ({ points, sourceIndex }, index, halo = false) => {
-      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      path.classList.add('content-split-xr-leader-line', 'content-split-svg-fragment--3');
-      if (halo) path.classList.add('content-split-xr-leader-line--halo');
-      path.setAttribute(halo ? 'data-xr-leader-halo' : 'data-xr-leader-line', `${sourceIndex}`);
-      if (!halo) path.style.stroke = `url(#content-split-xr-leader-gradient-${index + 1})`;
-      path.setAttribute('d', smoothPath(points));
-      return path;
+    const cubicPoint = (points, t) => {
+      const mt = 1 - t;
+      return {
+        x: (mt ** 3) * points[0].x + 3 * (mt ** 2) * t * points[1].x + 3 * mt * (t ** 2) * points[2].x + (t ** 3) * points[3].x,
+        y: (mt ** 3) * points[0].y + 3 * (mt ** 2) * t * points[1].y + 3 * mt * (t ** 2) * points[2].y + (t ** 3) * points[3].y
+      };
     };
-    const halos = routes.map((route, index) => makePath(route, index, true));
-    const lines = routes.map((route, index) => makePath(route, index));
-    return [...halos, ...lines];
+    const cubicLength = (points) => {
+      let length = 0;
+      let previous = points[0];
+      for (let step = 1; step <= 30; step += 1) {
+        const current = cubicPoint(points, step / 30);
+        length += Math.hypot(current.x - previous.x, current.y - previous.y);
+        previous = current;
+      }
+      return length;
+    };
+    const outlineColor = root.dataset.theme === 'light' ? 'rgba(255, 255, 255, 0.92)' : 'rgba(18, 26, 56, 0.98)';
+    const lineColor = getCicdLineColor();
+    const drawnIds = contentSplitDrawnXrLeaderIdsBySlide.get(currentSlide) || new Set();
+    contentSplitDrawnXrLeaderIdsBySlide.set(currentSlide, drawnIds);
+    const addDrawMask = (group, id, d, length) => {
+      if (drawnIds.has(id)) return;
+      const maskId = `content-split-xr-draw-mask-${id}`;
+      const mask = document.createElementNS('http://www.w3.org/2000/svg', 'mask');
+      mask.id = maskId;
+      mask.setAttribute('maskUnits', 'userSpaceOnUse');
+      mask.setAttribute('x', '0');
+      mask.setAttribute('y', '0');
+      mask.setAttribute('width', pane.offsetWidth);
+      mask.setAttribute('height', pane.offsetHeight);
+      const drawLine = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      drawLine.classList.add('cicd-pipeline-line-draw-mask');
+      drawLine.setAttribute('d', d);
+      drawLine.style.setProperty('--cicd-draw-length', Math.max(1, length));
+      mask.appendChild(drawLine);
+      defs.appendChild(mask);
+      group.setAttribute('mask', `url(#${maskId})`);
+      const finishDraw = () => {
+        drawnIds.add(id);
+        group.removeAttribute('mask');
+        mask.remove();
+      };
+      drawLine.addEventListener('animationend', finishDraw, { once: true });
+      window.setTimeout(finishDraw, 900);
+    };
+    return routes.map((route) => {
+      const d = smoothPath(route.points);
+      const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      group.classList.add('content-split-svg-fragment--3');
+      group.setAttribute('data-xr-leader-group', `${route.sourceIndex}`);
+      const outline = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      outline.classList.add('content-split-xr-leader-line', 'content-split-xr-leader-line--halo');
+      outline.setAttribute('data-xr-leader-halo', `${route.sourceIndex}`);
+      outline.setAttribute('stroke', outlineColor);
+      outline.setAttribute('d', d);
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      line.classList.add('content-split-xr-leader-line');
+      line.setAttribute('data-xr-leader-line', `${route.sourceIndex}`);
+      line.setAttribute('stroke', lineColor);
+      line.setAttribute('d', d);
+      group.append(outline, line);
+      addDrawMask(group, `source-${route.sourceIndex}`, d, cubicLength(route.points));
+      return group;
+    });
   };
   const cone = ({ source, target, direction, id }) => {
     const centerX = source.left + source.width / 2;
@@ -1082,7 +1126,7 @@ function requestContentSplitConeUpdate() {
 }
 
 function updateCicdOverlayVideos() {
-  document.querySelectorAll('.cicd-static-pipeline-video-overlay, .cicd-desired-state-background-video, .limitless-potential-background-video').forEach((video) => {
+  document.querySelectorAll('.cicd-static-pipeline-video-overlay, .cicd-desired-state-background-video, .limitless-potential-background-video, .content-split-composite-resource-video').forEach((video) => {
     if (!(video instanceof HTMLVideoElement)) return;
     const isPresent = video.closest('section')?.classList.contains('present');
     if (isPresent) {
