@@ -2458,10 +2458,6 @@ body {
   opacity: 0.9;
 }
 
-.reveal > .slide-number {
-  display: none !important;
-}
-
 .reveal .progress {
   color: var(--color-primary);
   height: 4px;
