@@ -536,20 +536,20 @@ function renderCicdLeaderLines() {
     cicdLeaderLineLayer.setAttribute('aria-hidden', 'true');
     cicdLeaderLineLayer.innerHTML = `
       <defs>
-        <marker id="cicd-pipeline-arrowhead" markerWidth="20" markerHeight="20" refX="17" refY="10" orient="auto" markerUnits="userSpaceOnUse">
-          <path class="cicd-pipeline-arrowhead-path" d="M 2 2 L 18 10 L 2 18 z"></path>
+        <marker id="cicd-pipeline-arrowhead" viewBox="-8 -8 16 16" markerWidth="20" markerHeight="20" refX="4" refY="0" orient="auto" markerUnits="userSpaceOnUse">
+          <polygon class="cicd-pipeline-arrowhead-path" points="-4,-8 4,0 -4,8 -7,5 -2,0 -7,-5"></polygon>
         </marker>
-        <marker id="cicd-pipeline-arrowhead-static" markerWidth="20" markerHeight="20" refX="17" refY="10" orient="auto" markerUnits="userSpaceOnUse">
-          <path class="cicd-pipeline-arrowhead-path-static" d="M 2 2 L 18 10 L 2 18 z"></path>
+        <marker id="cicd-pipeline-arrowhead-static" viewBox="-8 -8 16 16" markerWidth="20" markerHeight="20" refX="4" refY="0" orient="auto" markerUnits="userSpaceOnUse">
+          <polygon class="cicd-pipeline-arrowhead-path-static" points="-4,-8 4,0 -4,8 -7,5 -2,0 -7,-5"></polygon>
         </marker>
-        <marker id="cicd-pipeline-arrowhead-desired" markerWidth="30" markerHeight="30" refX="26" refY="15" orient="auto" markerUnits="userSpaceOnUse">
-          <path class="cicd-pipeline-arrowhead-path-desired" d="M 3 3 L 27 15 L 3 27 z"></path>
+        <marker id="cicd-pipeline-arrowhead-desired" viewBox="-8 -8 16 16" markerWidth="30" markerHeight="30" refX="4" refY="0" orient="auto" markerUnits="userSpaceOnUse">
+          <polygon class="cicd-pipeline-arrowhead-path-desired" points="-4,-8 4,0 -4,8 -7,5 -2,0 -7,-5"></polygon>
         </marker>
-        <marker id="cicd-pipeline-arrowhead-desired-reverse" markerWidth="30" markerHeight="30" refX="26" refY="15" orient="auto" markerUnits="userSpaceOnUse">
-          <path class="cicd-pipeline-arrowhead-path-desired-reverse" d="M 3 3 L 27 15 L 3 27 z"></path>
+        <marker id="cicd-pipeline-arrowhead-desired-reverse" viewBox="-8 -8 16 16" markerWidth="30" markerHeight="30" refX="4" refY="0" orient="auto" markerUnits="userSpaceOnUse">
+          <polygon class="cicd-pipeline-arrowhead-path-desired-reverse" points="-4,-8 4,0 -4,8 -7,5 -2,0 -7,-5"></polygon>
         </marker>
-        <marker id="cicd-pipeline-arrowhead-muted" markerWidth="20" markerHeight="20" refX="17" refY="10" orient="auto" markerUnits="userSpaceOnUse">
-          <path class="cicd-pipeline-arrowhead-path-muted" d="M 2 2 L 18 10 L 2 18 z"></path>
+        <marker id="cicd-pipeline-arrowhead-muted" viewBox="-8 -8 16 16" markerWidth="20" markerHeight="20" refX="4" refY="0" orient="auto" markerUnits="userSpaceOnUse">
+          <polygon class="cicd-pipeline-arrowhead-path-muted" points="-4,-8 4,0 -4,8 -7,5 -2,0 -7,-5"></polygon>
         </marker>
       </defs>
     `;
@@ -881,6 +881,20 @@ function renderContentSplitCones() {
   const crossplaneGreen = rootStyles.getPropertyValue('--crossplane-green').trim() || '#69cdbb';
   const kubernetesBlue = '#3f67d5';
   const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+  const xrArrowMarker = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
+  xrArrowMarker.id = 'content-split-xr-leader-arrowhead';
+  xrArrowMarker.setAttribute('viewBox', '-8 -8 16 16');
+  xrArrowMarker.setAttribute('markerWidth', '20');
+  xrArrowMarker.setAttribute('markerHeight', '20');
+  xrArrowMarker.setAttribute('refX', '4');
+  xrArrowMarker.setAttribute('refY', '0');
+  xrArrowMarker.setAttribute('orient', 'auto');
+  xrArrowMarker.setAttribute('markerUnits', 'userSpaceOnUse');
+  const xrArrowShape = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+  xrArrowShape.setAttribute('points', '-4,-8 4,0 -4,8 -7,5 -2,0 -7,-5');
+  xrArrowShape.setAttribute('fill', getCicdLineColor());
+  xrArrowMarker.appendChild(xrArrowShape);
+  defs.appendChild(xrArrowMarker);
   const gradient = ({ id, sourceX, targetX, y }) => {
     const gradientElement = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
     gradientElement.id = id;
@@ -1076,6 +1090,7 @@ function renderContentSplitCones() {
       line.classList.add('content-split-xr-leader-line');
       line.setAttribute('data-xr-leader-line', `${route.sourceIndex}`);
       line.setAttribute('stroke', lineColor);
+      line.setAttribute('marker-end', 'url(#content-split-xr-leader-arrowhead)');
       line.setAttribute('d', d);
       group.append(outline, line);
       addDrawMask(group, `source-${route.sourceIndex}`, d, cubicLength(route.points));
@@ -1126,7 +1141,7 @@ function requestContentSplitConeUpdate() {
 }
 
 function updateCicdOverlayVideos() {
-  document.querySelectorAll('.cicd-static-pipeline-video-overlay, .cicd-desired-state-background-video, .limitless-potential-background-video, .content-split-composite-resource-video').forEach((video) => {
+  document.querySelectorAll('.cicd-static-pipeline-video-overlay, .cicd-desired-state-background-video, .limitless-potential-background-video').forEach((video) => {
     if (!(video instanceof HTMLVideoElement)) return;
     const isPresent = video.closest('section')?.classList.contains('present');
     if (isPresent) {
