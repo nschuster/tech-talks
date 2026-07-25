@@ -99,6 +99,7 @@ let cicdLeaderLineLayer;
 let contentSplitConeLayer;
 let contentSplitConeUpdateFrame;
 let contentSplitConeUpdateTimeout;
+let controlsSlideNumber;
 const contentSplitDrawnXrLeaderIdsBySlide = new WeakMap();
 
 function getConfidentialityPatch() {
@@ -134,6 +135,28 @@ function updateMenuThemeButton(theme) {
     button.textContent = `Switch to ${nextTheme} mode`;
     button.setAttribute('aria-label', `Switch to ${nextTheme} mode`);
   });
+}
+
+function ensureControlsSlideNumber() {
+  const controls = document.querySelector('.reveal .controls');
+  if (!controls) return undefined;
+  if (!controlsSlideNumber || controlsSlideNumber.parentElement !== controls) {
+    controlsSlideNumber?.remove();
+    controlsSlideNumber = document.createElement('div');
+    controlsSlideNumber.className = 'controls-slide-number';
+    controlsSlideNumber.setAttribute('aria-live', 'polite');
+    controls.appendChild(controlsSlideNumber);
+  }
+  return controlsSlideNumber;
+}
+
+function updateControlsSlideNumber() {
+  const number = ensureControlsSlideNumber();
+  if (!number) return;
+  const current = deck.getSlidePastCount() + 1;
+  const total = deck.getTotalSlides();
+  number.textContent = `${current} / ${total}`;
+  number.setAttribute('aria-label', `Slide ${current} of ${total}`);
 }
 
 function updateBranding() {
@@ -567,6 +590,37 @@ function renderCicdLeaderLines() {
   cicdLeaderLineLayer.querySelector('.cicd-pipeline-arrowhead-path-muted')?.setAttribute('fill', desiredStateMutedColor);
 
   const activePipelineIds = new Set();
+  const addMovingArrowhead = ({ drawElement, length, fill, ownerGroup }) => {
+    if (!fill || !ownerGroup?.querySelector('.cicd-pipeline-line')?.hasAttribute('marker-end')) return undefined;
+    const arrowhead = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+    arrowhead.classList.add('cicd-pipeline-moving-arrowhead');
+    arrowhead.setAttribute('points', '-4,-8 4,0 -4,8 -7,5 -2,0 -7,-5');
+    arrowhead.setAttribute('fill', fill);
+    cicdLeaderLineLayer.appendChild(arrowhead);
+
+    const duration = 760;
+    const startedAt = window.performance.now();
+    let animationFrame;
+    const place = (progress) => {
+      const distance = Math.max(0, Math.min(length, length * progress));
+      const point = drawElement.getPointAtLength(distance);
+      const previous = drawElement.getPointAtLength(Math.max(0, distance - 2));
+      const next = drawElement.getPointAtLength(Math.min(length, distance + 2));
+      const angle = Math.atan2(next.y - previous.y, next.x - previous.x) * 180 / Math.PI;
+      arrowhead.setAttribute('transform', `translate(${point.x} ${point.y}) rotate(${angle})`);
+    };
+    const tick = (now) => {
+      const progress = Math.min(1, (now - startedAt) / duration);
+      place(progress);
+      if (progress < 1) animationFrame = window.requestAnimationFrame(tick);
+    };
+    place(0);
+    animationFrame = window.requestAnimationFrame(tick);
+    return () => {
+      if (animationFrame) window.cancelAnimationFrame(animationFrame);
+      arrowhead.remove();
+    };
+  };
   const setCommonLineAttributes = (element, stroke) => {
     element.setAttribute('stroke', stroke);
     if (element.classList.contains('cicd-pipeline-line')) {
@@ -651,7 +705,7 @@ function renderCicdLeaderLines() {
     cicdLeaderLineLayer.insertBefore(connectorGroup, firstPrimaryGroup || null);
   };
 
-  const addDrawMask = (group, tagName, attributes, length) => {
+  const addDrawMask = (group, tagName, attributes, length, arrowheadFill) => {
     const defs = cicdLeaderLineLayer.querySelector('defs');
     if (!defs) return;
 
@@ -674,10 +728,12 @@ function renderCicdLeaderLines() {
 
     group.dataset.cicdDrawMaskId = maskId;
     group.classList.add('cicd-pipeline-group--drawing');
+    const cleanupMovingArrowhead = addMovingArrowhead({ drawElement: drawLine, length, fill: arrowheadFill, ownerGroup: group });
     group.setAttribute('mask', `url(#${maskId})`);
     const finishDraw = () => {
       group.removeAttribute('mask');
       group.classList.remove('cicd-pipeline-group--drawing');
+      cleanupMovingArrowhead?.();
       delete group.dataset.cicdDrawMaskId;
       mask.remove();
     };
@@ -733,7 +789,7 @@ function renderCicdLeaderLines() {
       });
       outline.setAttribute('stroke', outlineColor);
       setCommonLineAttributes(line, segmentStroke || (shouldDash ? color : staticColor));
-      if (isNew && shouldDraw) addDrawMask(group, 'line', attrs, Math.hypot(end.x - start.x, end.y - start.y));
+      if (isNew && shouldDraw) addDrawMask(group, 'line', attrs, Math.hypot(end.x - start.x, end.y - start.y), line.getAttribute('stroke'));
     });
   });
 
@@ -798,7 +854,7 @@ function renderCicdLeaderLines() {
       }
       if (isNew && shouldDraw) {
         const segmentLength = length || (line.getTotalLength ? line.getTotalLength() : 1);
-        addDrawMask(group, tagName, attributes, segmentLength);
+        addDrawMask(group, tagName, attributes, segmentLength, line.getAttribute('stroke'));
       }
     });
   });
@@ -1056,6 +1112,41 @@ function renderContentSplitCones() {
     const shouldDrawNow = targetIcon.closest('.content-split-composite-resource-block')?.classList.contains('visible');
     const drawnIds = contentSplitDrawnXrLeaderIdsBySlide.get(currentSlide) || new Set();
     contentSplitDrawnXrLeaderIdsBySlide.set(currentSlide, drawnIds);
+    const addXrMovingArrowhead = ({ drawElement, length, fill, ownerGroup }) => {
+      if (!fill || !ownerGroup?.querySelector('.content-split-xr-leader-line:not(.content-split-xr-leader-line--halo)')?.hasAttribute('marker-end')) return undefined;
+      const arrowhead = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+      arrowhead.classList.add('content-split-xr-leader-moving-arrowhead');
+      arrowhead.setAttribute('points', '-4,-8 4,0 -4,8 -7,5 -2,0 -7,-5');
+      arrowhead.setAttribute('fill', fill);
+      let appendFrame = window.requestAnimationFrame(() => {
+        appendFrame = undefined;
+        contentSplitConeLayer.appendChild(arrowhead);
+      });
+
+      const duration = 760;
+      const startedAt = window.performance.now();
+      let animationFrame;
+      const place = (progress) => {
+        const distance = Math.max(0, Math.min(length, length * progress));
+        const point = drawElement.getPointAtLength(distance);
+        const previous = drawElement.getPointAtLength(Math.max(0, distance - 2));
+        const next = drawElement.getPointAtLength(Math.min(length, distance + 2));
+        const angle = Math.atan2(next.y - previous.y, next.x - previous.x) * 180 / Math.PI;
+        arrowhead.setAttribute('transform', `translate(${point.x} ${point.y}) rotate(${angle})`);
+      };
+      const tick = (now) => {
+        const progress = Math.min(1, (now - startedAt) / duration);
+        place(progress);
+        if (progress < 1) animationFrame = window.requestAnimationFrame(tick);
+      };
+      place(0);
+      animationFrame = window.requestAnimationFrame(tick);
+      return () => {
+        if (appendFrame) window.cancelAnimationFrame(appendFrame);
+        if (animationFrame) window.cancelAnimationFrame(animationFrame);
+        arrowhead.remove();
+      };
+    };
     const addDrawAnimation = (group, id, d, length) => {
       if (drawnIds.has(id)) return;
       drawnIds.add(id);
@@ -1074,10 +1165,12 @@ function renderContentSplitCones() {
       mask.appendChild(drawPath);
       defs.appendChild(mask);
       group.classList.add('content-split-xr-leader-group--drawing');
+      const cleanupMovingArrowhead = addXrMovingArrowhead({ drawElement: drawPath, length, fill: lineColor, ownerGroup: group });
       group.setAttribute('mask', `url(#${maskId})`);
       const finishDraw = () => {
         group.removeAttribute('mask');
         group.classList.remove('content-split-xr-leader-group--drawing');
+        cleanupMovingArrowhead?.();
         mask.remove();
       };
       drawPath.addEventListener('animationend', finishDraw, { once: true });
@@ -1171,12 +1264,14 @@ function toggleTheme() {
 setTheme(localStorage.getItem('tech-talks-theme') || root.dataset.theme || 'dark');
 deck.on('ready', () => {
   updateBranding();
+  updateControlsSlideNumber();
   updateCicdOverlayVideos();
   requestCicdLeaderLineUpdate();
   requestContentSplitConeUpdate();
 });
 deck.on('slidechanged', () => {
   updateBranding();
+  updateControlsSlideNumber();
   updateCicdOverlayVideos();
   requestCicdLeaderLineUpdate();
   requestContentSplitConeUpdate();

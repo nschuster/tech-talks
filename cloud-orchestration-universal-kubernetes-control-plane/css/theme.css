@@ -950,6 +950,10 @@ body {
   marker-end: none;
 }
 
+.content-split-xr-leader-moving-arrowhead {
+  pointer-events: none;
+}
+
 .content-split-xr-leader-draw-mask {
   fill: none;
   stroke: #ffffff;
@@ -1093,6 +1097,12 @@ body {
 
 .content-split-resource-grid--generic img {
   filter: brightness(0) invert(1);
+}
+
+.content-split-grid-spacer {
+  display: block;
+  width: 2.65rem;
+  height: 2.65rem;
 }
 
 .resource-glyph {
@@ -2103,6 +2113,10 @@ body {
   marker-end: none;
 }
 
+.cicd-pipeline-moving-arrowhead {
+  pointer-events: none;
+}
+
 .cicd-control-plane-marker-connector {
   stroke-width: 8px;
   stroke-linecap: round;
@@ -2457,4 +2471,29 @@ body {
   .reveal section {
     padding: 2.25rem 2rem;
   }
+}
+
+.reveal .controls .controls-slide-number {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 2;
+  min-width: 3.6em;
+  padding: 0.24em 0.34em;
+  border-radius: 999px;
+  background: rgba(18, 26, 56, 0.72);
+  color: var(--capgemini-white);
+  font-family: var(--font-body);
+  font-size: 0.34em;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  box-shadow: 0 0.12em 0.36em rgba(0, 0, 0, 0.32);
+}
+
+:root[data-theme="light"] .reveal .controls .controls-slide-number {
+  background: rgba(255, 255, 255, 0.88);
+  color: var(--capgemini-dark-blue);
 }
