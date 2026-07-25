@@ -47,7 +47,7 @@ const deck = new Reveal({
   hash: true,
   controls: true,
   progress: true,
-  slideNumber: true,
+  slideNumber: false,
   center: false,
   width: 1920,
   height: 1080,
@@ -101,6 +101,7 @@ let contentSplitConeUpdateFrame;
 let contentSplitConeUpdateTimeout;
 let controlsSlideNumber;
 const contentSplitDrawnXrLeaderIdsBySlide = new WeakMap();
+const contentSplitXrLeaderDrawStartsBySlide = new WeakMap();
 
 function getConfidentialityPatch() {
   return CONFIDENTIALITY_PATCHES[CONFIDENTIALITY_LEVEL] || CONFIDENTIALITY_PATCHES.SEC1;
@@ -590,6 +591,13 @@ function renderCicdLeaderLines() {
   cicdLeaderLineLayer.querySelector('.cicd-pipeline-arrowhead-path-muted')?.setAttribute('fill', desiredStateMutedColor);
 
   const activePipelineIds = new Set();
+  const getDrawProgress = (drawElement, length, startedAt, fallbackDuration = 760) => {
+    const dashOffset = Number.parseFloat(window.getComputedStyle(drawElement).strokeDashoffset);
+    if (Number.isFinite(dashOffset)) {
+      return Math.max(0, Math.min(1, 1 - (dashOffset / Math.max(1, length))));
+    }
+    return Math.min(1, (window.performance.now() - startedAt) / fallbackDuration);
+  };
   const addMovingArrowhead = ({ drawElement, length, fill, ownerGroup }) => {
     if (!fill || !ownerGroup?.querySelector('.cicd-pipeline-line')?.hasAttribute('marker-end')) return undefined;
     const arrowhead = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
@@ -598,7 +606,6 @@ function renderCicdLeaderLines() {
     arrowhead.setAttribute('fill', fill);
     cicdLeaderLineLayer.appendChild(arrowhead);
 
-    const duration = 760;
     const startedAt = window.performance.now();
     let animationFrame;
     const place = (progress) => {
@@ -609,8 +616,8 @@ function renderCicdLeaderLines() {
       const angle = Math.atan2(next.y - previous.y, next.x - previous.x) * 180 / Math.PI;
       arrowhead.setAttribute('transform', `translate(${point.x} ${point.y}) rotate(${angle})`);
     };
-    const tick = (now) => {
-      const progress = Math.min(1, (now - startedAt) / duration);
+    const tick = () => {
+      const progress = getDrawProgress(drawElement, length, startedAt);
       place(progress);
       if (progress < 1) animationFrame = window.requestAnimationFrame(tick);
     };
@@ -722,13 +729,14 @@ function renderCicdLeaderLines() {
     const drawLine = document.createElementNS('http://www.w3.org/2000/svg', tagName);
     drawLine.classList.add('cicd-pipeline-line-draw-mask');
     Object.entries(attributes).forEach(([name, value]) => drawLine.setAttribute(name, value));
-    drawLine.style.setProperty('--cicd-draw-length', Math.max(1, length));
     mask.appendChild(drawLine);
+    const preciseLength = drawLine.getTotalLength ? drawLine.getTotalLength() : length;
+    drawLine.style.setProperty('--cicd-draw-length', Math.max(1, preciseLength));
     defs.appendChild(mask);
 
     group.dataset.cicdDrawMaskId = maskId;
     group.classList.add('cicd-pipeline-group--drawing');
-    const cleanupMovingArrowhead = addMovingArrowhead({ drawElement: drawLine, length, fill: arrowheadFill, ownerGroup: group });
+    const cleanupMovingArrowhead = addMovingArrowhead({ drawElement: drawLine, length: preciseLength, fill: arrowheadFill, ownerGroup: group });
     group.setAttribute('mask', `url(#${maskId})`);
     const finishDraw = () => {
       group.removeAttribute('mask');
@@ -1112,7 +1120,16 @@ function renderContentSplitCones() {
     const shouldDrawNow = targetIcon.closest('.content-split-composite-resource-block')?.classList.contains('visible');
     const drawnIds = contentSplitDrawnXrLeaderIdsBySlide.get(currentSlide) || new Set();
     contentSplitDrawnXrLeaderIdsBySlide.set(currentSlide, drawnIds);
-    const addXrMovingArrowhead = ({ drawElement, length, fill, ownerGroup }) => {
+    const drawStarts = contentSplitXrLeaderDrawStartsBySlide.get(currentSlide) || new Map();
+    contentSplitXrLeaderDrawStartsBySlide.set(currentSlide, drawStarts);
+    const getXrDrawProgress = (drawElement, length, startedAt, fallbackDuration = 760) => {
+      const dashOffset = Number.parseFloat(window.getComputedStyle(drawElement).strokeDashoffset);
+      if (Number.isFinite(dashOffset)) {
+        return Math.max(0, Math.min(1, 1 - (dashOffset / Math.max(1, length))));
+      }
+      return Math.min(1, (window.performance.now() - startedAt) / fallbackDuration);
+    };
+    const addXrMovingArrowhead = ({ drawElement, length, fill, ownerGroup, startedAt = window.performance.now() }) => {
       if (!fill || !ownerGroup?.querySelector('.content-split-xr-leader-line:not(.content-split-xr-leader-line--halo)')?.hasAttribute('marker-end')) return undefined;
       const arrowhead = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
       arrowhead.classList.add('content-split-xr-leader-moving-arrowhead');
@@ -1123,8 +1140,6 @@ function renderContentSplitCones() {
         contentSplitConeLayer.appendChild(arrowhead);
       });
 
-      const duration = 760;
-      const startedAt = window.performance.now();
       let animationFrame;
       const place = (progress) => {
         const distance = Math.max(0, Math.min(length, length * progress));
@@ -1134,8 +1149,8 @@ function renderContentSplitCones() {
         const angle = Math.atan2(next.y - previous.y, next.x - previous.x) * 180 / Math.PI;
         arrowhead.setAttribute('transform', `translate(${point.x} ${point.y}) rotate(${angle})`);
       };
-      const tick = (now) => {
-        const progress = Math.min(1, (now - startedAt) / duration);
+      const tick = () => {
+        const progress = getXrDrawProgress(drawElement, length, startedAt);
         place(progress);
         if (progress < 1) animationFrame = window.requestAnimationFrame(tick);
       };
@@ -1149,7 +1164,16 @@ function renderContentSplitCones() {
     };
     const addDrawAnimation = (group, id, d, length) => {
       if (drawnIds.has(id)) return;
-      drawnIds.add(id);
+      const drawDuration = 760;
+      const now = window.performance.now();
+      const startedAt = drawStarts.get(id) ?? now;
+      const elapsed = now - startedAt;
+      if (elapsed >= drawDuration) {
+        drawnIds.add(id);
+        drawStarts.delete(id);
+        return;
+      }
+      drawStarts.set(id, startedAt);
       const maskId = `content-split-xr-leader-draw-mask-${id.replace(/[^a-z0-9_-]/gi, '-')}`;
       const mask = document.createElementNS('http://www.w3.org/2000/svg', 'mask');
       mask.id = maskId;
@@ -1161,16 +1185,20 @@ function renderContentSplitCones() {
       const drawPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       drawPath.classList.add('content-split-xr-leader-draw-mask');
       drawPath.setAttribute('d', d);
-      drawPath.style.setProperty('--cicd-draw-length', Math.max(1, length));
       mask.appendChild(drawPath);
+      const preciseLength = drawPath.getTotalLength ? drawPath.getTotalLength() : length;
+      drawPath.style.setProperty('--cicd-draw-length', Math.max(1, preciseLength));
+      drawPath.style.animationDelay = `${-elapsed}ms`;
       defs.appendChild(mask);
       group.classList.add('content-split-xr-leader-group--drawing');
-      const cleanupMovingArrowhead = addXrMovingArrowhead({ drawElement: drawPath, length, fill: lineColor, ownerGroup: group });
+      const cleanupMovingArrowhead = addXrMovingArrowhead({ drawElement: drawPath, length: preciseLength, fill: lineColor, ownerGroup: group, startedAt });
       group.setAttribute('mask', `url(#${maskId})`);
       const finishDraw = () => {
         group.removeAttribute('mask');
         group.classList.remove('content-split-xr-leader-group--drawing');
         cleanupMovingArrowhead?.();
+        drawnIds.add(id);
+        drawStarts.delete(id);
         mask.remove();
       };
       drawPath.addEventListener('animationend', finishDraw, { once: true });
