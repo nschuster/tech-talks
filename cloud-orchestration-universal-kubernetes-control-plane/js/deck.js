@@ -1008,7 +1008,7 @@ function renderContentSplitCones() {
   const xrLeaderLines = ({ sourceIcons, targetIcon }) => {
     if (!targetIcon || sourceIcons.length < 8) return [];
     const target = rect(targetIcon);
-    const targetPoint = (yRatio) => toPane(target.left + target.width * 0.08, target.top + target.height * yRatio);
+    const targetPoint = (yRatio) => toPane(target.left + target.width * 0.54, target.top + target.height * yRatio);
     const leaderSources = sourceIcons
       .map((element, index) => ({ element, sourceIndex: index + 1 }))
       .filter(({ sourceIndex }) => sourceIndex !== 3 && sourceIndex !== 6);

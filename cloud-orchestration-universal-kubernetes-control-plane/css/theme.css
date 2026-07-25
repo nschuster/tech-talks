@@ -555,6 +555,7 @@ body {
 .content-split-orientation-pane--left {
   grid-column: 2;
   position: relative;
+  z-index: 3;
   padding: 0;
   box-sizing: border-box;
 }
@@ -703,24 +704,6 @@ body {
   min-height: 0;
 }
 
-.content-split-composite-resource-icon-wrap::before {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  z-index: 0;
-  width: min(15.3rem, 82%);
-  height: min(15.3rem, 82%);
-  content: "";
-  border-radius: 35%;
-  background:
-    conic-gradient(from 220deg, var(--crossplane-red), var(--crossplane-yellow), var(--crossplane-green), var(--crossplane-red));
-  transform: translate(-50%, -50%);
-  opacity: 0.78;
-  filter: blur(1.05rem) saturate(1.28);
-  mix-blend-mode: screen;
-  pointer-events: none;
-}
-
 .content-split-composite-resource-icon {
   position: relative;
   z-index: 1;
@@ -729,11 +712,23 @@ body {
   height: auto;
   max-height: 14.88rem;
   object-fit: contain;
-  filter:
-    drop-shadow(0 0 0.42rem rgba(228, 134, 127, 0.8))
-    drop-shadow(0 0 0.62rem rgba(247, 207, 90, 0.62))
-    drop-shadow(0 0 0.82rem rgba(105, 205, 187, 0.66))
-    drop-shadow(0 0.65rem 1.35rem rgba(0, 0, 0, 0.28));
+  filter: drop-shadow(0 0.65rem 1.35rem rgba(0, 0, 0, 0.28));
+}
+
+.content-split-composite-resource-badge {
+  position: absolute;
+  right: calc(50% - min(5.56rem, 29.6%) - 0.38rem);
+  bottom: calc(50% - min(7.44rem, 29.6%) + 1.42rem);
+  z-index: 2;
+  display: block;
+  width: 3.15rem;
+  height: 3.15rem;
+  padding: 0.24rem;
+  border-radius: 50%;
+  background: rgba(18, 26, 56, 0.94);
+  box-shadow: 0 0 0 0.08rem rgba(255, 255, 255, 0.9), 0 0.22rem 0.58rem rgba(0, 0, 0, 0.32);
+  object-fit: contain;
+  box-sizing: border-box;
 }
 
 .content-split-managed-resources-code .hljs-attr,
