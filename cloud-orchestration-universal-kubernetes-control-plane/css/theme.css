@@ -946,6 +946,10 @@ body {
   stroke-width: 9px;
 }
 
+.content-split-xr-leader-group--drawing .content-split-xr-leader-line:not(.content-split-xr-leader-line--halo) {
+  marker-end: none;
+}
+
 .content-split-xr-leader-draw-mask {
   fill: none;
   stroke: #ffffff;
@@ -1085,6 +1089,10 @@ body {
   width: 2.65rem;
   height: 2.65rem;
   object-fit: contain;
+}
+
+.content-split-resource-grid--generic img {
+  filter: brightness(0) invert(1);
 }
 
 .resource-glyph {
@@ -2089,6 +2097,10 @@ body {
 
 .cicd-pipeline-line {
   stroke-width: 9px;
+}
+
+.cicd-pipeline-group--drawing .cicd-pipeline-line {
+  marker-end: none;
 }
 
 .cicd-control-plane-marker-connector {

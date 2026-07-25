@@ -673,9 +673,11 @@ function renderCicdLeaderLines() {
     defs.appendChild(mask);
 
     group.dataset.cicdDrawMaskId = maskId;
+    group.classList.add('cicd-pipeline-group--drawing');
     group.setAttribute('mask', `url(#${maskId})`);
     const finishDraw = () => {
       group.removeAttribute('mask');
+      group.classList.remove('cicd-pipeline-group--drawing');
       delete group.dataset.cicdDrawMaskId;
       mask.remove();
     };
@@ -1071,9 +1073,11 @@ function renderContentSplitCones() {
       drawPath.style.setProperty('--cicd-draw-length', Math.max(1, length));
       mask.appendChild(drawPath);
       defs.appendChild(mask);
+      group.classList.add('content-split-xr-leader-group--drawing');
       group.setAttribute('mask', `url(#${maskId})`);
       const finishDraw = () => {
         group.removeAttribute('mask');
+        group.classList.remove('content-split-xr-leader-group--drawing');
         mask.remove();
       };
       drawPath.addEventListener('animationend', finishDraw, { once: true });
