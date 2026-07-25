@@ -307,7 +307,6 @@ function renderCicdLeaderLines() {
   const singlePipelineMode = currentSlide.classList.contains('cicd-antipattern-slide--single-pipeline');
   const staticBasisMode = currentSlide.classList.contains('cicd-antipattern-slide--single-pipeline-basis');
   const nextSlideBaseMode = currentSlide.classList.contains('cicd-antipattern-slide--next-slide-base');
-  const skipPipelineDraw = currentSlide.classList.contains('cicd-antipattern-slide--no-pipeline-draw');
   const currentFragment = deck.getIndices().f ?? -1;
   const showAllPipelines = staticBasisMode && !nextSlideBaseMode;
   const isFragmentVisible = (fragmentIndex) => showAllPipelines || currentFragment >= fragmentIndex;
@@ -673,68 +672,27 @@ function renderCicdLeaderLines() {
     cicdLeaderLineLayer.insertBefore(connectorGroup, firstPrimaryGroup || null);
   };
 
-  const addDrawMask = (group, tagName, attributes, length) => {
-    const defs = cicdLeaderLineLayer.querySelector('defs');
-    if (!defs) return;
-
-    group.dataset.cicdDrawMaskId && document.getElementById(group.dataset.cicdDrawMaskId)?.remove();
-    const maskId = `cicd-pipeline-draw-mask-${group.dataset.cicdPipelineId.replace(/[^a-z0-9_-]/gi, '-')}`;
-    const mask = document.createElementNS('http://www.w3.org/2000/svg', 'mask');
-    mask.id = maskId;
-    mask.setAttribute('maskUnits', 'userSpaceOnUse');
-    mask.setAttribute('x', '0');
-    mask.setAttribute('y', '0');
-    mask.setAttribute('width', grid.offsetWidth);
-    mask.setAttribute('height', grid.offsetHeight);
-
-    const drawLine = document.createElementNS('http://www.w3.org/2000/svg', tagName);
-    drawLine.classList.add('cicd-pipeline-line-draw-mask');
-    Object.entries(attributes).forEach(([name, value]) => drawLine.setAttribute(name, value));
-    drawLine.style.setProperty('--cicd-draw-length', Math.max(1, length));
-    mask.appendChild(drawLine);
-    defs.appendChild(mask);
-
-    group.dataset.cicdDrawMaskId = maskId;
-    group.classList.add('cicd-pipeline-group--drawing');
-    group.setAttribute('mask', `url(#${maskId})`);
-    const finishDraw = () => {
-      group.removeAttribute('mask');
-      group.classList.remove('cicd-pipeline-group--drawing');
-      delete group.dataset.cicdDrawMaskId;
-      mask.remove();
-    };
-    drawLine.addEventListener('animationend', finishDraw, { once: true });
-    window.setTimeout(finishDraw, 900);
-  };
   const ensurePipelineGroup = (id) => {
     activePipelineIds.add(id);
     let group = cicdLeaderLineLayer.querySelector(`[data-cicd-pipeline-id="${id}"]`);
-    const isNew = !group;
     if (!group) {
       group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
       group.dataset.cicdPipelineId = id;
       group.classList.add('cicd-pipeline-group');
       cicdLeaderLineLayer.appendChild(group);
     }
-    return { group, isNew };
+    return group;
   };
   const isSourceToRegistryGroup = (pipelineGroupId) => pipelineGroupId.startsWith('source-to-registry-');
   const shouldDashPipelineGroup = (pipelineGroupId) => {
     return !staticBasisMode || isSourceToRegistryGroup(pipelineGroupId);
   };
-  const shouldDrawPipelineGroup = (pipelineGroupId) => {
-    if (skipPipelineDraw) return false;
-    if (nextSlideBaseMode && isSourceToRegistryGroup(pipelineGroupId)) return false;
-    return !staticBasisMode || isSourceToRegistryGroup(pipelineGroupId);
-  };
-
   pipelines.forEach(({ id, points, segmentStrokes = [] }) => {
     const segments = points.slice(0, -1).map((point, index) => [point, points[index + 1], `${id}-${index}`, segmentStrokes[index]]);
 
     segments.forEach(([start, end, segmentId, segmentStroke]) => {
-      const { group, isNew } = ensurePipelineGroup(segmentId);
+      const group = ensurePipelineGroup(segmentId);
       const shouldDash = shouldDashPipelineGroup(segmentId);
-      const shouldDraw = shouldDrawPipelineGroup(segmentId);
       group.classList.toggle('cicd-pipeline-group--static', !shouldDash);
       let outline = group.querySelector('.cicd-pipeline-line-outline');
       let line = group.querySelector('.cicd-pipeline-line');
@@ -755,7 +713,6 @@ function renderCicdLeaderLines() {
       });
       outline.setAttribute('stroke', outlineColor);
       setCommonLineAttributes(line, segmentStroke || (shouldDash ? color : staticColor));
-      if (isNew && shouldDraw) addDrawMask(group, 'line', attrs, Math.hypot(end.x - start.x, end.y - start.y));
     });
   });
 
@@ -763,9 +720,8 @@ function renderCicdLeaderLines() {
     const segmentNames = ['start', 'curve', 'end'];
     segments.forEach(({ kind, attributes, length, stroke }, index) => {
       const segmentId = `${id}-${segmentNames[index] || index}`;
-      const { group, isNew } = ensurePipelineGroup(segmentId);
+      const group = ensurePipelineGroup(segmentId);
       const shouldDash = shouldDashPipelineGroup(segmentId);
-      const shouldDraw = shouldDrawPipelineGroup(segmentId);
       group.classList.toggle('cicd-pipeline-group--static', !shouldDash);
       const tagName = kind === 'path' ? 'path' : 'line';
       let outline = group.querySelector('.cicd-pipeline-line-outline');
@@ -818,16 +774,11 @@ function renderCicdLeaderLines() {
             group.appendChild(marker);
           });
       }
-      if (isNew && shouldDraw) {
-        const segmentLength = length || (line.getTotalLength ? line.getTotalLength() : 1);
-        addDrawMask(group, tagName, attributes, segmentLength);
-      }
     });
   });
 
   cicdLeaderLineLayer.querySelectorAll('.cicd-pipeline-group').forEach((group) => {
     if (!activePipelineIds.has(group.dataset.cicdPipelineId)) {
-      group.dataset.cicdDrawMaskId && document.getElementById(group.dataset.cicdDrawMaskId)?.remove();
       group.remove();
     }
   });
