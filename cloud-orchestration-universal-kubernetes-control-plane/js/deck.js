@@ -590,37 +590,6 @@ function renderCicdLeaderLines() {
   cicdLeaderLineLayer.querySelector('.cicd-pipeline-arrowhead-path-muted')?.setAttribute('fill', desiredStateMutedColor);
 
   const activePipelineIds = new Set();
-  const addMovingArrowhead = ({ drawElement, length, fill, ownerGroup }) => {
-    if (!fill || !ownerGroup?.querySelector('.cicd-pipeline-line')?.hasAttribute('marker-end')) return undefined;
-    const arrowhead = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-    arrowhead.classList.add('cicd-pipeline-moving-arrowhead');
-    arrowhead.setAttribute('points', '-4,-8 4,0 -4,8 -7,5 -2,0 -7,-5');
-    arrowhead.setAttribute('fill', fill);
-    cicdLeaderLineLayer.appendChild(arrowhead);
-
-    const duration = 760;
-    const startedAt = window.performance.now();
-    let animationFrame;
-    const place = (progress) => {
-      const distance = Math.max(0, Math.min(length, length * progress));
-      const point = drawElement.getPointAtLength(distance);
-      const previous = drawElement.getPointAtLength(Math.max(0, distance - 2));
-      const next = drawElement.getPointAtLength(Math.min(length, distance + 2));
-      const angle = Math.atan2(next.y - previous.y, next.x - previous.x) * 180 / Math.PI;
-      arrowhead.setAttribute('transform', `translate(${point.x} ${point.y}) rotate(${angle})`);
-    };
-    const tick = (now) => {
-      const progress = Math.min(1, (now - startedAt) / duration);
-      place(progress);
-      if (progress < 1) animationFrame = window.requestAnimationFrame(tick);
-    };
-    place(0);
-    animationFrame = window.requestAnimationFrame(tick);
-    return () => {
-      if (animationFrame) window.cancelAnimationFrame(animationFrame);
-      arrowhead.remove();
-    };
-  };
   const setCommonLineAttributes = (element, stroke) => {
     element.setAttribute('stroke', stroke);
     if (element.classList.contains('cicd-pipeline-line')) {
@@ -705,7 +674,7 @@ function renderCicdLeaderLines() {
     cicdLeaderLineLayer.insertBefore(connectorGroup, firstPrimaryGroup || null);
   };
 
-  const addDrawMask = (group, tagName, attributes, length, arrowheadFill) => {
+  const addDrawMask = (group, tagName, attributes, length) => {
     const defs = cicdLeaderLineLayer.querySelector('defs');
     if (!defs) return;
 
@@ -728,12 +697,10 @@ function renderCicdLeaderLines() {
 
     group.dataset.cicdDrawMaskId = maskId;
     group.classList.add('cicd-pipeline-group--drawing');
-    const cleanupMovingArrowhead = addMovingArrowhead({ drawElement: drawLine, length, fill: arrowheadFill, ownerGroup: group });
     group.setAttribute('mask', `url(#${maskId})`);
     const finishDraw = () => {
       group.removeAttribute('mask');
       group.classList.remove('cicd-pipeline-group--drawing');
-      cleanupMovingArrowhead?.();
       delete group.dataset.cicdDrawMaskId;
       mask.remove();
     };
@@ -789,7 +756,7 @@ function renderCicdLeaderLines() {
       });
       outline.setAttribute('stroke', outlineColor);
       setCommonLineAttributes(line, segmentStroke || (shouldDash ? color : staticColor));
-      if (isNew && shouldDraw) addDrawMask(group, 'line', attrs, Math.hypot(end.x - start.x, end.y - start.y), line.getAttribute('stroke'));
+      if (isNew && shouldDraw) addDrawMask(group, 'line', attrs, Math.hypot(end.x - start.x, end.y - start.y));
     });
   });
 
@@ -854,7 +821,7 @@ function renderCicdLeaderLines() {
       }
       if (isNew && shouldDraw) {
         const segmentLength = length || (line.getTotalLength ? line.getTotalLength() : 1);
-        addDrawMask(group, tagName, attributes, segmentLength, line.getAttribute('stroke'));
+        addDrawMask(group, tagName, attributes, segmentLength);
       }
     });
   });
@@ -896,6 +863,9 @@ function renderContentSplitCones() {
   if (!currentSlide?.classList.contains('content-split-orientation-slide')) {
     contentSplitConeLayer?.remove();
     contentSplitConeLayer = undefined;
+    return;
+  }
+  if (contentSplitConeLayer?.closest('section') === currentSlide && contentSplitConeLayer.querySelector('.content-split-xr-leader-group--drawing')) {
     return;
   }
 
@@ -1090,66 +1060,13 @@ function renderContentSplitCones() {
       };
     });
     const smoothPath = (points) => `M ${points[0].x.toFixed(1)} ${points[0].y.toFixed(1)} C ${points[1].x.toFixed(1)} ${points[1].y.toFixed(1)}, ${points[2].x.toFixed(1)} ${points[2].y.toFixed(1)}, ${points[3].x.toFixed(1)} ${points[3].y.toFixed(1)}`;
-    const cubicPoint = (points, t) => {
-      const mt = 1 - t;
-      return {
-        x: (mt ** 3) * points[0].x + 3 * (mt ** 2) * t * points[1].x + 3 * mt * (t ** 2) * points[2].x + (t ** 3) * points[3].x,
-        y: (mt ** 3) * points[0].y + 3 * (mt ** 2) * t * points[1].y + 3 * mt * (t ** 2) * points[2].y + (t ** 3) * points[3].y
-      };
-    };
-    const cubicLength = (points) => {
-      let length = 0;
-      let previous = points[0];
-      for (let step = 1; step <= 30; step += 1) {
-        const current = cubicPoint(points, step / 30);
-        length += Math.hypot(current.x - previous.x, current.y - previous.y);
-        previous = current;
-      }
-      return length;
-    };
     const outlineColor = root.dataset.theme === 'light' ? 'rgba(255, 255, 255, 0.92)' : 'rgba(18, 26, 56, 0.98)';
     const lineColor = getCicdLineColor();
     const shouldDrawNow = targetIcon.closest('.content-split-composite-resource-block')?.classList.contains('visible');
     const drawnIds = contentSplitDrawnXrLeaderIdsBySlide.get(currentSlide) || new Set();
     contentSplitDrawnXrLeaderIdsBySlide.set(currentSlide, drawnIds);
-    const addXrMovingArrowhead = ({ drawElement, length, fill, ownerGroup }) => {
-      if (!fill || !ownerGroup?.querySelector('.content-split-xr-leader-line:not(.content-split-xr-leader-line--halo)')?.hasAttribute('marker-end')) return undefined;
-      const arrowhead = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-      arrowhead.classList.add('content-split-xr-leader-moving-arrowhead');
-      arrowhead.setAttribute('points', '-4,-8 4,0 -4,8 -7,5 -2,0 -7,-5');
-      arrowhead.setAttribute('fill', fill);
-      let appendFrame = window.requestAnimationFrame(() => {
-        appendFrame = undefined;
-        contentSplitConeLayer.appendChild(arrowhead);
-      });
-
-      const duration = 760;
-      const startedAt = window.performance.now();
-      let animationFrame;
-      const place = (progress) => {
-        const distance = Math.max(0, Math.min(length, length * progress));
-        const point = drawElement.getPointAtLength(distance);
-        const previous = drawElement.getPointAtLength(Math.max(0, distance - 2));
-        const next = drawElement.getPointAtLength(Math.min(length, distance + 2));
-        const angle = Math.atan2(next.y - previous.y, next.x - previous.x) * 180 / Math.PI;
-        arrowhead.setAttribute('transform', `translate(${point.x} ${point.y}) rotate(${angle})`);
-      };
-      const tick = (now) => {
-        const progress = Math.min(1, (now - startedAt) / duration);
-        place(progress);
-        if (progress < 1) animationFrame = window.requestAnimationFrame(tick);
-      };
-      place(0);
-      animationFrame = window.requestAnimationFrame(tick);
-      return () => {
-        if (appendFrame) window.cancelAnimationFrame(appendFrame);
-        if (animationFrame) window.cancelAnimationFrame(animationFrame);
-        arrowhead.remove();
-      };
-    };
-    const addDrawAnimation = (group, id, d, length) => {
+    const addDrawAnimation = (group, id, d) => {
       if (drawnIds.has(id)) return;
-      drawnIds.add(id);
       const maskId = `content-split-xr-leader-draw-mask-${id.replace(/[^a-z0-9_-]/gi, '-')}`;
       const mask = document.createElementNS('http://www.w3.org/2000/svg', 'mask');
       mask.id = maskId;
@@ -1161,16 +1078,15 @@ function renderContentSplitCones() {
       const drawPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       drawPath.classList.add('content-split-xr-leader-draw-mask');
       drawPath.setAttribute('d', d);
-      drawPath.style.setProperty('--cicd-draw-length', Math.max(1, length));
       mask.appendChild(drawPath);
+      drawPath.style.setProperty('--cicd-draw-length', Math.max(1, drawPath.getTotalLength ? drawPath.getTotalLength() : 1));
       defs.appendChild(mask);
       group.classList.add('content-split-xr-leader-group--drawing');
-      const cleanupMovingArrowhead = addXrMovingArrowhead({ drawElement: drawPath, length, fill: lineColor, ownerGroup: group });
       group.setAttribute('mask', `url(#${maskId})`);
       const finishDraw = () => {
         group.removeAttribute('mask');
         group.classList.remove('content-split-xr-leader-group--drawing');
-        cleanupMovingArrowhead?.();
+        drawnIds.add(id);
         mask.remove();
       };
       drawPath.addEventListener('animationend', finishDraw, { once: true });
@@ -1193,7 +1109,7 @@ function renderContentSplitCones() {
       line.setAttribute('marker-end', 'url(#content-split-xr-leader-arrowhead)');
       line.setAttribute('d', d);
       group.append(outline, line);
-      if (shouldDrawNow) addDrawAnimation(group, `source-${route.sourceIndex}`, d, cubicLength(route.points));
+      if (shouldDrawNow) addDrawAnimation(group, `source-${route.sourceIndex}`, d);
       return group;
     });
   };

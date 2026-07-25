@@ -950,10 +950,6 @@ body {
   marker-end: none;
 }
 
-.content-split-xr-leader-moving-arrowhead {
-  pointer-events: none;
-}
-
 .content-split-xr-leader-draw-mask {
   fill: none;
   stroke: #ffffff;
@@ -2111,10 +2107,6 @@ body {
 
 .cicd-pipeline-group--drawing .cicd-pipeline-line {
   marker-end: none;
-}
-
-.cicd-pipeline-moving-arrowhead {
-  pointer-events: none;
 }
 
 .cicd-control-plane-marker-connector {
