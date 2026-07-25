@@ -97,6 +97,8 @@ let capgeminiLogo;
 let confidentialityPatch;
 let cicdLeaderLineLayer;
 let contentSplitConeLayer;
+let contentSplitConeUpdateFrame;
+let contentSplitConeUpdateTimeout;
 const contentSplitDrawnXrLeaderIdsBySlide = new WeakMap();
 
 function getConfidentialityPatch() {
@@ -1011,8 +1013,8 @@ function renderContentSplitCones() {
     const targetPoint = (yRatio) => toPane(target.left + target.width * 0.54, target.top + target.height * yRatio);
     const leaderSources = sourceIcons
       .map((element, index) => ({ element, sourceIndex: index + 1 }))
-      .filter(({ sourceIndex }) => sourceIndex !== 3 && sourceIndex !== 6);
-    const targetRatios = [0.16, 0.3, 0.43, 0.57, 0.7, 0.84];
+      .filter(({ sourceIndex }) => sourceIndex !== 1 && sourceIndex !== 3 && sourceIndex !== 6);
+    const targetRatios = [0.22, 0.36, 0.5, 0.64, 0.78];
     const routes = leaderSources.map(({ element, sourceIndex }, index) => {
       const source = rect(element);
       const start = toPane(source.right, source.top + source.height * 0.5);
@@ -1053,6 +1055,7 @@ function renderContentSplitCones() {
     contentSplitDrawnXrLeaderIdsBySlide.set(currentSlide, drawnIds);
     const addDrawMask = (group, id, d, length) => {
       if (drawnIds.has(id)) return;
+      drawnIds.add(id);
       const maskId = `content-split-xr-draw-mask-${id}`;
       const mask = document.createElementNS('http://www.w3.org/2000/svg', 'mask');
       mask.id = maskId;
@@ -1069,7 +1072,6 @@ function renderContentSplitCones() {
       defs.appendChild(mask);
       group.setAttribute('mask', `url(#${maskId})`);
       const finishDraw = () => {
-        drawnIds.add(id);
         group.removeAttribute('mask');
         mask.remove();
       };
@@ -1133,11 +1135,15 @@ function renderContentSplitCones() {
 }
 
 function requestContentSplitConeUpdate() {
-  window.requestAnimationFrame(() => {
-    window.requestAnimationFrame(renderContentSplitCones);
+  if (contentSplitConeUpdateFrame) window.cancelAnimationFrame(contentSplitConeUpdateFrame);
+  if (contentSplitConeUpdateTimeout) window.clearTimeout(contentSplitConeUpdateTimeout);
+  contentSplitConeUpdateFrame = window.requestAnimationFrame(() => {
+    contentSplitConeUpdateFrame = undefined;
+    contentSplitConeUpdateTimeout = window.setTimeout(() => {
+      contentSplitConeUpdateTimeout = undefined;
+      renderContentSplitCones();
+    }, 120);
   });
-  window.setTimeout(renderContentSplitCones, 160);
-  window.setTimeout(renderContentSplitCones, 420);
 }
 
 function updateCicdOverlayVideos() {
