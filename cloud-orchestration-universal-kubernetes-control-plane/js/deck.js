@@ -1054,21 +1054,29 @@ function renderContentSplitCones() {
     const shouldDrawNow = targetIcon.closest('.content-split-composite-resource-block')?.classList.contains('visible');
     const drawnIds = contentSplitDrawnXrLeaderIdsBySlide.get(currentSlide) || new Set();
     contentSplitDrawnXrLeaderIdsBySlide.set(currentSlide, drawnIds);
-    const addDrawAnimation = (group, id, length) => {
+    const addDrawAnimation = (group, id, d, length) => {
       if (drawnIds.has(id)) return;
       drawnIds.add(id);
-      const paths = [...group.querySelectorAll('.content-split-xr-leader-line')];
-      paths.forEach((path) => {
-        path.style.setProperty('--xr-draw-length', Math.max(1, length));
-        path.classList.add('content-split-xr-leader-line--drawing');
-      });
+      const maskId = `content-split-xr-leader-draw-mask-${id.replace(/[^a-z0-9_-]/gi, '-')}`;
+      const mask = document.createElementNS('http://www.w3.org/2000/svg', 'mask');
+      mask.id = maskId;
+      mask.setAttribute('maskUnits', 'userSpaceOnUse');
+      mask.setAttribute('x', '0');
+      mask.setAttribute('y', '0');
+      mask.setAttribute('width', pane.offsetWidth);
+      mask.setAttribute('height', pane.offsetHeight);
+      const drawPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      drawPath.classList.add('content-split-xr-leader-draw-mask');
+      drawPath.setAttribute('d', d);
+      drawPath.style.setProperty('--cicd-draw-length', Math.max(1, length));
+      mask.appendChild(drawPath);
+      defs.appendChild(mask);
+      group.setAttribute('mask', `url(#${maskId})`);
       const finishDraw = () => {
-        paths.forEach((path) => {
-          path.classList.remove('content-split-xr-leader-line--drawing');
-          path.style.removeProperty('--xr-draw-length');
-        });
+        group.removeAttribute('mask');
+        mask.remove();
       };
-      paths.at(-1)?.addEventListener('animationend', finishDraw, { once: true });
+      drawPath.addEventListener('animationend', finishDraw, { once: true });
       window.setTimeout(finishDraw, 900);
     };
     return routes.map((route) => {
@@ -1088,7 +1096,7 @@ function renderContentSplitCones() {
       line.setAttribute('marker-end', 'url(#content-split-xr-leader-arrowhead)');
       line.setAttribute('d', d);
       group.append(outline, line);
-      if (shouldDrawNow) addDrawAnimation(group, `source-${route.sourceIndex}`, cubicLength(route.points));
+      if (shouldDrawNow) addDrawAnimation(group, `source-${route.sourceIndex}`, d, cubicLength(route.points));
       return group;
     });
   };
