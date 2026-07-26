@@ -1383,26 +1383,27 @@ function renderThreeColumnLeaderLines() {
     return;
   }
 
+  const grid = currentSlide.querySelector('.three-column-layout-grid');
   const source = currentSlide.querySelector('.three-column-layout-yellow-box--claim-source');
   const configurationTargets = [...currentSlide.querySelectorAll('.three-column-layout-yellow-stack--configuration .three-column-layout-yellow-box')];
   const topConfigurationSource = currentSlide.querySelector('.three-column-layout-yellow-box--configuration-source');
   const managedTargets = [...currentSlide.querySelectorAll('.three-column-layout-yellow-box--managed-target')];
-  if (!source || configurationTargets.length !== 3 || !topConfigurationSource || managedTargets.length !== 5) {
+  if (!grid || !source || configurationTargets.length !== 3 || !topConfigurationSource || managedTargets.length !== 5) {
     clearThreeColumnLeaderLines();
     return;
   }
 
-  if (!threeColumnLeaderLineLayer || threeColumnLeaderLineLayer.parentElement !== currentSlide) {
+  if (!threeColumnLeaderLineLayer || threeColumnLeaderLineLayer.parentElement !== grid) {
     clearThreeColumnLeaderLines();
     threeColumnLeaderLineLayer = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     threeColumnLeaderLineLayer.classList.add('three-column-layout-leader-lines');
     threeColumnLeaderLineLayer.setAttribute('aria-hidden', 'true');
-    currentSlide.appendChild(threeColumnLeaderLineLayer);
+    grid.appendChild(threeColumnLeaderLineLayer);
   }
 
-  const svgRect = threeColumnLeaderLineLayer.getBoundingClientRect();
+  const gridRect = grid.getBoundingClientRect();
   const rect = (element) => element.getBoundingClientRect();
-  const toSvg = (x, y) => ({ x: x - svgRect.left, y: y - svgRect.top });
+  const toSvg = (x, y) => ({ x: x - gridRect.left, y: y - gridRect.top });
   const rightCenter = (element) => {
     const box = rect(element);
     return toSvg(box.right, box.top + box.height / 2);
@@ -1422,36 +1423,42 @@ function renderThreeColumnLeaderLines() {
     group.classList.add('three-column-layout-leader-group', className);
     group.setAttribute('data-three-column-leader', `${index + 1}`);
     const d = makeCurve(from, to, bend);
-    const halo = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    halo.classList.add('three-column-layout-leader-line', 'three-column-layout-leader-line--halo');
-    halo.setAttribute('d', d);
     const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     line.classList.add('three-column-layout-leader-line');
     line.setAttribute('d', d);
     line.setAttribute('stroke', color);
-    line.setAttribute('marker-end', 'url(#three-column-layout-leader-arrow)');
-    group.append(halo, line);
+    line.setAttribute('marker-end', `url(#three-column-layout-leader-arrow-${index + 1}-${className})`);
+    line.style.animationDelay = `${index * -0.35}s`;
+    group.append(line);
     return group;
   };
 
   const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-  const marker = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
-  marker.id = 'three-column-layout-leader-arrow';
-  marker.setAttribute('viewBox', '0 0 12 12');
-  marker.setAttribute('refX', '10');
-  marker.setAttribute('refY', '6');
-  marker.setAttribute('markerWidth', '6');
-  marker.setAttribute('markerHeight', '6');
-  marker.setAttribute('orient', 'auto-start-reverse');
-  marker.setAttribute('markerUnits', 'strokeWidth');
-  const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-  arrow.setAttribute('d', 'M 1 1 L 11 6 L 1 11 Z');
-  arrow.setAttribute('fill', 'context-stroke');
-  marker.appendChild(arrow);
-  defs.appendChild(marker);
+  const createMarker = (id, color) => {
+    const marker = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
+    marker.id = id;
+    marker.setAttribute('viewBox', '-8 -8 16 16');
+    marker.setAttribute('refX', '4');
+    marker.setAttribute('refY', '0');
+    marker.setAttribute('markerWidth', '30');
+    marker.setAttribute('markerHeight', '30');
+    marker.setAttribute('markerUnits', 'userSpaceOnUse');
+    marker.setAttribute('orient', 'auto');
+    const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+    arrow.setAttribute('points', '-4,-8 4,0 -4,8 -7,5 -2,0 -7,-5');
+    arrow.setAttribute('fill', color);
+    marker.appendChild(arrow);
+    defs.appendChild(marker);
+  };
 
   const blue = getComputedStyle(root).getPropertyValue('--capgemini-light-blue').trim() || '#1db8f2';
   const yellow = getComputedStyle(root).getPropertyValue('--capgemini-yellow').trim() || '#feb100';
+  for (let index = 0; index < configurationTargets.length; index += 1) {
+    createMarker(`three-column-layout-leader-arrow-${index + 1}-three-column-layout-leader-group--blue-to-yellow`, blue);
+  }
+  for (let index = 0; index < managedTargets.length; index += 1) {
+    createMarker(`three-column-layout-leader-arrow-${index + 1}-three-column-layout-leader-group--yellow-to-turquoise`, yellow);
+  }
   const fromBlue = rightCenter(source);
   const fromYellow = rightCenter(topConfigurationSource);
   const blueBends = [-42, 0, 42];
@@ -1473,7 +1480,12 @@ function renderThreeColumnLeaderLines() {
     bend: turquoiseBends[index]
   }));
 
-  threeColumnLeaderLineLayer.setAttribute('viewBox', `0 0 ${svgRect.width} ${svgRect.height}`);
+  threeColumnLeaderLineLayer.setAttribute('viewBox', `0 0 ${gridRect.width} ${gridRect.height}`);
+  threeColumnLeaderLineLayer.setAttribute('width', `${gridRect.width}`);
+  threeColumnLeaderLineLayer.setAttribute('height', `${gridRect.height}`);
+  threeColumnLeaderLineLayer.style.width = `${gridRect.width}px`;
+  threeColumnLeaderLineLayer.style.height = `${gridRect.height}px`;
+  threeColumnLeaderLineLayer.setAttribute('preserveAspectRatio', 'none');
   threeColumnLeaderLineLayer.replaceChildren(defs, ...blueLines, ...yellowLines);
 }
 
