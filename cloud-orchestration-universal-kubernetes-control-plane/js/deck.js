@@ -1436,10 +1436,13 @@ function renderThreeColumnLeaderLines() {
     const start = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
     start.setAttribute('offset', '0%');
     start.setAttribute('stop-color', fromColor);
+    const hold = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+    hold.setAttribute('offset', '68%');
+    hold.setAttribute('stop-color', fromColor);
     const end = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
     end.setAttribute('offset', '100%');
     end.setAttribute('stop-color', toColor);
-    gradient.append(start, end);
+    gradient.append(start, hold, end);
     defs.appendChild(gradient);
   };
   const createPath = ({ from, to, className, index, fromColor, toColor, busX }) => {
