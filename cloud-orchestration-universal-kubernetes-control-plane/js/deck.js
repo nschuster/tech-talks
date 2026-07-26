@@ -333,8 +333,13 @@ function renderImageColumnLeaderLines() {
       <polygon points="-4,-8 4,0 -4,8 -7,5 -2,0 -7,-5" fill="${route.endColor}"/>
     </marker>`).join('');
 
-  const paths = routes.map((route, index) => `
-    <path class="image-column-orientation-leader" data-image-column-route="${route.id}" style="animation-delay: ${index * -0.65}s" d="${imageColumnArcPath(route.start, route.end, route.bendDirection)}" stroke="url(#image-column-gradient-${route.id})" marker-end="url(#image-column-arrow-${route.id})"/>`).join('');
+  const paths = routes.map((route, index) => {
+    const path = imageColumnArcPath(route.start, route.end, route.bendDirection);
+    const delay = `${index * -0.65}s`;
+    return `
+    <path class="image-column-orientation-leader-shadow" data-image-column-route-shadow="${route.id}" style="animation-delay: ${delay}" d="${path}"/>
+    <path class="image-column-orientation-leader" data-image-column-route="${route.id}" style="animation-delay: ${delay}" d="${path}" stroke="url(#image-column-gradient-${route.id})" marker-end="url(#image-column-arrow-${route.id})"/>`;
+  }).join('');
 
   imageColumnLeaderLineLayer.setAttribute('viewBox', `0 0 ${grid.offsetWidth} ${grid.offsetHeight}`);
   imageColumnLeaderLineLayer.setAttribute('preserveAspectRatio', 'none');

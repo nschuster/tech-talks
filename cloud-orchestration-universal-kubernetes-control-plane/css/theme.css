@@ -601,6 +601,7 @@ body {
   width: 10.2rem;
   height: 10.2rem;
   transform: translate(-50%, -50%);
+  filter: drop-shadow(0 0 0.42rem rgba(255, 255, 255, 0.28)) drop-shadow(0 0.7rem 1rem rgba(0, 0, 0, 0.64));
 }
 
 .image-column-orientation-icon-heading {
@@ -618,7 +619,7 @@ body {
   letter-spacing: 0.08em;
   line-height: 1.02;
   text-align: center;
-  text-shadow: none;
+  text-shadow: 0 0.18rem 0.45rem rgba(0, 0, 0, 0.82), 0 0 0.5rem rgba(18, 26, 56, 0.72);
   text-transform: uppercase;
   white-space: nowrap;
 }
@@ -703,15 +704,27 @@ body {
   height: 100%;
   overflow: visible;
   pointer-events: none;
+  filter: drop-shadow(0 0 0.55rem rgba(18, 26, 56, 0.82)) drop-shadow(0 0.5rem 0.8rem rgba(0, 0, 0, 0.58));
 }
 
+.image-column-orientation-leader-shadow,
 .image-column-orientation-leader {
   fill: none;
-  stroke-width: 8px;
   stroke-linecap: butt;
   stroke-linejoin: miter;
   stroke-dasharray: 30 18;
   animation: image-column-leader-dash 1.5s linear infinite;
+}
+
+.image-column-orientation-leader-shadow {
+  stroke: rgba(18, 26, 56, 0.72);
+  stroke-width: 22px;
+  opacity: 0.86;
+  filter: blur(2.5px);
+}
+
+.image-column-orientation-leader {
+  stroke-width: 12px;
 }
 
 @keyframes image-column-leader-dash {
