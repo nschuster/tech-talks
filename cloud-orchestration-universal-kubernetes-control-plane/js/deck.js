@@ -106,7 +106,9 @@ let imageColumnLeaderLineTimeout;
 let contentSplitConeLayer;
 let contentSplitConeUpdateFrame;
 let contentSplitConeUpdateTimeout;
-let controlsSlideNumber;
+let threeColumnLeaderLineLayer;
+let threeColumnLeaderLineFrame;
+let threeColumnLeaderLineTimeout;
 let controlsEventLine;
 const contentSplitDrawnXrLeaderIdsBySlide = new WeakMap();
 
@@ -174,28 +176,6 @@ function updateControlsEventLine() {
   const eventText = formatEventDetails();
   eventLine.textContent = eventText;
   eventLine.setAttribute('aria-label', eventText);
-}
-
-function ensureControlsSlideNumber() {
-  const controls = document.querySelector('.reveal .controls');
-  if (!controls) return undefined;
-  if (!controlsSlideNumber || controlsSlideNumber.parentElement !== controls) {
-    controlsSlideNumber?.remove();
-    controlsSlideNumber = document.createElement('div');
-    controlsSlideNumber.className = 'controls-slide-number';
-    controlsSlideNumber.setAttribute('aria-live', 'polite');
-    controls.appendChild(controlsSlideNumber);
-  }
-  return controlsSlideNumber;
-}
-
-function updateControlsSlideNumber() {
-  const number = ensureControlsSlideNumber();
-  if (!number) return;
-  const current = deck.getSlidePastCount() + 1;
-  const total = deck.getTotalSlides();
-  number.textContent = `${current} / ${total}`;
-  number.setAttribute('aria-label', `Slide ${current} of ${total}`);
 }
 
 function updateBranding() {
@@ -1391,6 +1371,124 @@ function requestContentSplitConeUpdate() {
   });
 }
 
+function clearThreeColumnLeaderLines() {
+  threeColumnLeaderLineLayer?.remove();
+  threeColumnLeaderLineLayer = undefined;
+}
+
+function renderThreeColumnLeaderLines() {
+  const currentSlide = deck.getCurrentSlide();
+  if (!currentSlide?.classList.contains('three-column-layout-slide')) {
+    clearThreeColumnLeaderLines();
+    return;
+  }
+
+  const source = currentSlide.querySelector('.three-column-layout-yellow-box--claim-source');
+  const configurationTargets = [...currentSlide.querySelectorAll('.three-column-layout-yellow-stack--configuration .three-column-layout-yellow-box')];
+  const topConfigurationSource = currentSlide.querySelector('.three-column-layout-yellow-box--configuration-source');
+  const managedTargets = [...currentSlide.querySelectorAll('.three-column-layout-yellow-box--managed-target')];
+  if (!source || configurationTargets.length !== 3 || !topConfigurationSource || managedTargets.length !== 5) {
+    clearThreeColumnLeaderLines();
+    return;
+  }
+
+  if (!threeColumnLeaderLineLayer || threeColumnLeaderLineLayer.parentElement !== currentSlide) {
+    clearThreeColumnLeaderLines();
+    threeColumnLeaderLineLayer = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    threeColumnLeaderLineLayer.classList.add('three-column-layout-leader-lines');
+    threeColumnLeaderLineLayer.setAttribute('aria-hidden', 'true');
+    currentSlide.appendChild(threeColumnLeaderLineLayer);
+  }
+
+  const svgRect = threeColumnLeaderLineLayer.getBoundingClientRect();
+  const rect = (element) => element.getBoundingClientRect();
+  const toSvg = (x, y) => ({ x: x - svgRect.left, y: y - svgRect.top });
+  const rightCenter = (element) => {
+    const box = rect(element);
+    return toSvg(box.right, box.top + box.height / 2);
+  };
+  const leftCenter = (element) => {
+    const box = rect(element);
+    return toSvg(box.left, box.top + box.height / 2);
+  };
+  const makeCurve = (from, to, bend = 0) => {
+    const dx = Math.max(120, to.x - from.x);
+    const c1 = { x: from.x + dx * 0.42, y: from.y + bend };
+    const c2 = { x: to.x - dx * 0.42, y: to.y - bend };
+    return `M ${from.x.toFixed(1)} ${from.y.toFixed(1)} C ${c1.x.toFixed(1)} ${c1.y.toFixed(1)}, ${c2.x.toFixed(1)} ${c2.y.toFixed(1)}, ${to.x.toFixed(1)} ${to.y.toFixed(1)}`;
+  };
+  const createPath = ({ from, to, className, index, color, bend }) => {
+    const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    group.classList.add('three-column-layout-leader-group', className);
+    group.setAttribute('data-three-column-leader', `${index + 1}`);
+    const d = makeCurve(from, to, bend);
+    const halo = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    halo.classList.add('three-column-layout-leader-line', 'three-column-layout-leader-line--halo');
+    halo.setAttribute('d', d);
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    line.classList.add('three-column-layout-leader-line');
+    line.setAttribute('d', d);
+    line.setAttribute('stroke', color);
+    line.setAttribute('marker-end', 'url(#three-column-layout-leader-arrow)');
+    group.append(halo, line);
+    return group;
+  };
+
+  const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+  const marker = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
+  marker.id = 'three-column-layout-leader-arrow';
+  marker.setAttribute('viewBox', '0 0 12 12');
+  marker.setAttribute('refX', '10');
+  marker.setAttribute('refY', '6');
+  marker.setAttribute('markerWidth', '6');
+  marker.setAttribute('markerHeight', '6');
+  marker.setAttribute('orient', 'auto-start-reverse');
+  marker.setAttribute('markerUnits', 'strokeWidth');
+  const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  arrow.setAttribute('d', 'M 1 1 L 11 6 L 1 11 Z');
+  arrow.setAttribute('fill', 'context-stroke');
+  marker.appendChild(arrow);
+  defs.appendChild(marker);
+
+  const blue = getComputedStyle(root).getPropertyValue('--capgemini-light-blue').trim() || '#1db8f2';
+  const yellow = getComputedStyle(root).getPropertyValue('--capgemini-yellow').trim() || '#feb100';
+  const fromBlue = rightCenter(source);
+  const fromYellow = rightCenter(topConfigurationSource);
+  const blueBends = [-42, 0, 42];
+  const turquoiseBends = [-82, -40, 0, 40, 82];
+  const blueLines = configurationTargets.map((target, index) => createPath({
+    from: fromBlue,
+    to: leftCenter(target),
+    className: 'three-column-layout-leader-group--blue-to-yellow',
+    index,
+    color: blue,
+    bend: blueBends[index]
+  }));
+  const yellowLines = managedTargets.map((target, index) => createPath({
+    from: fromYellow,
+    to: leftCenter(target),
+    className: 'three-column-layout-leader-group--yellow-to-turquoise',
+    index,
+    color: yellow,
+    bend: turquoiseBends[index]
+  }));
+
+  threeColumnLeaderLineLayer.setAttribute('viewBox', `0 0 ${svgRect.width} ${svgRect.height}`);
+  threeColumnLeaderLineLayer.replaceChildren(defs, ...blueLines, ...yellowLines);
+}
+
+function requestThreeColumnLeaderLineUpdate() {
+  if (threeColumnLeaderLineFrame) window.cancelAnimationFrame(threeColumnLeaderLineFrame);
+  if (threeColumnLeaderLineTimeout) window.clearTimeout(threeColumnLeaderLineTimeout);
+  threeColumnLeaderLineFrame = window.requestAnimationFrame(() => {
+    threeColumnLeaderLineFrame = undefined;
+    threeColumnLeaderLineTimeout = window.setTimeout(() => {
+      threeColumnLeaderLineTimeout = undefined;
+      renderThreeColumnLeaderLines();
+    }, 120);
+  });
+}
+
 function updateCicdOverlayVideos() {
   document.querySelectorAll('.cicd-static-pipeline-video-overlay, .cicd-desired-state-background-video, .limitless-potential-background-video').forEach((video) => {
     if (!(video instanceof HTMLVideoElement)) return;
@@ -1411,49 +1509,55 @@ function toggleTheme() {
 setTheme(localStorage.getItem('tech-talks-theme') || root.dataset.theme || 'dark');
 deck.on('ready', () => {
   updateBranding();
-  updateControlsSlideNumber();
   updateControlsEventLine();
   updateCicdOverlayVideos();
   requestCicdLeaderLineUpdate();
   requestImageColumnLeaderLineUpdate();
+  requestThreeColumnLeaderLineUpdate();
   requestContentSplitConeUpdate();
 });
 deck.on('slidechanged', () => {
   updateBranding();
-  updateControlsSlideNumber();
   updateControlsEventLine();
   updateCicdOverlayVideos();
   requestCicdLeaderLineUpdate();
   requestImageColumnLeaderLineUpdate();
+  requestThreeColumnLeaderLineUpdate();
   requestContentSplitConeUpdate();
 });
 deck.on('fragmentshown', () => {
   requestCicdLeaderLineUpdate();
   requestImageColumnLeaderLineUpdate();
+  requestThreeColumnLeaderLineUpdate();
   requestContentSplitConeUpdate();
 });
 deck.on('fragmenthidden', () => {
   requestCicdLeaderLineUpdate();
   requestImageColumnLeaderLineUpdate();
+  requestThreeColumnLeaderLineUpdate();
   requestContentSplitConeUpdate();
 });
 deck.on('resize', () => {
   requestCicdLeaderLineUpdate();
   requestImageColumnLeaderLineUpdate();
+  requestThreeColumnLeaderLineUpdate();
   requestContentSplitConeUpdate();
 });
 deck.on('overviewshown', () => {
   clearCicdLeaderLines();
   clearImageColumnLeaderLines();
+  clearThreeColumnLeaderLines();
 });
 deck.on('overviewhidden', () => {
   requestCicdLeaderLineUpdate();
   requestImageColumnLeaderLineUpdate();
+  requestThreeColumnLeaderLineUpdate();
   requestContentSplitConeUpdate();
 });
 window.addEventListener('resize', () => {
   requestCicdLeaderLineUpdate();
   requestImageColumnLeaderLineUpdate();
+  requestThreeColumnLeaderLineUpdate();
   requestContentSplitConeUpdate();
 });
 document.addEventListener('menu-ready', () => updateMenuThemeButton(root.dataset.theme || 'dark'));
