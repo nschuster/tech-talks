@@ -2810,10 +2810,8 @@ body {
   stroke-width: 9px;
   stroke-linecap: butt;
   stroke-linejoin: miter;
-  stroke-dasharray: 30 18;
   vector-effect: non-scaling-stroke;
   shape-rendering: geometricPrecision;
-  animation: cicd-pipeline-dash 1s linear infinite;
 }
 
 .three-column-layout-column--medium .three-column-layout-yellow-stack {
@@ -2821,11 +2819,11 @@ body {
 }
 
 .three-column-layout-column--claim .three-column-layout-yellow-stack {
-  align-self: start;
+  align-self: center;
   justify-self: stretch;
   justify-content: center;
   width: 100%;
-  margin-top: 17rem;
+  margin-top: 0;
   margin-left: 0;
 }
 

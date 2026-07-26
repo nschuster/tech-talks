@@ -1424,21 +1424,39 @@ function renderThreeColumnLeaderLines() {
     const y2 = to.y.toFixed(1);
     return `M ${x1} ${y1} H ${xb} V ${y2} H ${x2}`;
   };
-  const createPath = ({ from, to, className, index, color, busX }) => {
+  const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+  const createGradient = ({ id, from, to, fromColor, toColor }) => {
+    const gradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+    gradient.id = id;
+    gradient.setAttribute('gradientUnits', 'userSpaceOnUse');
+    gradient.setAttribute('x1', from.x.toFixed(1));
+    gradient.setAttribute('y1', from.y.toFixed(1));
+    gradient.setAttribute('x2', to.x.toFixed(1));
+    gradient.setAttribute('y2', to.y.toFixed(1));
+    const start = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+    start.setAttribute('offset', '0%');
+    start.setAttribute('stop-color', fromColor);
+    const end = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+    end.setAttribute('offset', '100%');
+    end.setAttribute('stop-color', toColor);
+    gradient.append(start, end);
+    defs.appendChild(gradient);
+  };
+  const createPath = ({ from, to, className, index, fromColor, toColor, busX }) => {
     const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     group.classList.add('three-column-layout-leader-group', className);
     group.setAttribute('data-three-column-leader', `${index + 1}`);
+    const gradientId = `three-column-layout-leader-gradient-${index + 1}-${className}`;
+    createGradient({ id: gradientId, from, to, fromColor, toColor });
     const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     line.classList.add('three-column-layout-leader-line');
     line.setAttribute('d', makeGridPath(from, to, busX));
-    line.setAttribute('stroke', color);
+    line.setAttribute('stroke', `url(#${gradientId})`);
     line.setAttribute('marker-end', `url(#three-column-layout-leader-arrow-${index + 1}-${className})`);
-    line.style.animationDelay = `${index * -0.35}s`;
     group.append(line);
     return group;
   };
 
-  const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
   const createMarker = (id, color) => {
     const marker = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
     marker.id = id;
@@ -1458,11 +1476,12 @@ function renderThreeColumnLeaderLines() {
 
   const blue = getComputedStyle(root).getPropertyValue('--capgemini-light-blue').trim() || '#1db8f2';
   const yellow = getComputedStyle(root).getPropertyValue('--capgemini-yellow').trim() || '#feb100';
+  const turquoise = getComputedStyle(root).getPropertyValue('--capgemini-turquoise').trim() || '#12abdb';
   for (let index = 0; index < configurationTargets.length; index += 1) {
-    createMarker(`three-column-layout-leader-arrow-${index + 1}-three-column-layout-leader-group--blue-to-yellow`, blue);
+    createMarker(`three-column-layout-leader-arrow-${index + 1}-three-column-layout-leader-group--blue-to-yellow`, yellow);
   }
   for (let index = 0; index < managedTargets.length; index += 1) {
-    createMarker(`three-column-layout-leader-arrow-${index + 1}-three-column-layout-leader-group--yellow-to-turquoise`, yellow);
+    createMarker(`three-column-layout-leader-arrow-${index + 1}-three-column-layout-leader-group--yellow-to-turquoise`, turquoise);
   }
   const fromBlue = rightCenter(source);
   const fromYellow = rightCenter(topConfigurationSource);
@@ -1475,7 +1494,8 @@ function renderThreeColumnLeaderLines() {
     to: target,
     className: 'three-column-layout-leader-group--blue-to-yellow',
     index,
-    color: blue,
+    fromColor: blue,
+    toColor: yellow,
     busX: blueBusX
   }));
   const yellowLines = managedEndpoints.map((target, index) => createPath({
@@ -1483,7 +1503,8 @@ function renderThreeColumnLeaderLines() {
     to: target,
     className: 'three-column-layout-leader-group--yellow-to-turquoise',
     index,
-    color: yellow,
+    fromColor: yellow,
+    toColor: turquoise,
     busX: yellowBusX
   }));
 
