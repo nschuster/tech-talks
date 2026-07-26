@@ -1486,12 +1486,17 @@ function renderThreeColumnLeaderLines() {
   for (let index = 0; index < managedTargets.length; index += 1) {
     createMarker(`three-column-layout-leader-arrow-${index + 1}-three-column-layout-leader-group--yellow-to-turquoise`, turquoise);
   }
+  const isRevealedFragment = (element) => !element.closest('.fragment:not(.visible)');
   const fromBlue = rightCenter(source);
   const fromYellow = rightCenter(topConfigurationSource);
-  const configurationEndpoints = configurationTargets.map(leftCenter);
-  const managedEndpoints = managedTargets.map(leftCenter);
-  const blueBusX = fromBlue.x + Math.max(72, (Math.min(...configurationEndpoints.map((point) => point.x)) - fromBlue.x) * 0.5);
-  const yellowBusX = fromYellow.x + Math.max(72, (Math.min(...managedEndpoints.map((point) => point.x)) - fromYellow.x) * 0.5);
+  const configurationEndpoints = configurationTargets.filter(isRevealedFragment).map(leftCenter);
+  const managedEndpoints = managedTargets.filter(isRevealedFragment).map(leftCenter);
+  const blueBusX = configurationEndpoints.length
+    ? fromBlue.x + Math.max(72, (Math.min(...configurationEndpoints.map((point) => point.x)) - fromBlue.x) * 0.5)
+    : fromBlue.x + 72;
+  const yellowBusX = managedEndpoints.length
+    ? fromYellow.x + Math.max(72, (Math.min(...managedEndpoints.map((point) => point.x)) - fromYellow.x) * 0.5)
+    : fromYellow.x + 72;
   const blueLines = configurationEndpoints.map((target, index) => createPath({
     from: fromBlue,
     to: target,
@@ -1501,15 +1506,17 @@ function renderThreeColumnLeaderLines() {
     toColor: yellow,
     busX: blueBusX
   }));
-  const yellowLines = managedEndpoints.map((target, index) => createPath({
-    from: fromYellow,
-    to: target,
-    className: 'three-column-layout-leader-group--yellow-to-turquoise',
-    index,
-    fromColor: yellow,
-    toColor: turquoise,
-    busX: yellowBusX
-  }));
+  const yellowLines = isRevealedFragment(topConfigurationSource)
+    ? managedEndpoints.map((target, index) => createPath({
+      from: fromYellow,
+      to: target,
+      className: 'three-column-layout-leader-group--yellow-to-turquoise',
+      index,
+      fromColor: yellow,
+      toColor: turquoise,
+      busX: yellowBusX
+    }))
+    : [];
 
   threeColumnLeaderLineLayer.setAttribute('viewBox', `0 0 ${gridWidth} ${gridHeight}`);
   threeColumnLeaderLineLayer.setAttribute('width', `${gridWidth}`);
