@@ -273,17 +273,17 @@ function renderImageColumnLeaderLines() {
   }
 
   const grid = currentSlide.querySelector('.image-column-orientation-grid');
-  const gitIcon = getImageColumnIcon(currentSlide, 'Git');
+  const githubIcon = getImageColumnIcon(currentSlide, 'GitHub');
   const argoIcon = getImageColumnIcon(currentSlide, 'Argo CD');
   const kubernetesIcon = getImageColumnIcon(currentSlide, 'Kubernetes');
-  if (!grid || !gitIcon || !argoIcon || !kubernetesIcon) {
+  if (!grid || !githubIcon || !argoIcon || !kubernetesIcon) {
     clearImageColumnLeaderLines();
     return;
   }
 
   const anchors = {
-    gitTopRight: getImageColumnLeaderAnchor(gitIcon, 'top-right'),
-    gitBottomRight: getImageColumnLeaderAnchor(gitIcon, 'bottom-right'),
+    githubTopRight: getImageColumnLeaderAnchor(githubIcon, 'top-right'),
+    githubBottomRight: getImageColumnLeaderAnchor(githubIcon, 'bottom-right'),
     argoTopLeft: getImageColumnLeaderAnchor(argoIcon, 'top-left'),
     argoBottomLeft: getImageColumnLeaderAnchor(argoIcon, 'bottom-left'),
     argoTopRight: getImageColumnLeaderAnchor(argoIcon, 'top-right'),
@@ -296,25 +296,25 @@ function renderImageColumnLeaderLines() {
   const scaleX = gridRect.width / grid.offsetWidth;
   const scaleY = gridRect.height / grid.offsetHeight;
   const point = (anchor) => getImageColumnAnchorPoint(anchor, gridRect, scaleX, scaleY);
-  const gitColor = '#f03c2e';
+  const githubColor = '#ffffff';
   const argoColor = '#ef7b4d';
   const kubernetesColor = '#326ce5';
   const routes = [
     {
-      id: 'git-argo-top',
-      start: point(anchors.gitTopRight),
+      id: 'github-argo-top',
+      start: point(anchors.githubTopRight),
       end: point(anchors.argoTopLeft),
       bendDirection: 'up',
-      startColor: gitColor,
+      startColor: githubColor,
       endColor: argoColor
     },
     {
-      id: 'argo-git-bottom',
+      id: 'argo-github-bottom',
       start: point(anchors.argoBottomLeft),
-      end: point(anchors.gitBottomRight),
+      end: point(anchors.githubBottomRight),
       bendDirection: 'down',
       startColor: argoColor,
-      endColor: gitColor
+      endColor: githubColor
     },
     {
       id: 'argo-kubernetes-top',
