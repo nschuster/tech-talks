@@ -526,6 +526,22 @@ body {
   overflow: hidden;
 }
 
+.image-column-orientation-slide::before {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  content: "";
+  background: rgba(18, 26, 56, 0.28);
+  pointer-events: none;
+}
+
+.image-column-orientation-slide h2,
+.image-column-orientation-slide .slide-subtitle,
+.image-column-orientation-grid {
+  position: relative;
+  z-index: 1;
+}
+
 .image-column-orientation-slide h2 {
   text-shadow: none;
 }
