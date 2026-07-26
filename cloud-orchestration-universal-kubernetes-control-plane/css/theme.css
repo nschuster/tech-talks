@@ -2668,6 +2668,62 @@ body {
   font-size: 0.78rem !important;
 }
 
+.three-column-layout-slide {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.three-column-layout-grid {
+  display: grid;
+  grid-template-columns: 20% 40% 30%;
+  gap: 5%;
+  flex: 1 1 auto;
+  min-height: 0;
+  margin-top: 2.1rem;
+}
+
+.three-column-layout-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-width: 0;
+  min-height: 0;
+  padding: 1.35rem 1.25rem;
+  border: 1px solid var(--color-border);
+  border-radius: 1.2rem;
+  background: color-mix(in srgb, var(--color-card) 82%, transparent);
+  box-shadow: 0 0.45rem 1.35rem rgba(0, 0, 0, 0.2);
+}
+
+.three-column-layout-eyebrow {
+  margin: 0 0 0.85rem;
+  color: var(--color-primary);
+  font-family: var(--font-display);
+  font-size: 0.52em;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.three-column-layout-column h3 {
+  margin: 0 0 0.65rem;
+  color: var(--color-heading-primary);
+  font-family: var(--font-display);
+  font-size: 0.9em;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 0.98;
+}
+
+.three-column-layout-column p:not(.three-column-layout-eyebrow) {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 0.45em;
+  line-height: 1.28;
+}
+
 .reveal .controls {
   color: var(--color-primary);
   opacity: 0.52;
@@ -2675,6 +2731,34 @@ body {
 
 .reveal .controls:hover {
   opacity: 0.9;
+}
+
+.reveal .slide-event-line {
+  position: fixed;
+  right: 138px;
+  bottom: 16px;
+  z-index: 35;
+  width: max-content;
+  max-width: min(660px, calc(100vw - 260px));
+  padding: 5px 9px;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 28%, transparent);
+  border-radius: 999px;
+  background: rgba(18, 26, 56, 0.68);
+  color: var(--capgemini-white);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  text-align: right;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.28);
+}
+
+:root[data-theme="light"] .reveal .slide-event-line {
+  background: rgba(255, 255, 255, 0.88);
+  color: var(--capgemini-dark-blue);
 }
 
 .reveal .progress {

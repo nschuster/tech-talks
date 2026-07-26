@@ -9,6 +9,12 @@ import RevealMenu from '../node_modules/reveal.js-menu/plugin.js';
 // Valid values: SEC0, SEC1, SEC2, SEC2a, SEC3.
 const CONFIDENTIALITY_LEVEL = 'SEC1';
 
+const EVENT_DETAILS = {
+  event: 'Cloud Orchestration Tech Talk',
+  date: 'XX.XX.2026',
+  time: 'TBD'
+};
+
 const CAPGEMINI_LOGOS = {
   dark: {
     full: 'assets/logos/Capgemini_Primary_Logo_White.svg',
@@ -103,6 +109,7 @@ let contentSplitConeLayer;
 let contentSplitConeUpdateFrame;
 let contentSplitConeUpdateTimeout;
 let controlsSlideNumber;
+let controlsEventLine;
 const contentSplitDrawnXrLeaderIdsBySlide = new WeakMap();
 
 function getConfidentialityPatch() {
@@ -138,6 +145,30 @@ function updateMenuThemeButton(theme) {
     button.textContent = `Switch to ${nextTheme} mode`;
     button.setAttribute('aria-label', `Switch to ${nextTheme} mode`);
   });
+}
+
+function formatEventDetails() {
+  return `${EVENT_DETAILS.event} · ${EVENT_DETAILS.date} · ${EVENT_DETAILS.time}`;
+}
+
+function ensureControlsEventLine() {
+  if (!reveal) return undefined;
+  if (!controlsEventLine || controlsEventLine.parentElement !== reveal) {
+    controlsEventLine?.remove();
+    controlsEventLine = document.createElement('div');
+    controlsEventLine.className = 'slide-event-line';
+    controlsEventLine.setAttribute('aria-live', 'polite');
+    reveal.appendChild(controlsEventLine);
+  }
+  return controlsEventLine;
+}
+
+function updateControlsEventLine() {
+  const eventLine = ensureControlsEventLine();
+  if (!eventLine) return;
+  const eventText = formatEventDetails();
+  eventLine.textContent = eventText;
+  eventLine.setAttribute('aria-label', eventText);
 }
 
 function ensureControlsSlideNumber() {
@@ -1376,6 +1407,7 @@ setTheme(localStorage.getItem('tech-talks-theme') || root.dataset.theme || 'dark
 deck.on('ready', () => {
   updateBranding();
   updateControlsSlideNumber();
+  updateControlsEventLine();
   updateCicdOverlayVideos();
   requestCicdLeaderLineUpdate();
   requestImageColumnLeaderLineUpdate();
@@ -1384,6 +1416,7 @@ deck.on('ready', () => {
 deck.on('slidechanged', () => {
   updateBranding();
   updateControlsSlideNumber();
+  updateControlsEventLine();
   updateCicdOverlayVideos();
   requestCicdLeaderLineUpdate();
   requestImageColumnLeaderLineUpdate();
