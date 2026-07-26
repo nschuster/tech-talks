@@ -2678,6 +2678,7 @@ body {
   display: grid;
   grid-template-columns: 20% 40% 30%;
   gap: 5%;
+  align-items: stretch;
   flex: 1 1 auto;
   min-height: 0;
   margin-top: 2.1rem;
@@ -2697,6 +2698,8 @@ body {
 }
 
 .three-column-layout-column--white {
+  display: grid;
+  grid-template-rows: 2.1rem minmax(0, 1fr);
   align-items: stretch;
   gap: 0.78rem;
   padding: 0;
@@ -2709,11 +2712,13 @@ body {
 .three-column-layout-white-box {
   position: relative;
   display: flex;
-  flex: 1 1 auto;
   align-items: center;
-  justify-content: center;
-  min-height: 0;
-  padding: 1.35rem;
+  justify-content: space-between;
+  min-height: 16.8rem;
+  height: 100%;
+  min-width: 0;
+  padding: 1.25rem 1.45rem;
+  gap: 1.25rem;
   border: 4px solid var(--capgemini-white);
   background: rgba(18, 26, 56, 0.22);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
@@ -2728,10 +2733,11 @@ body {
 
 .three-column-layout-icon-square {
   display: flex;
+  flex: 0 0 8.8rem;
   align-items: center;
   justify-content: center;
-  width: 10.4rem;
-  height: 10.4rem;
+  width: 8.8rem;
+  height: 8.8rem;
   border-radius: 0;
   background: #ffffff;
   box-shadow: none;
@@ -2744,9 +2750,38 @@ body {
   object-fit: contain;
 }
 
+.three-column-layout-column--medium .three-column-layout-icon-square {
+  flex-basis: 7.2rem;
+  width: 7.2rem;
+  height: 7.2rem;
+}
+
 .three-column-layout-column--medium .three-column-layout-icon-square img {
   width: 80%;
   height: 80%;
+}
+
+.three-column-layout-yellow-stack {
+  display: flex;
+  flex: 0 0 10.8rem;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  gap: 0.62rem;
+  width: 10.8rem;
+  margin-left: auto;
+}
+
+.three-column-layout-yellow-box {
+  display: block;
+  width: 100%;
+  height: 1.05rem;
+  background: var(--capgemini-yellow);
+}
+
+.three-column-layout-column--medium .three-column-layout-yellow-stack {
+  flex-basis: 10.8rem;
+  width: 10.8rem;
 }
 
 .three-column-layout-eyebrow {
@@ -2771,15 +2806,17 @@ body {
 }
 
 .three-column-layout-column--white h3 {
+  align-self: end;
   margin: 0;
   max-width: 100%;
   color: var(--capgemini-white);
-  font-size: 1.18em;
+  font-size: 0.76em;
   font-weight: 900;
-  letter-spacing: -0.045em;
-  line-height: 0.92;
+  letter-spacing: -0.06em;
+  line-height: 1;
   text-align: center;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 :root[data-theme="light"] .three-column-layout-column--white h3 {
