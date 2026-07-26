@@ -96,7 +96,7 @@ let brandingLayer;
 let capgeminiLogo;
 let confidentialityPatch;
 let cicdLeaderLineLayer;
-let imageColumnLeaderLines = [];
+let imageColumnLeaderLineLayer;
 let imageColumnLeaderLineFrame;
 let imageColumnLeaderLineTimeout;
 let contentSplitConeLayer;
@@ -202,8 +202,8 @@ function clearCicdLeaderLines() {
 }
 
 function clearImageColumnLeaderLines() {
-  imageColumnLeaderLines.forEach((line) => line.remove());
-  imageColumnLeaderLines = [];
+  imageColumnLeaderLineLayer?.remove();
+  imageColumnLeaderLineLayer = undefined;
 }
 
 function getImageColumnIcon(slide, label) {
@@ -229,91 +229,113 @@ function getImageColumnLeaderAnchor(icon, corner) {
   return anchor;
 }
 
+function getImageColumnAnchorPoint(anchor, gridRect) {
+  const rect = anchor.getBoundingClientRect();
+  return {
+    x: rect.left - gridRect.left,
+    y: rect.top - gridRect.top
+  };
+}
+
+function imageColumnArcPath(start, end, bendDirection) {
+  const distance = Math.abs(end.x - start.x);
+  const bend = Math.max(96, Math.min(178, distance * 0.22));
+  const controlY = bendDirection === 'up'
+    ? Math.min(start.y, end.y) - bend
+    : Math.max(start.y, end.y) + bend;
+
+  return `M ${start.x.toFixed(2)} ${start.y.toFixed(2)} C ${(start.x + distance * 0.32 * Math.sign(end.x - start.x)).toFixed(2)} ${controlY.toFixed(2)} ${(end.x - distance * 0.32 * Math.sign(end.x - start.x)).toFixed(2)} ${controlY.toFixed(2)} ${end.x.toFixed(2)} ${end.y.toFixed(2)}`;
+}
+
 function renderImageColumnLeaderLines() {
-  const LeaderLine = window.LeaderLine;
   const currentSlide = deck.getCurrentSlide();
-  if (!LeaderLine || !currentSlide?.classList.contains('image-column-orientation-slide') || deck.isOverview()) {
+  if (!currentSlide?.classList.contains('image-column-orientation-slide') || deck.isOverview()) {
     clearImageColumnLeaderLines();
     return;
   }
 
+  const grid = currentSlide.querySelector('.image-column-orientation-grid');
   const githubIcon = getImageColumnIcon(currentSlide, 'GitHub');
   const argoIcon = getImageColumnIcon(currentSlide, 'Argo CD');
   const kubernetesIcon = getImageColumnIcon(currentSlide, 'Kubernetes');
-  if (!githubIcon || !argoIcon || !kubernetesIcon) {
+  if (!grid || !githubIcon || !argoIcon || !kubernetesIcon) {
     clearImageColumnLeaderLines();
     return;
   }
 
-  clearImageColumnLeaderLines();
-
-  const baseOptions = {
-    path: 'arc',
-    size: 8,
-    startPlug: 'behind',
-    endPlug: 'arrow2',
-    endPlugSize: 1.55,
-    dash: { len: 14, gap: 8, animation: true },
-    gradient: true,
-    outline: true,
-    outlineColor: 'rgba(6, 16, 36, 0.48)',
-    outlineSize: 1.35
+  const anchors = {
+    githubTopRight: getImageColumnLeaderAnchor(githubIcon, 'top-right'),
+    githubBottomRight: getImageColumnLeaderAnchor(githubIcon, 'bottom-right'),
+    argoTopLeft: getImageColumnLeaderAnchor(argoIcon, 'top-left'),
+    argoBottomLeft: getImageColumnLeaderAnchor(argoIcon, 'bottom-left'),
+    argoTopRight: getImageColumnLeaderAnchor(argoIcon, 'top-right'),
+    argoBottomRight: getImageColumnLeaderAnchor(argoIcon, 'bottom-right'),
+    kubernetesTopLeft: getImageColumnLeaderAnchor(kubernetesIcon, 'top-left'),
+    kubernetesBottomLeft: getImageColumnLeaderAnchor(kubernetesIcon, 'bottom-left')
   };
 
-  const argoToGithubStart = getImageColumnLeaderAnchor(argoIcon, 'top-left');
-  const githubToArgoStart = getImageColumnLeaderAnchor(githubIcon, 'bottom-right');
-  const argoToKubernetesStart = getImageColumnLeaderAnchor(argoIcon, 'top-right');
-  const kubernetesToArgoStart = getImageColumnLeaderAnchor(kubernetesIcon, 'bottom-left');
-  const githubUpperEnd = getImageColumnLeaderAnchor(githubIcon, 'top-right');
-  const argoLeftLowerEnd = getImageColumnLeaderAnchor(argoIcon, 'bottom-left');
-  const kubernetesUpperEnd = getImageColumnLeaderAnchor(kubernetesIcon, 'top-left');
-  const argoRightLowerEnd = getImageColumnLeaderAnchor(argoIcon, 'bottom-right');
-
+  const gridRect = grid.getBoundingClientRect();
+  const point = (anchor) => getImageColumnAnchorPoint(anchor, gridRect);
   const routes = [
     {
-      start: githubUpperEnd,
-      end: argoToGithubStart,
-      startSocket: 'top',
-      endSocket: 'top',
-      color: '#ffffff',
-      startPlugColor: '#ffffff',
-      endPlugColor: '#ef7b4d'
+      id: 'github-argo-top',
+      start: point(anchors.githubTopRight),
+      end: point(anchors.argoTopLeft),
+      bendDirection: 'up',
+      startColor: '#ffffff',
+      endColor: '#ef7b4d'
     },
     {
-      start: argoLeftLowerEnd,
-      end: githubToArgoStart,
-      startSocket: 'bottom',
-      endSocket: 'bottom',
-      color: '#ef7b4d',
-      startPlugColor: '#ef7b4d',
-      endPlugColor: '#ffffff'
+      id: 'argo-github-bottom',
+      start: point(anchors.argoBottomLeft),
+      end: point(anchors.githubBottomRight),
+      bendDirection: 'down',
+      startColor: '#ef7b4d',
+      endColor: '#ffffff'
     },
     {
-      start: argoToKubernetesStart,
-      end: kubernetesUpperEnd,
-      startSocket: 'top',
-      endSocket: 'top',
-      color: '#ef7b4d',
-      startPlugColor: '#ef7b4d',
-      endPlugColor: '#326ce5'
+      id: 'argo-kubernetes-top',
+      start: point(anchors.argoTopRight),
+      end: point(anchors.kubernetesTopLeft),
+      bendDirection: 'up',
+      startColor: '#ef7b4d',
+      endColor: '#326ce5'
     },
     {
-      start: kubernetesToArgoStart,
-      end: argoRightLowerEnd,
-      startSocket: 'bottom',
-      endSocket: 'bottom',
-      color: '#326ce5',
-      startPlugColor: '#326ce5',
-      endPlugColor: '#ef7b4d'
+      id: 'kubernetes-argo-bottom',
+      start: point(anchors.kubernetesBottomLeft),
+      end: point(anchors.argoBottomRight),
+      bendDirection: 'down',
+      startColor: '#326ce5',
+      endColor: '#ef7b4d'
     }
   ];
 
-  imageColumnLeaderLines = routes.map((route) => {
-    const line = new LeaderLine(route.start, route.end, { ...baseOptions, ...route });
-    line.svg?.classList.add('image-column-orientation-leader-line');
-    line.position();
-    return line;
-  });
+  if (!imageColumnLeaderLineLayer || imageColumnLeaderLineLayer.parentElement !== grid) {
+    clearImageColumnLeaderLines();
+    imageColumnLeaderLineLayer = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    imageColumnLeaderLineLayer.classList.add('image-column-orientation-leaders');
+    imageColumnLeaderLineLayer.setAttribute('aria-hidden', 'true');
+    grid.appendChild(imageColumnLeaderLineLayer);
+  }
+
+  const defs = routes.map((route) => `
+    <linearGradient id="image-column-gradient-${route.id}" gradientUnits="userSpaceOnUse" x1="${route.start.x.toFixed(2)}" y1="${route.start.y.toFixed(2)}" x2="${route.end.x.toFixed(2)}" y2="${route.end.y.toFixed(2)}">
+      <stop offset="0" stop-color="${route.startColor}"/>
+      <stop offset="1" stop-color="${route.endColor}"/>
+    </linearGradient>
+    <marker id="image-column-arrow-${route.id}" viewBox="0 0 14 14" refX="13" refY="7" markerWidth="14" markerHeight="14" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path d="M1 1 L13 7 L1 13 L5.3 7 Z" fill="${route.endColor}"/>
+    </marker>`).join('');
+
+  const paths = routes.map((route, index) => `
+    <path class="image-column-orientation-leader image-column-orientation-leader--halo" d="${imageColumnArcPath(route.start, route.end, route.bendDirection)}"/>
+    <path class="image-column-orientation-leader" data-image-column-route="${route.id}" style="animation-delay: ${index * -0.65}s" d="${imageColumnArcPath(route.start, route.end, route.bendDirection)}" stroke="url(#image-column-gradient-${route.id})" marker-end="url(#image-column-arrow-${route.id})"/>`).join('');
+
+  imageColumnLeaderLineLayer.setAttribute('viewBox', `0 0 ${grid.offsetWidth} ${grid.offsetHeight}`);
+  imageColumnLeaderLineLayer.setAttribute('preserveAspectRatio', 'none');
+  imageColumnLeaderLineLayer.replaceChildren();
+  imageColumnLeaderLineLayer.insertAdjacentHTML('afterbegin', `<defs>${defs}</defs>${paths}`);
 }
 
 function requestImageColumnLeaderLineUpdate() {

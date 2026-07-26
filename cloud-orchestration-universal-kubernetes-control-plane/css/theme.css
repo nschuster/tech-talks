@@ -652,14 +652,37 @@ body {
   display: block;
 }
 
-.leader-line {
+.image-column-orientation-leaders {
+  position: absolute;
+  inset: 0;
   z-index: 2;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
   pointer-events: none;
 }
 
-.leader-line path,
-.leader-line use {
+.image-column-orientation-leader {
+  fill: none;
+  stroke-width: 8px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 14 8;
+  animation: image-column-leader-dash 1.5s linear infinite;
   filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.34));
+}
+
+.image-column-orientation-leader--halo {
+  stroke: rgba(6, 16, 36, 0.48);
+  stroke-width: 11px;
+  stroke-dasharray: none;
+  animation: none;
+}
+
+@keyframes image-column-leader-dash {
+  to {
+    stroke-dashoffset: -22;
+  }
 }
 
 .reveal section.content-split-orientation-slide {
