@@ -526,13 +526,10 @@ body {
   overflow: hidden;
 }
 
-.image-column-orientation-slide::before {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  content: "";
-  background: rgba(18, 26, 56, 0.28);
-  pointer-events: none;
+.reveal .slide-background.image-column-orientation-slide .slide-background-content {
+  background-image: linear-gradient(rgba(18, 26, 56, 0.28), rgba(18, 26, 56, 0.28)), url("../assets/backgrounds/GettyImages-1672937282.jpeg") !important;
+  background-position: center center !important;
+  background-size: cover !important;
 }
 
 .image-column-orientation-slide h2,
@@ -651,7 +648,7 @@ body {
 }
 
 .image-column-orientation-icon-heading--below {
-  top: calc(100% + 1.05rem);
+  top: calc(100% + 0.38rem);
   bottom: auto;
 }
 
