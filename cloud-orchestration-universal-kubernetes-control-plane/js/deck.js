@@ -10,9 +10,7 @@ import RevealMenu from '../node_modules/reveal.js-menu/plugin.js';
 const CONFIDENTIALITY_LEVEL = 'SEC1';
 
 const EVENT_DETAILS = {
-  event: 'Cloud Orchestration Tech Talk',
-  date: 'XX.XX.2026',
-  time: 'TBD'
+  event: 'Cloud Orchestration Tech Talk'
 };
 
 const CAPGEMINI_LOGOS = {
@@ -148,17 +146,24 @@ function updateMenuThemeButton(theme) {
 }
 
 function formatEventDetails() {
-  return `${EVENT_DETAILS.event} · ${EVENT_DETAILS.date} · ${EVENT_DETAILS.time}`;
+  const liveDate = new Intl.DateTimeFormat('de-DE', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  }).format(new Date());
+
+  return `${EVENT_DETAILS.event} · ${liveDate}`;
 }
 
 function ensureControlsEventLine() {
-  if (!reveal) return undefined;
-  if (!controlsEventLine || controlsEventLine.parentElement !== reveal) {
+  const controls = document.querySelector('.reveal .controls');
+  if (!controls) return undefined;
+  if (!controlsEventLine || controlsEventLine.parentElement !== controls) {
     controlsEventLine?.remove();
     controlsEventLine = document.createElement('div');
-    controlsEventLine.className = 'slide-event-line';
+    controlsEventLine.className = 'controls-event-line';
     controlsEventLine.setAttribute('aria-live', 'polite');
-    reveal.appendChild(controlsEventLine);
+    controls.appendChild(controlsEventLine);
   }
   return controlsEventLine;
 }
