@@ -96,6 +96,9 @@ let brandingLayer;
 let capgeminiLogo;
 let confidentialityPatch;
 let cicdLeaderLineLayer;
+let imageColumnLeaderLines = [];
+let imageColumnLeaderLineFrame;
+let imageColumnLeaderLineTimeout;
 let contentSplitConeLayer;
 let contentSplitConeUpdateFrame;
 let contentSplitConeUpdateTimeout;
@@ -189,12 +192,135 @@ function setTheme(theme) {
   updateMenuThemeButton(theme);
   updateBranding();
   requestCicdLeaderLineUpdate();
+  requestImageColumnLeaderLineUpdate();
   requestContentSplitConeUpdate();
 }
 
 function clearCicdLeaderLines() {
   cicdLeaderLineLayer?.remove();
   cicdLeaderLineLayer = undefined;
+}
+
+function clearImageColumnLeaderLines() {
+  imageColumnLeaderLines.forEach((line) => line.remove());
+  imageColumnLeaderLines = [];
+}
+
+function getImageColumnIcon(slide, label) {
+  return slide.querySelector(`.image-column-orientation-icon[aria-label="${label}"]`);
+}
+
+function getImageColumnLeaderAnchor(icon, name, { x, y }) {
+  let anchor = icon.querySelector(`[data-image-column-leader-anchor="${name}"]`);
+  if (!anchor) {
+    anchor = document.createElement('span');
+    anchor.className = 'image-column-orientation-leader-anchor';
+    anchor.dataset.imageColumnLeaderAnchor = name;
+    anchor.setAttribute('aria-hidden', 'true');
+    icon.appendChild(anchor);
+  }
+  anchor.style.left = x;
+  anchor.style.top = y;
+  return anchor;
+}
+
+function renderImageColumnLeaderLines() {
+  const LeaderLine = window.LeaderLine;
+  const currentSlide = deck.getCurrentSlide();
+  if (!LeaderLine || !currentSlide?.classList.contains('image-column-orientation-slide') || deck.isOverview()) {
+    clearImageColumnLeaderLines();
+    return;
+  }
+
+  const githubIcon = getImageColumnIcon(currentSlide, 'GitHub');
+  const argoIcon = getImageColumnIcon(currentSlide, 'Argo CD');
+  const kubernetesIcon = getImageColumnIcon(currentSlide, 'Kubernetes');
+  if (!githubIcon || !argoIcon || !kubernetesIcon) {
+    clearImageColumnLeaderLines();
+    return;
+  }
+
+  clearImageColumnLeaderLines();
+
+  const baseOptions = {
+    path: 'arc',
+    size: 5,
+    startPlug: 'behind',
+    endPlug: 'arrow3',
+    endPlugSize: 1.35,
+    dash: { len: 10, gap: 7, animation: true },
+    gradient: true,
+    outline: true,
+    outlineColor: 'rgba(6, 16, 36, 0.42)',
+    outlineSize: 1.2
+  };
+
+  const argoToGithubStart = getImageColumnLeaderAnchor(argoIcon, 'left-top', { x: '23%', y: '36%' });
+  const githubToArgoStart = getImageColumnLeaderAnchor(githubIcon, 'right-bottom', { x: '77%', y: '66%' });
+  const argoToKubernetesStart = getImageColumnLeaderAnchor(argoIcon, 'right-top', { x: '77%', y: '36%' });
+  const kubernetesToArgoStart = getImageColumnLeaderAnchor(kubernetesIcon, 'left-bottom', { x: '23%', y: '66%' });
+  const githubUpperEnd = getImageColumnLeaderAnchor(githubIcon, 'right-top', { x: '77%', y: '36%' });
+  const argoLeftLowerEnd = getImageColumnLeaderAnchor(argoIcon, 'left-bottom', { x: '23%', y: '66%' });
+  const kubernetesUpperEnd = getImageColumnLeaderAnchor(kubernetesIcon, 'left-top', { x: '23%', y: '36%' });
+  const argoRightLowerEnd = getImageColumnLeaderAnchor(argoIcon, 'right-bottom', { x: '77%', y: '66%' });
+
+  const routes = [
+    {
+      start: argoToGithubStart,
+      end: githubUpperEnd,
+      startSocket: 'left',
+      endSocket: 'right',
+      color: '#ef7b4d',
+      startPlugColor: '#ef7b4d',
+      endPlugColor: '#ffffff'
+    },
+    {
+      start: githubToArgoStart,
+      end: argoLeftLowerEnd,
+      startSocket: 'right',
+      endSocket: 'left',
+      color: '#ffffff',
+      startPlugColor: '#ffffff',
+      endPlugColor: '#ef7b4d'
+    },
+    {
+      start: argoToKubernetesStart,
+      end: kubernetesUpperEnd,
+      startSocket: 'right',
+      endSocket: 'left',
+      color: '#ef7b4d',
+      startPlugColor: '#ef7b4d',
+      endPlugColor: '#326ce5'
+    },
+    {
+      start: kubernetesToArgoStart,
+      end: argoRightLowerEnd,
+      startSocket: 'left',
+      endSocket: 'right',
+      color: '#326ce5',
+      startPlugColor: '#326ce5',
+      endPlugColor: '#ef7b4d'
+    }
+  ];
+
+  imageColumnLeaderLines = routes.map((route) => {
+    const line = new LeaderLine(route.start, route.end, { ...baseOptions, ...route });
+    line.svg?.classList.add('image-column-orientation-leader-line');
+    line.position();
+    return line;
+  });
+}
+
+function requestImageColumnLeaderLineUpdate() {
+  if (imageColumnLeaderLineFrame) window.cancelAnimationFrame(imageColumnLeaderLineFrame);
+  if (imageColumnLeaderLineTimeout) window.clearTimeout(imageColumnLeaderLineTimeout);
+  imageColumnLeaderLineFrame = window.requestAnimationFrame(() => {
+    imageColumnLeaderLineFrame = undefined;
+    imageColumnLeaderLineTimeout = window.setTimeout(() => {
+      imageColumnLeaderLineTimeout = undefined;
+      renderImageColumnLeaderLines();
+    }, 120);
+  });
 }
 
 function getCicdLineColor({ isStatic = false } = {}) {
@@ -1197,6 +1323,7 @@ deck.on('ready', () => {
   updateControlsSlideNumber();
   updateCicdOverlayVideos();
   requestCicdLeaderLineUpdate();
+  requestImageColumnLeaderLineUpdate();
   requestContentSplitConeUpdate();
 });
 deck.on('slidechanged', () => {
@@ -1204,27 +1331,36 @@ deck.on('slidechanged', () => {
   updateControlsSlideNumber();
   updateCicdOverlayVideos();
   requestCicdLeaderLineUpdate();
+  requestImageColumnLeaderLineUpdate();
   requestContentSplitConeUpdate();
 });
 deck.on('fragmentshown', () => {
   requestCicdLeaderLineUpdate();
+  requestImageColumnLeaderLineUpdate();
   requestContentSplitConeUpdate();
 });
 deck.on('fragmenthidden', () => {
   requestCicdLeaderLineUpdate();
+  requestImageColumnLeaderLineUpdate();
   requestContentSplitConeUpdate();
 });
 deck.on('resize', () => {
   requestCicdLeaderLineUpdate();
+  requestImageColumnLeaderLineUpdate();
   requestContentSplitConeUpdate();
 });
-deck.on('overviewshown', clearCicdLeaderLines);
+deck.on('overviewshown', () => {
+  clearCicdLeaderLines();
+  clearImageColumnLeaderLines();
+});
 deck.on('overviewhidden', () => {
   requestCicdLeaderLineUpdate();
+  requestImageColumnLeaderLineUpdate();
   requestContentSplitConeUpdate();
 });
 window.addEventListener('resize', () => {
   requestCicdLeaderLineUpdate();
+  requestImageColumnLeaderLineUpdate();
   requestContentSplitConeUpdate();
 });
 document.addEventListener('menu-ready', () => updateMenuThemeButton(root.dataset.theme || 'dark'));

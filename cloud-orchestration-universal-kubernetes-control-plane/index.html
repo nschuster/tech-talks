@@ -92,21 +92,6 @@
 <div class="image-column-orientation-column image-column-orientation-column--three"><span class="image-column-orientation-index">03</span><h3>Column 3</h3><span class="image-column-orientation-icon" aria-label="Argo CD"><img class="image-column-orientation-icon-image image-column-orientation-icon-image--light" src="assets/icons/argocd-light.svg" alt="Argo CD"/><img class="image-column-orientation-icon-image image-column-orientation-icon-image--dark" src="assets/icons/argocd-dark.svg" alt="Argo CD"/></span></div>
 <div class="image-column-orientation-column image-column-orientation-column--two"><span class="image-column-orientation-index">02</span><h3>Column 2</h3></div>
 <div class="image-column-orientation-column image-column-orientation-column--one"><span class="image-column-orientation-index">01</span><h3>Column 1</h3><span class="image-column-orientation-icon" aria-label="Kubernetes"><img class="image-column-orientation-icon-image image-column-orientation-icon-image--light" src="assets/icons/kubernetes-light.svg" alt="Kubernetes"/><img class="image-column-orientation-icon-image image-column-orientation-icon-image--dark" src="assets/icons/kubernetes-dark.svg" alt="Kubernetes"/></span></div>
-<svg class="image-column-orientation-leaders" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-<defs>
-<linearGradient id="image-column-gradient-argo-github" gradientUnits="userSpaceOnUse" x1="45" y1="52" x2="15" y2="52"><stop offset="0" stop-color="#ef7b4d"/><stop offset="1" stop-color="#ffffff"/></linearGradient>
-<linearGradient id="image-column-gradient-github-argo" gradientUnits="userSpaceOnUse" x1="15" y1="60" x2="45" y2="60"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#ef7b4d"/></linearGradient>
-<linearGradient id="image-column-gradient-argo-kubernetes" gradientUnits="userSpaceOnUse" x1="55" y1="52" x2="85" y2="52"><stop offset="0" stop-color="#ef7b4d"/><stop offset="1" stop-color="#326ce5"/></linearGradient>
-<linearGradient id="image-column-gradient-kubernetes-argo" gradientUnits="userSpaceOnUse" x1="85" y1="60" x2="55" y2="60"><stop offset="0" stop-color="#326ce5"/><stop offset="1" stop-color="#ef7b4d"/></linearGradient>
-<marker id="image-column-arrow-github" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M1,1 L11,6 L1,11 Z" fill="#ffffff"/></marker>
-<marker id="image-column-arrow-argo" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M1,1 L11,6 L1,11 Z" fill="#ef7b4d"/></marker>
-<marker id="image-column-arrow-kubernetes" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M1,1 L11,6 L1,11 Z" fill="#326ce5"/></marker>
-</defs>
-<path class="image-column-orientation-leader" d="M45 52 C35 34 25 34 15 52" stroke="url(#image-column-gradient-argo-github)" marker-end="url(#image-column-arrow-github)"/>
-<path class="image-column-orientation-leader" d="M15 60 C25 78 35 78 45 60" stroke="url(#image-column-gradient-github-argo)" marker-end="url(#image-column-arrow-argo)"/>
-<path class="image-column-orientation-leader" d="M55 52 C65 34 75 34 85 52" stroke="url(#image-column-gradient-argo-kubernetes)" marker-end="url(#image-column-arrow-kubernetes)"/>
-<path class="image-column-orientation-leader" d="M85 60 C75 78 65 78 55 60" stroke="url(#image-column-gradient-kubernetes-argo)" marker-end="url(#image-column-arrow-argo)"/>
-</svg>
 </div>
 </section>
 <section class="content-split-orientation-slide" data-menu-title="Content Split Orientation">
@@ -387,6 +372,7 @@ spec:
 </section>
 </div>
 </div>
+<script src="vendor/leader-line.min.js"></script>
 <script src="js/deck.js" type="module"></script>
 </body>
 </html>
