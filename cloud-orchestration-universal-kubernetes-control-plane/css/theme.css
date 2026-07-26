@@ -2676,12 +2676,13 @@ body {
 
 .three-column-layout-grid {
   display: grid;
-  grid-template-columns: 20% 40% 30%;
-  gap: 5%;
+  grid-template-columns: 20fr 40fr 30fr;
+  gap: 1.15rem;
   align-items: stretch;
   flex: 1 1 auto;
   min-height: 0;
   margin-top: 2.1rem;
+  width: 100%;
 }
 
 .three-column-layout-column {
@@ -2699,9 +2700,12 @@ body {
 
 .three-column-layout-column--white {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: 2.1rem minmax(0, 1fr);
   align-items: stretch;
+  justify-items: stretch;
   gap: 0.78rem;
+  width: 100%;
   padding: 0;
   border: 0;
   border-radius: 0;
@@ -2717,6 +2721,7 @@ body {
   min-height: 16.8rem;
   height: 100%;
   min-width: 0;
+  width: 100%;
   padding: 1.35rem;
   border: 4px solid var(--capgemini-white);
   background: rgba(18, 26, 56, 0.22);
@@ -2755,25 +2760,24 @@ body {
 
 .three-column-layout-yellow-stack {
   display: flex;
-  flex: 0 0 10.8rem;
+  flex: 0 1 100%;
   flex-direction: column;
   align-items: stretch;
   justify-content: center;
-  gap: 0.62rem;
-  width: 10.8rem;
+  gap: 1.05rem;
+  width: min(100%, 24rem);
   margin-left: auto;
 }
 
 .three-column-layout-yellow-box {
   display: block;
   width: 100%;
-  height: 1.05rem;
+  height: 2.25rem;
   background: var(--capgemini-yellow);
 }
 
 .three-column-layout-column--medium .three-column-layout-yellow-stack {
-  flex-basis: 10.8rem;
-  width: 10.8rem;
+  width: min(100%, 19rem);
 }
 
 .three-column-layout-eyebrow {
