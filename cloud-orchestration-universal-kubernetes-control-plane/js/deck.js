@@ -229,11 +229,11 @@ function getImageColumnLeaderAnchor(icon, corner) {
   return anchor;
 }
 
-function getImageColumnAnchorPoint(anchor, gridRect) {
+function getImageColumnAnchorPoint(anchor, gridRect, scaleX = 1, scaleY = 1) {
   const rect = anchor.getBoundingClientRect();
   return {
-    x: rect.left - gridRect.left,
-    y: rect.top - gridRect.top
+    x: (rect.left - gridRect.left) / scaleX,
+    y: (rect.top - gridRect.top) / scaleY
   };
 }
 
@@ -275,7 +275,9 @@ function renderImageColumnLeaderLines() {
   };
 
   const gridRect = grid.getBoundingClientRect();
-  const point = (anchor) => getImageColumnAnchorPoint(anchor, gridRect);
+  const scaleX = gridRect.width / grid.offsetWidth;
+  const scaleY = gridRect.height / grid.offsetHeight;
+  const point = (anchor) => getImageColumnAnchorPoint(anchor, gridRect, scaleX, scaleY);
   const routes = [
     {
       id: 'github-argo-top',
@@ -324,12 +326,11 @@ function renderImageColumnLeaderLines() {
       <stop offset="0" stop-color="${route.startColor}"/>
       <stop offset="1" stop-color="${route.endColor}"/>
     </linearGradient>
-    <marker id="image-column-arrow-${route.id}" viewBox="0 0 14 14" refX="13" refY="7" markerWidth="14" markerHeight="14" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
-      <path d="M1 1 L13 7 L1 13 L5.3 7 Z" fill="${route.endColor}"/>
+    <marker id="image-column-arrow-${route.id}" viewBox="-8 -8 16 16" refX="4" refY="0" markerWidth="30" markerHeight="30" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <polygon points="-4,-8 4,0 -4,8 -7,5 -2,0 -7,-5" fill="${route.endColor}"/>
     </marker>`).join('');
 
   const paths = routes.map((route, index) => `
-    <path class="image-column-orientation-leader image-column-orientation-leader--halo" d="${imageColumnArcPath(route.start, route.end, route.bendDirection)}"/>
     <path class="image-column-orientation-leader" data-image-column-route="${route.id}" style="animation-delay: ${index * -0.65}s" d="${imageColumnArcPath(route.start, route.end, route.bendDirection)}" stroke="url(#image-column-gradient-${route.id})" marker-end="url(#image-column-arrow-${route.id})"/>`).join('');
 
   imageColumnLeaderLineLayer.setAttribute('viewBox', `0 0 ${grid.offsetWidth} ${grid.offsetHeight}`);
