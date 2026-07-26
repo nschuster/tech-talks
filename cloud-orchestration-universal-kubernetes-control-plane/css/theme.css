@@ -610,11 +610,38 @@ body {
   display: none;
 }
 
+.image-column-orientation-leader-box {
+  position: absolute;
+  inset: 0;
+  display: block;
+  pointer-events: none;
+}
+
 .image-column-orientation-leader-anchor {
   position: absolute;
   width: 0;
   height: 0;
   pointer-events: none;
+}
+
+.image-column-orientation-leader-anchor[data-image-column-leader-anchor="top-left"] {
+  left: 0;
+  top: 0;
+}
+
+.image-column-orientation-leader-anchor[data-image-column-leader-anchor="top-right"] {
+  right: 0;
+  top: 0;
+}
+
+.image-column-orientation-leader-anchor[data-image-column-leader-anchor="bottom-left"] {
+  left: 0;
+  bottom: 0;
+}
+
+.image-column-orientation-leader-anchor[data-image-column-leader-anchor="bottom-right"] {
+  right: 0;
+  bottom: 0;
 }
 
 :root[data-theme="light"] .image-column-orientation-icon-image--light {

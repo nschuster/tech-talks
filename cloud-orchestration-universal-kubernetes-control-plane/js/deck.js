@@ -210,17 +210,22 @@ function getImageColumnIcon(slide, label) {
   return slide.querySelector(`.image-column-orientation-icon[aria-label="${label}"]`);
 }
 
-function getImageColumnLeaderAnchor(icon, name, { x, y }) {
-  let anchor = icon.querySelector(`[data-image-column-leader-anchor="${name}"]`);
+function getImageColumnLeaderAnchor(icon, corner) {
+  let anchorBox = icon.querySelector('.image-column-orientation-leader-box');
+  if (!anchorBox) {
+    anchorBox = document.createElement('span');
+    anchorBox.className = 'image-column-orientation-leader-box';
+    anchorBox.setAttribute('aria-hidden', 'true');
+    icon.appendChild(anchorBox);
+  }
+
+  let anchor = anchorBox.querySelector(`[data-image-column-leader-anchor="${corner}"]`);
   if (!anchor) {
     anchor = document.createElement('span');
     anchor.className = 'image-column-orientation-leader-anchor';
-    anchor.dataset.imageColumnLeaderAnchor = name;
-    anchor.setAttribute('aria-hidden', 'true');
-    icon.appendChild(anchor);
+    anchor.dataset.imageColumnLeaderAnchor = corner;
+    anchorBox.appendChild(anchor);
   }
-  anchor.style.left = x;
-  anchor.style.top = y;
   return anchor;
 }
 
@@ -244,50 +249,50 @@ function renderImageColumnLeaderLines() {
 
   const baseOptions = {
     path: 'arc',
-    size: 5,
+    size: 8,
     startPlug: 'behind',
-    endPlug: 'arrow3',
-    endPlugSize: 1.35,
-    dash: { len: 10, gap: 7, animation: true },
+    endPlug: 'arrow2',
+    endPlugSize: 1.55,
+    dash: { len: 14, gap: 8, animation: true },
     gradient: true,
     outline: true,
-    outlineColor: 'rgba(6, 16, 36, 0.42)',
-    outlineSize: 1.2
+    outlineColor: 'rgba(6, 16, 36, 0.48)',
+    outlineSize: 1.35
   };
 
-  const argoToGithubStart = getImageColumnLeaderAnchor(argoIcon, 'left-top', { x: '23%', y: '36%' });
-  const githubToArgoStart = getImageColumnLeaderAnchor(githubIcon, 'right-bottom', { x: '77%', y: '66%' });
-  const argoToKubernetesStart = getImageColumnLeaderAnchor(argoIcon, 'right-top', { x: '77%', y: '36%' });
-  const kubernetesToArgoStart = getImageColumnLeaderAnchor(kubernetesIcon, 'left-bottom', { x: '23%', y: '66%' });
-  const githubUpperEnd = getImageColumnLeaderAnchor(githubIcon, 'right-top', { x: '77%', y: '36%' });
-  const argoLeftLowerEnd = getImageColumnLeaderAnchor(argoIcon, 'left-bottom', { x: '23%', y: '66%' });
-  const kubernetesUpperEnd = getImageColumnLeaderAnchor(kubernetesIcon, 'left-top', { x: '23%', y: '36%' });
-  const argoRightLowerEnd = getImageColumnLeaderAnchor(argoIcon, 'right-bottom', { x: '77%', y: '66%' });
+  const argoToGithubStart = getImageColumnLeaderAnchor(argoIcon, 'top-left');
+  const githubToArgoStart = getImageColumnLeaderAnchor(githubIcon, 'bottom-right');
+  const argoToKubernetesStart = getImageColumnLeaderAnchor(argoIcon, 'top-right');
+  const kubernetesToArgoStart = getImageColumnLeaderAnchor(kubernetesIcon, 'bottom-left');
+  const githubUpperEnd = getImageColumnLeaderAnchor(githubIcon, 'top-right');
+  const argoLeftLowerEnd = getImageColumnLeaderAnchor(argoIcon, 'bottom-left');
+  const kubernetesUpperEnd = getImageColumnLeaderAnchor(kubernetesIcon, 'top-left');
+  const argoRightLowerEnd = getImageColumnLeaderAnchor(argoIcon, 'bottom-right');
 
   const routes = [
     {
-      start: argoToGithubStart,
-      end: githubUpperEnd,
-      startSocket: 'left',
-      endSocket: 'right',
-      color: '#ef7b4d',
-      startPlugColor: '#ef7b4d',
-      endPlugColor: '#ffffff'
-    },
-    {
-      start: githubToArgoStart,
-      end: argoLeftLowerEnd,
-      startSocket: 'right',
-      endSocket: 'left',
+      start: githubUpperEnd,
+      end: argoToGithubStart,
+      startSocket: 'top',
+      endSocket: 'top',
       color: '#ffffff',
       startPlugColor: '#ffffff',
       endPlugColor: '#ef7b4d'
     },
     {
+      start: argoLeftLowerEnd,
+      end: githubToArgoStart,
+      startSocket: 'bottom',
+      endSocket: 'bottom',
+      color: '#ef7b4d',
+      startPlugColor: '#ef7b4d',
+      endPlugColor: '#ffffff'
+    },
+    {
       start: argoToKubernetesStart,
       end: kubernetesUpperEnd,
-      startSocket: 'right',
-      endSocket: 'left',
+      startSocket: 'top',
+      endSocket: 'top',
       color: '#ef7b4d',
       startPlugColor: '#ef7b4d',
       endPlugColor: '#326ce5'
@@ -295,8 +300,8 @@ function renderImageColumnLeaderLines() {
     {
       start: kubernetesToArgoStart,
       end: argoRightLowerEnd,
-      startSocket: 'left',
-      endSocket: 'right',
+      startSocket: 'bottom',
+      endSocket: 'bottom',
       color: '#326ce5',
       startPlugColor: '#326ce5',
       endPlugColor: '#ef7b4d'
