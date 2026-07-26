@@ -527,8 +527,6 @@ body {
 }
 
 .image-column-orientation-slide h2 {
-  max-width: 1800px;
-  font-size: 1.82em;
   text-shadow: none;
 }
 
@@ -546,8 +544,7 @@ body {
   flex: 1;
   min-height: 0;
   margin-top: 2.4rem;
-  border-top: 2px solid rgba(255, 255, 255, 0.42);
-  border-bottom: 2px solid rgba(255, 255, 255, 0.36);
+  border: 0;
   box-shadow: none;
 }
 
@@ -561,7 +558,7 @@ body {
   min-width: 0;
   height: 100%;
   padding: 2.2rem 1.35rem;
-  border-right: 2px solid rgba(255, 255, 255, 0.34);
+  border: 0;
   color: var(--capgemini-white);
   box-sizing: border-box;
 }
@@ -616,7 +613,7 @@ body {
   transform: translateX(-50%);
   color: var(--capgemini-white);
   font-family: var(--font-display);
-  font-size: 0.38em;
+  font-size: 0.52em;
   font-weight: 400;
   letter-spacing: 0.08em;
   line-height: 1.02;
@@ -628,6 +625,20 @@ body {
 
 .image-column-orientation-icon-heading strong {
   font-weight: 700;
+}
+
+.image-column-orientation-icon-heading--below {
+  top: calc(100% + 1.05rem);
+  bottom: auto;
+}
+
+.image-column-orientation-icon--with-heading-below {
+  color: var(--capgemini-white);
+}
+
+.image-column-orientation-icon--with-heading-below .image-column-orientation-icon-image {
+  width: 82%;
+  height: 82%;
 }
 
 .image-column-orientation-icon-image {

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Sync icon">
+  <g fill="none" stroke="#ffffff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M101 45A43 43 0 0 0 30 29"/>
+    <path d="M30 29h24"/>
+    <path d="M30 29v24"/>
+    <path d="M27 83a43 43 0 0 0 71 16"/>
+    <path d="M98 99H74"/>
+    <path d="M98 99V75"/>
+  </g>
+  <g fill="#1db8f2">
+    <circle cx="64" cy="64" r="15"/>
+  </g>
+</svg>

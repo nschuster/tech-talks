@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Webhook icon">
+  <g fill="none" stroke="#ffffff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="34" cy="37" r="18" fill="#121a38"/>
+    <circle cx="92" cy="37" r="18" fill="#121a38"/>
+    <circle cx="64" cy="91" r="18" fill="#121a38"/>
+    <path d="M49 37h28"/>
+    <path d="M43 53l13 25"/>
+    <path d="M85 53 72 78"/>
+  </g>
+  <g fill="#1db8f2">
+    <circle cx="34" cy="37" r="7"/>
+    <circle cx="92" cy="37" r="7"/>
+    <circle cx="64" cy="91" r="7"/>
+  </g>
+</svg>
