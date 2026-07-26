@@ -1402,8 +1402,12 @@ function renderThreeColumnLeaderLines() {
   }
 
   const gridRect = grid.getBoundingClientRect();
+  const gridWidth = grid.clientWidth || grid.offsetWidth || gridRect.width;
+  const gridHeight = grid.clientHeight || grid.offsetHeight || gridRect.height;
+  const scaleX = gridRect.width / gridWidth || 1;
+  const scaleY = gridRect.height / gridHeight || 1;
   const rect = (element) => element.getBoundingClientRect();
-  const toSvg = (x, y) => ({ x: x - gridRect.left, y: y - gridRect.top });
+  const toSvg = (x, y) => ({ x: (x - gridRect.left) / scaleX, y: (y - gridRect.top) / scaleY });
   const rightCenter = (element) => {
     const box = rect(element);
     return toSvg(box.right, box.top + box.height / 2);
@@ -1483,11 +1487,11 @@ function renderThreeColumnLeaderLines() {
     busX: yellowBusX
   }));
 
-  threeColumnLeaderLineLayer.setAttribute('viewBox', `0 0 ${gridRect.width} ${gridRect.height}`);
-  threeColumnLeaderLineLayer.setAttribute('width', `${gridRect.width}`);
-  threeColumnLeaderLineLayer.setAttribute('height', `${gridRect.height}`);
-  threeColumnLeaderLineLayer.style.width = `${gridRect.width}px`;
-  threeColumnLeaderLineLayer.style.height = `${gridRect.height}px`;
+  threeColumnLeaderLineLayer.setAttribute('viewBox', `0 0 ${gridWidth} ${gridHeight}`);
+  threeColumnLeaderLineLayer.setAttribute('width', `${gridWidth}`);
+  threeColumnLeaderLineLayer.setAttribute('height', `${gridHeight}`);
+  threeColumnLeaderLineLayer.style.removeProperty('width');
+  threeColumnLeaderLineLayer.style.removeProperty('height');
   threeColumnLeaderLineLayer.setAttribute('preserveAspectRatio', 'none');
   threeColumnLeaderLineLayer.replaceChildren(defs, ...blueLines, ...yellowLines);
 }
