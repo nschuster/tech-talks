@@ -256,11 +256,9 @@ function renderImageColumnLeaderLines() {
 
   const grid = currentSlide.querySelector('.image-column-orientation-grid');
   const gitIcon = getImageColumnIcon(currentSlide, 'Git');
-  const webhookIcon = getImageColumnIcon(currentSlide, 'Webhook');
   const argoIcon = getImageColumnIcon(currentSlide, 'Argo CD');
-  const syncIcon = getImageColumnIcon(currentSlide, 'Sync');
   const kubernetesIcon = getImageColumnIcon(currentSlide, 'Kubernetes');
-  if (!grid || !gitIcon || !webhookIcon || !argoIcon || !syncIcon || !kubernetesIcon) {
+  if (!grid || !gitIcon || !argoIcon || !kubernetesIcon) {
     clearImageColumnLeaderLines();
     return;
   }
@@ -268,18 +266,10 @@ function renderImageColumnLeaderLines() {
   const anchors = {
     gitTopRight: getImageColumnLeaderAnchor(gitIcon, 'top-right'),
     gitBottomRight: getImageColumnLeaderAnchor(gitIcon, 'bottom-right'),
-    webhookTopLeft: getImageColumnLeaderAnchor(webhookIcon, 'top-left'),
-    webhookBottomLeft: getImageColumnLeaderAnchor(webhookIcon, 'bottom-left'),
-    webhookTopRight: getImageColumnLeaderAnchor(webhookIcon, 'top-right'),
-    webhookBottomRight: getImageColumnLeaderAnchor(webhookIcon, 'bottom-right'),
     argoTopLeft: getImageColumnLeaderAnchor(argoIcon, 'top-left'),
     argoBottomLeft: getImageColumnLeaderAnchor(argoIcon, 'bottom-left'),
     argoTopRight: getImageColumnLeaderAnchor(argoIcon, 'top-right'),
     argoBottomRight: getImageColumnLeaderAnchor(argoIcon, 'bottom-right'),
-    syncTopLeft: getImageColumnLeaderAnchor(syncIcon, 'top-left'),
-    syncBottomLeft: getImageColumnLeaderAnchor(syncIcon, 'bottom-left'),
-    syncTopRight: getImageColumnLeaderAnchor(syncIcon, 'top-right'),
-    syncBottomRight: getImageColumnLeaderAnchor(syncIcon, 'bottom-right'),
     kubernetesTopLeft: getImageColumnLeaderAnchor(kubernetesIcon, 'top-left'),
     kubernetesBottomLeft: getImageColumnLeaderAnchor(kubernetesIcon, 'bottom-left')
   };
@@ -289,73 +279,40 @@ function renderImageColumnLeaderLines() {
   const scaleY = gridRect.height / grid.offsetHeight;
   const point = (anchor) => getImageColumnAnchorPoint(anchor, gridRect, scaleX, scaleY);
   const gitColor = '#f03c2e';
-  const automationColor = '#1db8f2';
   const argoColor = '#ef7b4d';
   const kubernetesColor = '#326ce5';
   const routes = [
     {
-      id: 'git-webhook-top',
+      id: 'git-argo-top',
       start: point(anchors.gitTopRight),
-      end: point(anchors.webhookTopLeft),
+      end: point(anchors.argoTopLeft),
       bendDirection: 'up',
       startColor: gitColor,
-      endColor: automationColor
+      endColor: argoColor
     },
     {
-      id: 'webhook-git-bottom',
-      start: point(anchors.webhookBottomLeft),
+      id: 'argo-git-bottom',
+      start: point(anchors.argoBottomLeft),
       end: point(anchors.gitBottomRight),
       bendDirection: 'down',
-      startColor: automationColor,
+      startColor: argoColor,
       endColor: gitColor
     },
     {
-      id: 'webhook-argo-top',
-      start: point(anchors.webhookTopRight),
-      end: point(anchors.argoTopLeft),
-      bendDirection: 'up',
-      startColor: automationColor,
-      endColor: argoColor
-    },
-    {
-      id: 'argo-webhook-bottom',
-      start: point(anchors.argoBottomLeft),
-      end: point(anchors.webhookBottomRight),
-      bendDirection: 'down',
-      startColor: argoColor,
-      endColor: automationColor
-    },
-    {
-      id: 'argo-sync-top',
+      id: 'argo-kubernetes-top',
       start: point(anchors.argoTopRight),
-      end: point(anchors.syncTopLeft),
-      bendDirection: 'up',
-      startColor: argoColor,
-      endColor: automationColor
-    },
-    {
-      id: 'sync-argo-bottom',
-      start: point(anchors.syncBottomLeft),
-      end: point(anchors.argoBottomRight),
-      bendDirection: 'down',
-      startColor: automationColor,
-      endColor: argoColor
-    },
-    {
-      id: 'sync-kubernetes-top',
-      start: point(anchors.syncTopRight),
       end: point(anchors.kubernetesTopLeft),
       bendDirection: 'up',
-      startColor: automationColor,
+      startColor: argoColor,
       endColor: kubernetesColor
     },
     {
-      id: 'kubernetes-sync-bottom',
+      id: 'kubernetes-argo-bottom',
       start: point(anchors.kubernetesBottomLeft),
-      end: point(anchors.syncBottomRight),
+      end: point(anchors.argoBottomRight),
       bendDirection: 'down',
       startColor: kubernetesColor,
-      endColor: automationColor
+      endColor: argoColor
     }
   ];
 
