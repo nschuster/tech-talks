@@ -1464,15 +1464,15 @@ function renderThreeColumnLeaderLines() {
   const createMarker = (id, color) => {
     const marker = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
     marker.id = id;
-    marker.setAttribute('viewBox', '-8 -8 16 16');
-    marker.setAttribute('refX', '4');
+    marker.setAttribute('viewBox', '-10 -10 20 20');
+    marker.setAttribute('refX', '8');
     marker.setAttribute('refY', '0');
     marker.setAttribute('markerWidth', '30');
     marker.setAttribute('markerHeight', '30');
     marker.setAttribute('markerUnits', 'userSpaceOnUse');
     marker.setAttribute('orient', 'auto');
     const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-    arrow.setAttribute('points', '-4,-8 4,0 -4,8 -7,5 -2,0 -7,-5');
+    arrow.setAttribute('points', '-8,-8 8,0 -8,8');
     arrow.setAttribute('fill', color);
     marker.appendChild(arrow);
     defs.appendChild(marker);
@@ -1566,6 +1566,12 @@ deck.on('ready', () => {
   requestImageColumnLeaderLineUpdate();
   requestThreeColumnLeaderLineUpdate();
   requestContentSplitConeUpdate();
+  window.setTimeout(() => {
+    requestCicdLeaderLineUpdate();
+    requestImageColumnLeaderLineUpdate();
+    requestThreeColumnLeaderLineUpdate();
+    requestContentSplitConeUpdate();
+  }, 650);
 });
 deck.on('slidechanged', () => {
   updateBranding();
