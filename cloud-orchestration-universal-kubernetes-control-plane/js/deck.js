@@ -247,6 +247,24 @@ function imageColumnArcPath(start, end, bendDirection) {
   return `M ${start.x.toFixed(2)} ${start.y.toFixed(2)} C ${(start.x + distance * 0.32 * Math.sign(end.x - start.x)).toFixed(2)} ${controlY.toFixed(2)} ${(end.x - distance * 0.32 * Math.sign(end.x - start.x)).toFixed(2)} ${controlY.toFixed(2)} ${end.x.toFixed(2)} ${end.y.toFixed(2)}`;
 }
 
+function getImageColumnArrowLineEnd(start, end, bendDirection, inset = 11.25) {
+  const distance = Math.abs(end.x - start.x);
+  const direction = Math.sign(end.x - start.x) || 1;
+  const bend = Math.max(96, Math.min(178, distance * 0.22));
+  const controlY = bendDirection === 'up'
+    ? Math.min(start.y, end.y) - bend
+    : Math.max(start.y, end.y) + bend;
+  const controlX = end.x - distance * 0.32 * direction;
+  const tangentX = end.x - controlX;
+  const tangentY = end.y - controlY;
+  const tangentLength = Math.hypot(tangentX, tangentY) || 1;
+
+  return {
+    x: end.x - (tangentX / tangentLength) * inset,
+    y: end.y - (tangentY / tangentLength) * inset
+  };
+}
+
 function renderImageColumnLeaderLines() {
   const currentSlide = deck.getCurrentSlide();
   if (!currentSlide?.classList.contains('image-column-orientation-slide') || deck.isOverview()) {
@@ -329,12 +347,13 @@ function renderImageColumnLeaderLines() {
       <stop offset="0" stop-color="${route.startColor}"/>
       <stop offset="1" stop-color="${route.endColor}"/>
     </linearGradient>
-    <marker id="image-column-arrow-${route.id}" viewBox="-8 -8 16 16" refX="4" refY="0" markerWidth="30" markerHeight="30" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+    <marker id="image-column-arrow-${route.id}" viewBox="-8 -8 16 16" refX="-2" refY="0" markerWidth="30" markerHeight="30" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
       <polygon points="-4,-8 4,0 -4,8 -7,5 -2,0 -7,-5" fill="${route.endColor}"/>
     </marker>`).join('');
 
   const paths = routes.map((route, index) => {
-    const path = imageColumnArcPath(route.start, route.end, route.bendDirection);
+    const lineEnd = getImageColumnArrowLineEnd(route.start, route.end, route.bendDirection);
+    const path = imageColumnArcPath(route.start, lineEnd, route.bendDirection);
     const delay = `${index * -0.65}s`;
     return `
     <path class="image-column-orientation-leader-shadow" data-image-column-route-shadow="${route.id}" style="animation-delay: ${delay}" d="${path}"/>
