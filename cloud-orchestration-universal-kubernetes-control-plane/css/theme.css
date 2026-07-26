@@ -2839,6 +2839,22 @@ body {
   stroke-linejoin: miter;
   vector-effect: non-scaling-stroke;
   shape-rendering: geometricPrecision;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: three-column-leader-line-draw 820ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes three-column-leader-line-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .three-column-layout-leader-line {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
 }
 
 .three-column-layout-column--medium .three-column-layout-yellow-stack {
@@ -2862,6 +2878,15 @@ body {
 
 .three-column-layout-yellow-stack--managed .three-column-layout-yellow-box {
   background: var(--capgemini-turquoise);
+}
+
+.three-column-layout-yellow-stack--managed {
+  gap: 0.72rem;
+  transform: translateY(1.7rem);
+}
+
+.three-column-layout-yellow-stack--managed .three-column-layout-yellow-box {
+  height: 3.45rem;
 }
 
 .three-column-layout-eyebrow {
@@ -2945,7 +2970,7 @@ body {
 .three-column-layout-box-label {
   color: rgba(8, 20, 44, 0.92);
   font-family: var(--font-display);
-  font-size: 0.363em;
+  font-size: 0.399em;
   font-weight: 900;
   letter-spacing: 0.01em;
   line-height: 1.08;
@@ -2960,7 +2985,7 @@ body {
   margin: 0;
   color: var(--capgemini-white);
   font-family: var(--font-display);
-  font-size: 0.624em;
+  font-size: 0.686em;
   font-weight: 900;
   letter-spacing: -0.015em;
   line-height: 1;
@@ -2979,7 +3004,7 @@ body {
 
 .three-column-layout-yellow-stack--claim .three-column-layout-box-label {
   color: var(--capgemini-white);
-  font-size: 0.411em;
+  font-size: 0.452em;
 }
 
 .three-column-layout-column p:not(.three-column-layout-eyebrow, .three-column-layout-xpkg-note p) {

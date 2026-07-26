@@ -1388,7 +1388,7 @@ function renderThreeColumnLeaderLines() {
   const configurationTargets = [...currentSlide.querySelectorAll('.three-column-layout-yellow-stack--configuration .three-column-layout-yellow-box')];
   const topConfigurationSource = currentSlide.querySelector('.three-column-layout-yellow-box--configuration-source');
   const managedTargets = [...currentSlide.querySelectorAll('.three-column-layout-yellow-box--managed-target')];
-  if (!grid || !source || configurationTargets.length !== 3 || !topConfigurationSource || managedTargets.length !== 5) {
+  if (!grid || !source || configurationTargets.length !== 3 || !topConfigurationSource || managedTargets.length !== 7) {
     clearThreeColumnLeaderLines();
     return;
   }
@@ -1453,6 +1453,7 @@ function renderThreeColumnLeaderLines() {
     createGradient({ id: gradientId, from, to, fromColor, toColor });
     const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     line.classList.add('three-column-layout-leader-line');
+    line.setAttribute('pathLength', '1');
     line.setAttribute('d', makeGridPath(from, to, busX));
     line.setAttribute('stroke', `url(#${gradientId})`);
     line.setAttribute('marker-end', `url(#three-column-layout-leader-arrow-${index + 1}-${className})`);
