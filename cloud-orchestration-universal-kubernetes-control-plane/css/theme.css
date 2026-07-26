@@ -2809,7 +2809,7 @@ body {
   fill: none;
   stroke-width: 9px;
   stroke-linecap: butt;
-  stroke-linejoin: round;
+  stroke-linejoin: miter;
   stroke-dasharray: 30 18;
   vector-effect: non-scaling-stroke;
   shape-rendering: geometricPrecision;

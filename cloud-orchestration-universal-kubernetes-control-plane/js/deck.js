@@ -1412,20 +1412,21 @@ function renderThreeColumnLeaderLines() {
     const box = rect(element);
     return toSvg(box.left, box.top + box.height / 2);
   };
-  const makeCurve = (from, to, bend = 0) => {
-    const dx = Math.max(120, to.x - from.x);
-    const c1 = { x: from.x + dx * 0.42, y: from.y + bend };
-    const c2 = { x: to.x - dx * 0.42, y: to.y - bend };
-    return `M ${from.x.toFixed(1)} ${from.y.toFixed(1)} C ${c1.x.toFixed(1)} ${c1.y.toFixed(1)}, ${c2.x.toFixed(1)} ${c2.y.toFixed(1)}, ${to.x.toFixed(1)} ${to.y.toFixed(1)}`;
+  const makeGridPath = (from, to, busX) => {
+    const x1 = from.x.toFixed(1);
+    const y1 = from.y.toFixed(1);
+    const xb = busX.toFixed(1);
+    const x2 = to.x.toFixed(1);
+    const y2 = to.y.toFixed(1);
+    return `M ${x1} ${y1} H ${xb} V ${y2} H ${x2}`;
   };
-  const createPath = ({ from, to, className, index, color, bend }) => {
+  const createPath = ({ from, to, className, index, color, busX }) => {
     const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     group.classList.add('three-column-layout-leader-group', className);
     group.setAttribute('data-three-column-leader', `${index + 1}`);
-    const d = makeCurve(from, to, bend);
     const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     line.classList.add('three-column-layout-leader-line');
-    line.setAttribute('d', d);
+    line.setAttribute('d', makeGridPath(from, to, busX));
     line.setAttribute('stroke', color);
     line.setAttribute('marker-end', `url(#three-column-layout-leader-arrow-${index + 1}-${className})`);
     line.style.animationDelay = `${index * -0.35}s`;
@@ -1461,23 +1462,25 @@ function renderThreeColumnLeaderLines() {
   }
   const fromBlue = rightCenter(source);
   const fromYellow = rightCenter(topConfigurationSource);
-  const blueBends = [-42, 0, 42];
-  const turquoiseBends = [-82, -40, 0, 40, 82];
-  const blueLines = configurationTargets.map((target, index) => createPath({
+  const configurationEndpoints = configurationTargets.map(leftCenter);
+  const managedEndpoints = managedTargets.map(leftCenter);
+  const blueBusX = fromBlue.x + Math.max(72, (Math.min(...configurationEndpoints.map((point) => point.x)) - fromBlue.x) * 0.5);
+  const yellowBusX = fromYellow.x + Math.max(72, (Math.min(...managedEndpoints.map((point) => point.x)) - fromYellow.x) * 0.5);
+  const blueLines = configurationEndpoints.map((target, index) => createPath({
     from: fromBlue,
-    to: leftCenter(target),
+    to: target,
     className: 'three-column-layout-leader-group--blue-to-yellow',
     index,
     color: blue,
-    bend: blueBends[index]
+    busX: blueBusX
   }));
-  const yellowLines = managedTargets.map((target, index) => createPath({
+  const yellowLines = managedEndpoints.map((target, index) => createPath({
     from: fromYellow,
-    to: leftCenter(target),
+    to: target,
     className: 'three-column-layout-leader-group--yellow-to-turquoise',
     index,
     color: yellow,
-    bend: turquoiseBends[index]
+    busX: yellowBusX
   }));
 
   threeColumnLeaderLineLayer.setAttribute('viewBox', `0 0 ${gridRect.width} ${gridRect.height}`);
