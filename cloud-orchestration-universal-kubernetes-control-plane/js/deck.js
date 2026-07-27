@@ -1724,6 +1724,10 @@ function renderKcpBootstrapLeaderLines() {
   }
 
   const grid = currentSlide.querySelector('.kcp-bootstrap-grid');
+  if (currentSlide.classList.contains('kcp-bootstrap-slide--no-lines')) {
+    clearKcpBootstrapLeaderLines();
+    return;
+  }
   const firstFileIcon = currentSlide.querySelector('.kcp-bootstrap-file-row--one .kcp-bootstrap-file-icon');
   const secondFileIcon = currentSlide.querySelector('.kcp-bootstrap-file-row--two .kcp-bootstrap-file-icon');
   const argoIcon = currentSlide.querySelector('.kcp-bootstrap-local-plane-icon--argo');
@@ -1836,7 +1840,7 @@ function renderKcpBootstrapLeaderLines() {
     return `M ${startPoint.x.toFixed(2)} ${startPoint.y.toFixed(2)} L ${shortenedEnd.x.toFixed(2)} ${shortenedEnd.y.toFixed(2)}`;
   };
   const smoothBridgePath = (startPoint, secondColumnX, fourthColumnX, underBoxY, targetPoint) => {
-    const radius = 46;
+    const radius = 58;
     const kappa = 0.5522847498;
     const k = radius * kappa;
     const firstTurnStartX = secondColumnX - radius;

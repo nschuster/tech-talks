@@ -3080,6 +3080,32 @@ body {
   border-radius: 40px;
 }
 
+.reveal section.kcp-bootstrap-slide--borderless .kcp-bootstrap-git-box,
+.reveal section.kcp-bootstrap-slide--borderless .kcp-bootstrap-column--three,
+.reveal section.kcp-bootstrap-slide--borderless .kcp-bootstrap-column--five,
+.reveal section.kcp-bootstrap-slide--borderless .kcp-bootstrap-local-plane-shell,
+.reveal section.kcp-bootstrap-slide--borderless .kcp-bootstrap-control-plane .cicd-desired-state-gradient-box {
+  border-color: transparent;
+}
+
+.reveal section.kcp-bootstrap-slide--borderless .kcp-bootstrap-git-box {
+  border-width: 0;
+  box-shadow: none;
+}
+
+.reveal section.kcp-bootstrap-slide--borderless .kcp-bootstrap-local-plane-shell,
+.reveal section.kcp-bootstrap-slide--borderless .kcp-bootstrap-control-plane .cicd-desired-state-gradient-box {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.reveal section.kcp-bootstrap-slide--borderless .kcp-bootstrap-local-plane-inner,
+.reveal section.kcp-bootstrap-slide--borderless .kcp-bootstrap-control-plane .cicd-desired-state-gradient-box::after {
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+}
+
 .kcp-bootstrap-git-box {
   position: absolute;
   inset: 0;
