@@ -1822,6 +1822,46 @@ function renderKcpBootstrapLeaderLines() {
     const shortenedEnd = shortenLineEnd(startPoint, endPoint);
     return `M ${startPoint.x.toFixed(2)} ${startPoint.y.toFixed(2)} L ${shortenedEnd.x.toFixed(2)} ${shortenedEnd.y.toFixed(2)}`;
   };
+  const finishDrawAfterAnimation = (drawElement, finishDraw) => {
+    let finished = false;
+    const finishOnce = () => {
+      if (finished) return;
+      finished = true;
+      finishDraw();
+    };
+    drawElement.addEventListener('animationend', finishOnce, { once: true });
+    window.setTimeout(finishOnce, 820);
+  };
+  const addDrawMask = (group, route, length) => {
+    const defs = kcpBootstrapLeaderLineLayer.querySelector('defs');
+    if (!defs) return;
+    group.dataset.cicdDrawMaskId && document.getElementById(group.dataset.cicdDrawMaskId)?.remove();
+    const maskId = `kcp-bootstrap-draw-mask-${route.id.replace(/[^a-z0-9_-]/gi, '-')}`;
+    const mask = document.createElementNS('http://www.w3.org/2000/svg', 'mask');
+    mask.id = maskId;
+    mask.setAttribute('maskUnits', 'userSpaceOnUse');
+    mask.setAttribute('x', '0');
+    mask.setAttribute('y', '0');
+    mask.setAttribute('width', gridRect.width);
+    mask.setAttribute('height', gridRect.height);
+
+    const drawLine = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    drawLine.classList.add('cicd-pipeline-line-draw-mask');
+    drawLine.setAttribute('d', route.d);
+    drawLine.style.setProperty('--cicd-draw-length', Math.max(1, length));
+    mask.appendChild(drawLine);
+    defs.appendChild(mask);
+
+    group.dataset.cicdDrawMaskId = maskId;
+    group.classList.add('cicd-pipeline-group--drawing');
+    group.setAttribute('mask', `url(#${maskId})`);
+    finishDrawAfterAnimation(drawLine, () => {
+      group.removeAttribute('mask');
+      group.classList.remove('cicd-pipeline-group--drawing');
+      delete group.dataset.cicdDrawMaskId;
+      mask.remove();
+    });
+  };
 
   const blueColor = getComputedStyle(document.documentElement).getPropertyValue('--capgemini-light-blue').trim() || '#1db8f2';
   const yellowColor = getComputedStyle(document.documentElement).getPropertyValue('--capgemini-yellow').trim() || '#feb100';
@@ -1882,6 +1922,7 @@ function renderKcpBootstrapLeaderLines() {
   visibleRoutes.forEach((route) => {
     let group = kcpBootstrapLeaderLineLayer.querySelector(`[data-kcp-bootstrap-route="${route.id}"]`);
     let line = group?.querySelector('.cicd-pipeline-line');
+    const isNew = !group || !line;
     if (!group || !line) {
       group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
       group.classList.add('cicd-pipeline-group', 'kcp-bootstrap-line-group', route.className);
@@ -1896,9 +1937,15 @@ function renderKcpBootstrapLeaderLines() {
     line.setAttribute('d', route.d);
     line.setAttribute('stroke', route.stroke);
     line.setAttribute('marker-end', route.marker);
+    if (isNew) {
+      addDrawMask(group, route, line.getTotalLength ? line.getTotalLength() : 1);
+    }
   });
   kcpBootstrapLeaderLineLayer.querySelectorAll('.kcp-bootstrap-line-group[data-kcp-bootstrap-route]').forEach((group) => {
-    if (!activeIds.has(group.dataset.kcpBootstrapRoute)) group.remove();
+    if (!activeIds.has(group.dataset.kcpBootstrapRoute)) {
+      group.dataset.cicdDrawMaskId && document.getElementById(group.dataset.cicdDrawMaskId)?.remove();
+      group.remove();
+    }
   });
 }
 
@@ -1906,12 +1953,16 @@ function requestKcpBootstrapLeaderLineUpdate() {
   if (kcpBootstrapLeaderLineFrame) window.cancelAnimationFrame(kcpBootstrapLeaderLineFrame);
   if (kcpBootstrapLeaderLineTimeout) window.clearTimeout(kcpBootstrapLeaderLineTimeout);
   kcpBootstrapLeaderLineFrame = window.requestAnimationFrame(() => {
-    kcpBootstrapLeaderLineFrame = undefined;
-    kcpBootstrapLeaderLineTimeout = window.setTimeout(() => {
-      kcpBootstrapLeaderLineTimeout = undefined;
+    kcpBootstrapLeaderLineFrame = window.requestAnimationFrame(() => {
+      kcpBootstrapLeaderLineFrame = undefined;
       renderKcpBootstrapLeaderLines();
-    }, 120);
+    });
   });
+  window.setTimeout(renderKcpBootstrapLeaderLines, 160);
+  kcpBootstrapLeaderLineTimeout = window.setTimeout(() => {
+    kcpBootstrapLeaderLineTimeout = undefined;
+    renderKcpBootstrapLeaderLines();
+  }, 420);
 }
 
 function updateCicdOverlayVideos() {
