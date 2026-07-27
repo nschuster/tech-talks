@@ -1994,7 +1994,7 @@ function renderKcpBootstrapLeaderLines() {
   };
 
   const ucpSelfLoopPath = (anchor) => {
-    const loopAnchor = { x: anchor.x - 24, y: anchor.y };
+    const loopAnchor = { x: anchor.x - 42, y: anchor.y };
     const gap = 42;
     const radiusX = 126;
     const radiusY = 82;
