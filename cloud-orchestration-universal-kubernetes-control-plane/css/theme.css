@@ -3059,13 +3059,13 @@ body {
 }
 
 .kcp-bootstrap-column--three {
-  border: 5px solid var(--capgemini-light-blue);
-  border-radius: 45px;
+  border: 8px solid var(--capgemini-light-blue);
+  border-radius: 40px;
 }
 
 .kcp-bootstrap-column--five {
-  border: 5px solid var(--capgemini-yellow);
-  border-radius: 45px;
+  border: 8px solid var(--capgemini-yellow);
+  border-radius: 40px;
 }
 
 .kcp-bootstrap-git-box {
