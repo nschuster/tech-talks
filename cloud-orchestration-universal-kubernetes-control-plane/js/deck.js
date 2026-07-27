@@ -127,6 +127,9 @@ let contentSplitConeUpdateTimeout;
 let threeColumnLeaderLineLayer;
 let threeColumnLeaderLineFrame;
 let threeColumnLeaderLineTimeout;
+let kcpBootstrapLeaderLineLayer;
+let kcpBootstrapLeaderLineFrame;
+let kcpBootstrapLeaderLineTimeout;
 let controlsEventLine;
 let menuAuthorLine;
 const contentSplitDrawnXrLeaderIdsBySlide = new WeakMap();
@@ -1708,6 +1711,185 @@ function requestThreeColumnLeaderLineUpdate() {
   });
 }
 
+function clearKcpBootstrapLeaderLines() {
+  kcpBootstrapLeaderLineLayer?.remove();
+  kcpBootstrapLeaderLineLayer = undefined;
+}
+
+function renderKcpBootstrapLeaderLines() {
+  const currentSlide = deck.getCurrentSlide();
+  if (!currentSlide?.classList.contains('kcp-bootstrap-slide') || deck.isOverview()) {
+    clearKcpBootstrapLeaderLines();
+    return;
+  }
+
+  const grid = currentSlide.querySelector('.kcp-bootstrap-grid');
+  const firstFileIcon = currentSlide.querySelector('.kcp-bootstrap-file-row--one .kcp-bootstrap-file-icon');
+  const argoAnchor = currentSlide.querySelector('.kcp-bootstrap-local-plane-icon-anchor--argo');
+  const crossplaneAnchor = currentSlide.querySelector('.kcp-bootstrap-local-plane-icon-anchor--crossplane');
+  const thirdColumn = currentSlide.querySelector('.kcp-bootstrap-column--three');
+  const fifthColumn = currentSlide.querySelector('.kcp-bootstrap-column--five');
+  if (!grid || !firstFileIcon || !argoAnchor || !crossplaneAnchor || !thirdColumn || !fifthColumn) {
+    clearKcpBootstrapLeaderLines();
+    return;
+  }
+
+  if (!kcpBootstrapLeaderLineLayer || kcpBootstrapLeaderLineLayer.parentElement !== grid) {
+    clearKcpBootstrapLeaderLines();
+    kcpBootstrapLeaderLineLayer = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    kcpBootstrapLeaderLineLayer.classList.add('cicd-pipeline-lines-layer', 'kcp-bootstrap-lines-layer');
+    kcpBootstrapLeaderLineLayer.setAttribute('aria-hidden', 'true');
+    kcpBootstrapLeaderLineLayer.innerHTML = `
+      <defs>
+        <marker id="kcp-bootstrap-pipeline-arrow-blue" viewBox="-8 -8 16 16" markerWidth="30" markerHeight="30" refX="-2" refY="0" orient="auto" markerUnits="userSpaceOnUse">
+          <polygon class="kcp-bootstrap-arrow-head kcp-bootstrap-arrow-head--blue" points="-4,-8 4,0 -4,8 -7,5 -2,0 -7,-5"></polygon>
+        </marker>
+        <marker id="kcp-bootstrap-pipeline-arrow-yellow" viewBox="-8 -8 16 16" markerWidth="30" markerHeight="30" refX="-2" refY="0" orient="auto" markerUnits="userSpaceOnUse">
+          <polygon class="kcp-bootstrap-arrow-head kcp-bootstrap-arrow-head--yellow" points="-4,-8 4,0 -4,8 -7,5 -2,0 -7,-5"></polygon>
+        </marker>
+      </defs>
+    `;
+    grid.appendChild(kcpBootstrapLeaderLineLayer);
+  }
+
+  const gridRect = grid.getBoundingClientRect();
+  const rectPoint = (rect, xFactor, yFactor) => ({
+    x: rect.left - gridRect.left + rect.width * xFactor,
+    y: rect.top - gridRect.top + rect.height * yFactor
+  });
+  const firstFileRect = firstFileIcon.getBoundingClientRect();
+  const argoRect = argoAnchor.getBoundingClientRect();
+  const crossplaneRect = crossplaneAnchor.getBoundingClientRect();
+  const thirdRect = thirdColumn.getBoundingClientRect();
+  const fifthRect = fifthColumn.getBoundingClientRect();
+
+  const start = rectPoint(firstFileRect, 1, 0.5);
+  const argoLeft = rectPoint(argoRect, 0, 0.5);
+  const argoBottom = rectPoint(argoRect, 0.5, 1);
+  const crossplaneTop = rectPoint(crossplaneRect, 0.5, 0);
+  const crossplaneRight = rectPoint(crossplaneRect, 1, 0.5);
+  const thirdBorder = {
+    x: thirdRect.left - gridRect.left,
+    y: argoRect.top - gridRect.top + argoRect.height * 0.28
+  };
+  const fifthBorder = {
+    x: fifthRect.left - gridRect.left,
+    y: crossplaneRight.y
+  };
+
+  const arrowEndpointInset = 16;
+  const shortenLineEnd = (from, to, inset = arrowEndpointInset) => {
+    const dx = to.x - from.x;
+    const dy = to.y - from.y;
+    const length = Math.hypot(dx, dy) || 1;
+    if (length <= inset) return to;
+    return {
+      x: to.x - (dx / length) * inset,
+      y: to.y - (dy / length) * inset
+    };
+  };
+  const shortenCubicEnd = (startPoint, control1, control2, endPoint, inset = arrowEndpointInset) => {
+    const tangentX = endPoint.x - control2.x;
+    const tangentY = endPoint.y - control2.y;
+    const tangentLength = Math.hypot(tangentX, tangentY) || 1;
+    return {
+      x: endPoint.x - (tangentX / tangentLength) * inset,
+      y: endPoint.y - (tangentY / tangentLength) * inset
+    };
+  };
+  const cubicPath = (startPoint, control1, control2, endPoint) => {
+    const shortenedEnd = shortenCubicEnd(startPoint, control1, control2, endPoint);
+    return `M ${startPoint.x.toFixed(2)} ${startPoint.y.toFixed(2)} C ${control1.x.toFixed(2)} ${control1.y.toFixed(2)} ${control2.x.toFixed(2)} ${control2.y.toFixed(2)} ${shortenedEnd.x.toFixed(2)} ${shortenedEnd.y.toFixed(2)}`;
+  };
+  const linePath = (startPoint, endPoint) => {
+    const shortenedEnd = shortenLineEnd(startPoint, endPoint);
+    return `M ${startPoint.x.toFixed(2)} ${startPoint.y.toFixed(2)} L ${shortenedEnd.x.toFixed(2)} ${shortenedEnd.y.toFixed(2)}`;
+  };
+
+  const blueColor = getComputedStyle(document.documentElement).getPropertyValue('--capgemini-light-blue').trim() || '#1db8f2';
+  const yellowColor = getComputedStyle(document.documentElement).getPropertyValue('--capgemini-yellow').trim() || '#feb100';
+  kcpBootstrapLeaderLineLayer.querySelector('.kcp-bootstrap-arrow-head--blue')?.setAttribute('fill', blueColor);
+  kcpBootstrapLeaderLineLayer.querySelector('.kcp-bootstrap-arrow-head--yellow')?.setAttribute('fill', yellowColor);
+  kcpBootstrapLeaderLineLayer.setAttribute('viewBox', `0 0 ${grid.offsetWidth} ${grid.offsetHeight}`);
+  kcpBootstrapLeaderLineLayer.setAttribute('preserveAspectRatio', 'none');
+
+  const routes = [
+    {
+      id: 'file-to-argo',
+      className: 'kcp-bootstrap-line-group--blue',
+      stroke: blueColor,
+      marker: 'url(#kcp-bootstrap-pipeline-arrow-blue)',
+      d: linePath(start, argoLeft)
+    },
+    {
+      id: 'file-to-third-column',
+      className: 'kcp-bootstrap-line-group--blue',
+      stroke: blueColor,
+      marker: 'url(#kcp-bootstrap-pipeline-arrow-blue)',
+      d: cubicPath(
+        start,
+        { x: start.x + 120, y: start.y },
+        { x: thirdBorder.x - 92, y: thirdBorder.y },
+        thirdBorder
+      )
+    },
+    {
+      id: 'argo-to-crossplane',
+      className: 'kcp-bootstrap-line-group--yellow',
+      stroke: yellowColor,
+      marker: 'url(#kcp-bootstrap-pipeline-arrow-yellow)',
+      d: linePath(argoBottom, crossplaneTop)
+    },
+    {
+      id: 'crossplane-to-fifth-column',
+      className: 'kcp-bootstrap-line-group--yellow',
+      stroke: yellowColor,
+      marker: 'url(#kcp-bootstrap-pipeline-arrow-yellow)',
+      d: cubicPath(
+        crossplaneRight,
+        { x: crossplaneRight.x + 88, y: crossplaneRight.y },
+        { x: fifthBorder.x - 90, y: fifthBorder.y },
+        fifthBorder
+      )
+    }
+  ];
+
+  const activeIds = new Set(routes.map((route) => route.id));
+  routes.forEach((route) => {
+    let group = kcpBootstrapLeaderLineLayer.querySelector(`[data-kcp-bootstrap-route="${route.id}"]`);
+    let line = group?.querySelector('.cicd-pipeline-line');
+    if (!group || !line) {
+      group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      group.classList.add('cicd-pipeline-group', 'kcp-bootstrap-line-group', route.className);
+      group.dataset.kcpBootstrapRoute = route.id;
+      line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      line.classList.add('cicd-pipeline-line');
+      group.append(line);
+      kcpBootstrapLeaderLineLayer.append(group);
+    }
+    group.classList.toggle('kcp-bootstrap-line-group--blue', route.className === 'kcp-bootstrap-line-group--blue');
+    group.classList.toggle('kcp-bootstrap-line-group--yellow', route.className === 'kcp-bootstrap-line-group--yellow');
+    line.setAttribute('d', route.d);
+    line.setAttribute('stroke', route.stroke);
+    line.setAttribute('marker-end', route.marker);
+  });
+  kcpBootstrapLeaderLineLayer.querySelectorAll('.kcp-bootstrap-line-group[data-kcp-bootstrap-route]').forEach((group) => {
+    if (!activeIds.has(group.dataset.kcpBootstrapRoute)) group.remove();
+  });
+}
+
+function requestKcpBootstrapLeaderLineUpdate() {
+  if (kcpBootstrapLeaderLineFrame) window.cancelAnimationFrame(kcpBootstrapLeaderLineFrame);
+  if (kcpBootstrapLeaderLineTimeout) window.clearTimeout(kcpBootstrapLeaderLineTimeout);
+  kcpBootstrapLeaderLineFrame = window.requestAnimationFrame(() => {
+    kcpBootstrapLeaderLineFrame = undefined;
+    kcpBootstrapLeaderLineTimeout = window.setTimeout(() => {
+      kcpBootstrapLeaderLineTimeout = undefined;
+      renderKcpBootstrapLeaderLines();
+    }, 120);
+  });
+}
+
 function updateCicdOverlayVideos() {
   document.querySelectorAll('.cicd-static-pipeline-video-overlay, .cicd-desired-state-background-video, .limitless-potential-background-video').forEach((video) => {
     if (!(video instanceof HTMLVideoElement)) return;
@@ -1735,12 +1917,14 @@ deck.on('ready', () => {
   requestCicdLeaderLineUpdate();
   requestImageColumnLeaderLineUpdate();
   requestThreeColumnLeaderLineUpdate();
+  requestKcpBootstrapLeaderLineUpdate();
   requestContentSplitConeUpdate();
   window.setTimeout(() => {
     updateMenuAuthorLine();
     requestCicdLeaderLineUpdate();
     requestImageColumnLeaderLineUpdate();
     requestThreeColumnLeaderLineUpdate();
+    requestKcpBootstrapLeaderLineUpdate();
     requestContentSplitConeUpdate();
   }, 650);
 });
@@ -1752,41 +1936,48 @@ deck.on('slidechanged', () => {
   requestCicdLeaderLineUpdate();
   requestImageColumnLeaderLineUpdate();
   requestThreeColumnLeaderLineUpdate();
+  requestKcpBootstrapLeaderLineUpdate();
   requestContentSplitConeUpdate();
 });
 deck.on('fragmentshown', () => {
   requestCicdLeaderLineUpdate();
   requestImageColumnLeaderLineUpdate();
   requestThreeColumnLeaderLineUpdate();
+  requestKcpBootstrapLeaderLineUpdate();
   requestContentSplitConeUpdate();
 });
 deck.on('fragmenthidden', () => {
   requestCicdLeaderLineUpdate();
   requestImageColumnLeaderLineUpdate();
   requestThreeColumnLeaderLineUpdate();
+  requestKcpBootstrapLeaderLineUpdate();
   requestContentSplitConeUpdate();
 });
 deck.on('resize', () => {
   requestCicdLeaderLineUpdate();
   requestImageColumnLeaderLineUpdate();
   requestThreeColumnLeaderLineUpdate();
+  requestKcpBootstrapLeaderLineUpdate();
   requestContentSplitConeUpdate();
 });
 deck.on('overviewshown', () => {
   clearCicdLeaderLines();
   clearImageColumnLeaderLines();
   clearThreeColumnLeaderLines();
+  clearKcpBootstrapLeaderLines();
 });
 deck.on('overviewhidden', () => {
   requestCicdLeaderLineUpdate();
   requestImageColumnLeaderLineUpdate();
   requestThreeColumnLeaderLineUpdate();
+  requestKcpBootstrapLeaderLineUpdate();
   requestContentSplitConeUpdate();
 });
 window.addEventListener('resize', () => {
   requestCicdLeaderLineUpdate();
   requestImageColumnLeaderLineUpdate();
   requestThreeColumnLeaderLineUpdate();
+  requestKcpBootstrapLeaderLineUpdate();
   requestContentSplitConeUpdate();
 });
 document.addEventListener('menu-ready', () => updateMenuThemeButton(root.dataset.theme || THEME_OPTIONS[0].id));
