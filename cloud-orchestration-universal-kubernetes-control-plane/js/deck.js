@@ -1829,11 +1829,20 @@ function renderKcpBootstrapLeaderLines() {
     const shortenedEnd = shortenLineEnd(startPoint, endPoint);
     return `M ${startPoint.x.toFixed(2)} ${startPoint.y.toFixed(2)} L ${shortenedEnd.x.toFixed(2)} ${shortenedEnd.y.toFixed(2)}`;
   };
-  const polylinePath = (points) => {
-    if (points.length < 2) return '';
-    const finalPoint = shortenLineEnd(points[points.length - 2], points[points.length - 1]);
-    const pathPoints = [...points.slice(0, -1), finalPoint];
-    return pathPoints.map((point, index) => `${index === 0 ? 'M' : 'L'} ${point.x.toFixed(2)} ${point.y.toFixed(2)}`).join(' ');
+  const smoothBridgePath = (startPoint, firstExitPoint, underBoxY, targetPoint) => {
+    const shortenedTarget = shortenCubicEnd(
+      { x: targetPoint.x - 130, y: underBoxY },
+      { x: targetPoint.x - 96, y: underBoxY },
+      { x: targetPoint.x, y: underBoxY + 18 },
+      targetPoint
+    );
+    return [
+      `M ${startPoint.x.toFixed(2)} ${startPoint.y.toFixed(2)}`,
+      `C ${firstExitPoint.x.toFixed(2)} ${startPoint.y.toFixed(2)} ${(firstExitPoint.x + 8).toFixed(2)} ${startPoint.y.toFixed(2)} ${(firstExitPoint.x + 18).toFixed(2)} ${(startPoint.y + 28).toFixed(2)}`,
+      `C ${(firstExitPoint.x + 42).toFixed(2)} ${(startPoint.y + 92).toFixed(2)} ${(firstExitPoint.x + 24).toFixed(2)} ${(underBoxY - 18).toFixed(2)} ${(firstExitPoint.x + 84).toFixed(2)} ${underBoxY.toFixed(2)}`,
+      `C ${(firstExitPoint.x + 230).toFixed(2)} ${underBoxY.toFixed(2)} ${(targetPoint.x - 170).toFixed(2)} ${underBoxY.toFixed(2)} ${(targetPoint.x - 108).toFixed(2)} ${underBoxY.toFixed(2)}`,
+      `C ${(targetPoint.x - 64).toFixed(2)} ${underBoxY.toFixed(2)} ${(targetPoint.x - 4).toFixed(2)} ${(underBoxY - 8).toFixed(2)} ${shortenedTarget.x.toFixed(2)} ${shortenedTarget.y.toFixed(2)}`
+    ].join(' ');
   };
   const easeDraw = (t) => t < 0.5
     ? 2 * t * t
@@ -1944,6 +1953,7 @@ function renderKcpBootstrapLeaderLines() {
     };
     const underThirdBoxY = thirdRect.bottom - gridRect.top + 72;
     const firstBoxExitX = firstColumnRight + 28;
+    const firstExitPoint = { x: firstBoxExitX, y: secondFileStart.y };
     return {
       id: 'second-file-to-bottom-turquoise-midpoint',
       className: 'kcp-bootstrap-line-group--turquoise',
@@ -1951,13 +1961,7 @@ function renderKcpBootstrapLeaderLines() {
       marker: 'url(#kcp-bootstrap-pipeline-arrow-turquoise)',
       revealAxis: 'x',
       visible: isUcpStartSlide,
-      d: polylinePath([
-        secondFileStart,
-        { x: firstBoxExitX, y: secondFileStart.y },
-        { x: firstBoxExitX, y: underThirdBoxY },
-        { x: target.x, y: underThirdBoxY },
-        target
-      ])
+      d: smoothBridgePath(secondFileStart, firstExitPoint, underThirdBoxY, target)
     };
   };
 
