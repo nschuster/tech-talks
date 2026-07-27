@@ -3027,10 +3027,10 @@ body {
 
 .reveal .controls .controls-event-line,
 .reveal .slide-number {
-  padding: 5px 9px;
-  border: 1px solid color-mix(in srgb, var(--color-primary) 28%, transparent);
-  border-radius: 999px;
-  background: rgba(18, 26, 56, 0.68);
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
   color: var(--capgemini-white);
   font-family: var(--font-body);
   font-size: 13px;
@@ -3039,7 +3039,7 @@ body {
   line-height: 1;
   white-space: nowrap;
   pointer-events: none;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.28);
+  box-shadow: none;
 }
 
 .reveal .controls .controls-event-line {
@@ -3054,9 +3054,10 @@ body {
 }
 
 .reveal .slide-number {
-  right: 1.15rem;
+  right: 38px;
   bottom: 40px;
   z-index: 31;
+  min-width: 36px;
   opacity: 1;
   text-align: center;
   transform: translateY(50%);
@@ -3064,7 +3065,7 @@ body {
 
 :root[data-theme="light"] .reveal .controls .controls-event-line,
 :root[data-theme="light"] .reveal .slide-number {
-  background: rgba(255, 255, 255, 0.88);
+  background: transparent;
   color: var(--capgemini-dark-blue);
 }
 
