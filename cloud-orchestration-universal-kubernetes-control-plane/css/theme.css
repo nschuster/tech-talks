@@ -3030,16 +3030,8 @@ body {
   filter: drop-shadow(0 5px 12px rgba(0, 0, 0, 0.34));
 }
 
-.kcp-bootstrap-line-group--blue .cicd-pipeline-line-outline {
-  stroke: rgba(0, 88, 171, 0.28);
-}
-
 .kcp-bootstrap-line-group--blue .cicd-pipeline-line {
   stroke: var(--capgemini-blue);
-}
-
-.kcp-bootstrap-line-group--yellow .cicd-pipeline-line-outline {
-  stroke: rgba(254, 177, 0, 0.28);
 }
 
 .kcp-bootstrap-line-group--yellow .cicd-pipeline-line {
@@ -3069,12 +3061,12 @@ body {
 
 .kcp-bootstrap-column--three {
   border: 9px solid var(--capgemini-blue);
-  border-radius: 30px;
+  border-radius: 45px;
 }
 
 .kcp-bootstrap-column--five {
   border: 9px solid var(--capgemini-yellow);
-  border-radius: 30px;
+  border-radius: 45px;
 }
 
 .kcp-bootstrap-git-box {
