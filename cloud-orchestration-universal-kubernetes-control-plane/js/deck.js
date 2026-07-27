@@ -1993,6 +1993,21 @@ function renderKcpBootstrapLeaderLines() {
     };
   };
 
+  const ucpSelfLoopPath = (anchor) => {
+    const radiusX = 132;
+    const radiusY = 86;
+    const outerX = anchor.x - radiusX;
+    return [
+      `M ${anchor.x.toFixed(2)} ${anchor.y.toFixed(2)}`,
+      `C ${(anchor.x - 34).toFixed(2)} ${(anchor.y - radiusY).toFixed(2)} ${outerX.toFixed(2)} ${(anchor.y - radiusY).toFixed(2)} ${outerX.toFixed(2)} ${anchor.y.toFixed(2)}`,
+      `C ${outerX.toFixed(2)} ${(anchor.y + radiusY).toFixed(2)} ${(anchor.x - 34).toFixed(2)} ${(anchor.y + radiusY).toFixed(2)} ${anchor.x.toFixed(2)} ${anchor.y.toFixed(2)}`
+    ].join(' ');
+  };
+  const ucpCrossplaneEdgeTarget = ucpCrossplaneLeft ? { x: ucpLeft, y: ucpCrossplaneLeft.y } : null;
+  const ucpCrossplaneEdgeLineEnd = ucpCrossplaneLeft && ucpCrossplaneEdgeTarget
+    ? shortenLineEnd(ucpCrossplaneLeft, ucpCrossplaneEdgeTarget)
+    : null;
+
   const step3Routes = [
     {
       id: 'third-file-to-third-column-deprovision',
@@ -2019,16 +2034,27 @@ function renderKcpBootstrapLeaderLines() {
           d: linePath(ucpArgoBottom, ucpCrossplaneTop)
         }]
       : []),
-    ...(ucpCrossplaneLeft
-      ? [{
-          id: 'ucp-crossplane-to-left-edge',
-          className: 'kcp-bootstrap-line-group--yellow',
-          stroke: yellowColor,
-          marker: 'url(#kcp-bootstrap-pipeline-arrow-yellow)',
-          revealAxis: 'x',
-          visible: true,
-          d: linePath(ucpCrossplaneLeft, { x: ucpLeft, y: ucpCrossplaneLeft.y })
-        }]
+    ...(ucpCrossplaneLeft && ucpCrossplaneEdgeTarget && ucpCrossplaneEdgeLineEnd
+      ? [
+          {
+            id: 'ucp-crossplane-to-left-edge',
+            className: 'kcp-bootstrap-line-group--yellow',
+            stroke: yellowColor,
+            marker: 'url(#kcp-bootstrap-pipeline-arrow-yellow)',
+            revealAxis: 'x',
+            visible: true,
+            d: linePath(ucpCrossplaneLeft, ucpCrossplaneEdgeTarget)
+          },
+          {
+            id: 'ucp-self-manage-loop',
+            className: 'kcp-bootstrap-line-group--yellow',
+            stroke: yellowColor,
+            marker: 'url(#kcp-bootstrap-pipeline-arrow-yellow)',
+            revealAxis: 'x',
+            visible: true,
+            d: ucpSelfLoopPath(ucpCrossplaneEdgeLineEnd)
+          }
+        ]
       : [])
   ];
 

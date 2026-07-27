@@ -3103,6 +3103,11 @@ body {
     );
 }
 
+.reveal section.kcp-bootstrap-slide--step3-deprovision .kcp-bootstrap-stack-caption--cluster {
+  color: #a8afb8;
+  text-shadow: 0 5px 16px rgba(0, 0, 0, 0.42);
+}
+
 .reveal section.kcp-bootstrap-slide--step3-deprovision .kcp-bootstrap-local-plane-heading-icon,
 .reveal section.kcp-bootstrap-slide--step3-deprovision .kcp-bootstrap-local-plane-icon {
   filter: grayscale(1) saturate(0) brightness(0.68) opacity(0.58) drop-shadow(0 8px 18px rgba(0, 0, 0, 0.3));
