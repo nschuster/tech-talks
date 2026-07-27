@@ -1897,8 +1897,8 @@ function renderKcpBootstrapLeaderLines() {
   kcpBootstrapLeaderLineLayer.setAttribute('viewBox', `0 0 ${gridRect.width} ${gridRect.height}`);
   kcpBootstrapLeaderLineLayer.setAttribute('preserveAspectRatio', 'none');
 
-  const crossplaneToFifthRoute = (id, verticalOffset = 0) => {
-    const isEdgeRoute = isUcpStartSlide && id.startsWith('crossplane-to-fifth-column');
+  const crossplaneToFifthRoute = (id, verticalOffset = 0, options = {}) => {
+    const isEdgeRoute = options.fromThirdEdge === true;
     const strokeColor = isEdgeRoute ? turquoiseColor : yellowColor;
     const markerId = isEdgeRoute
       ? 'url(#kcp-bootstrap-pipeline-arrow-turquoise)'
@@ -1961,7 +1961,10 @@ function renderKcpBootstrapLeaderLines() {
       d: linePath(argoBottom, crossplaneTop)
     },
     ...(isUcpStartSlide
-      ? [-288, -240, -192, -144, -96, -48, 0, 48].map((offset, index) => crossplaneToFifthRoute(`crossplane-to-fifth-column-${index + 1}`, offset))
+      ? [
+          crossplaneToFifthRoute('crossplane-to-fifth-column'),
+          ...[-288, -240, -192, -144, -96, -48, 0, 48].map((offset, index) => crossplaneToFifthRoute(`third-edge-to-fifth-column-${index + 1}`, offset, { fromThirdEdge: true }))
+        ]
       : [crossplaneToFifthRoute('crossplane-to-fifth-column')])
   ];
 
