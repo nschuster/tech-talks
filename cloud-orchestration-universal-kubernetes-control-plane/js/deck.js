@@ -10,7 +10,7 @@ import RevealMenu from '../node_modules/reveal.js-menu/plugin.js';
 const CONFIDENTIALITY_LEVEL = 'SEC1';
 
 const EVENT_DETAILS = {
-  event: 'Cloud Orchestration Tech Talk'
+  event: 'CIS Cyber Frankfurt Team Meeting'
 };
 
 const AUTHOR_DETAILS = {
