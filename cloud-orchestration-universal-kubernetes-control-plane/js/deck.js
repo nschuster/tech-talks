@@ -1826,6 +1826,12 @@ function renderKcpBootstrapLeaderLines() {
     const shortenedEnd = shortenLineEnd(startPoint, endPoint);
     return `M ${startPoint.x.toFixed(2)} ${startPoint.y.toFixed(2)} L ${shortenedEnd.x.toFixed(2)} ${shortenedEnd.y.toFixed(2)}`;
   };
+  const polylinePath = (points) => {
+    if (points.length < 2) return '';
+    const finalPoint = shortenLineEnd(points[points.length - 2], points[points.length - 1]);
+    const pathPoints = [...points.slice(0, -1), finalPoint];
+    return pathPoints.map((point, index) => `${index === 0 ? 'M' : 'L'} ${point.x.toFixed(2)} ${point.y.toFixed(2)}`).join(' ');
+  };
   const easeDraw = (t) => t < 0.5
     ? 2 * t * t
     : 1 - Math.pow(-2 * t + 2, 2) / 2;
@@ -1926,6 +1932,29 @@ function renderKcpBootstrapLeaderLines() {
       )
     };
   };
+  const secondFileToBottomTurquoiseRoute = () => {
+    const bottomLineStart = { x: thirdRight, y: fifthBorder.y + 48 };
+    const bottomLineEnd = { x: fifthBorder.x, y: fifthBorder.y + 48 };
+    const target = {
+      x: (bottomLineStart.x + bottomLineEnd.x) / 2,
+      y: bottomLineStart.y
+    };
+    const underThirdBoxY = thirdRect.bottom - gridRect.top + 72;
+    return {
+      id: 'second-file-to-bottom-turquoise-midpoint',
+      className: 'kcp-bootstrap-line-group--turquoise',
+      stroke: turquoiseColor,
+      marker: 'url(#kcp-bootstrap-pipeline-arrow-turquoise)',
+      revealAxis: 'x',
+      visible: isUcpStartSlide,
+      d: polylinePath([
+        secondFileStart,
+        { x: secondFileStart.x, y: underThirdBoxY },
+        { x: target.x, y: underThirdBoxY },
+        target
+      ])
+    };
+  };
 
   const routes = [
     {
@@ -1963,7 +1992,8 @@ function renderKcpBootstrapLeaderLines() {
     ...(isUcpStartSlide
       ? [
           crossplaneToFifthRoute('crossplane-to-fifth-column'),
-          ...[-288, -240, -192, -144, -96, -48, 0, 48].map((offset, index) => crossplaneToFifthRoute(`third-edge-to-fifth-column-${index + 1}`, offset, { fromThirdEdge: true }))
+          ...[-288, -240, -192, -144, -96, -48, 48].map((offset, index) => crossplaneToFifthRoute(`third-edge-to-fifth-column-${index + 1}`, offset, { fromThirdEdge: true })),
+          secondFileToBottomTurquoiseRoute()
         ]
       : [crossplaneToFifthRoute('crossplane-to-fifth-column')])
   ];
