@@ -1725,6 +1725,7 @@ function renderKcpBootstrapLeaderLines() {
 
   const grid = currentSlide.querySelector('.kcp-bootstrap-grid');
   const isStep3DeprovisionSlide = currentSlide.classList.contains('kcp-bootstrap-slide--step3-deprovision');
+  const isUcpOnlySlide = currentSlide.classList.contains('kcp-bootstrap-slide--ucp-only');
   const firstFileIcon = currentSlide.querySelector('.kcp-bootstrap-file-row--one .kcp-bootstrap-file-icon');
   const secondFileIcon = currentSlide.querySelector('.kcp-bootstrap-file-row--two .kcp-bootstrap-file-icon');
   const thirdFileIcon = currentSlide.querySelector('.kcp-bootstrap-file-row--three .kcp-bootstrap-file-icon');
@@ -2012,21 +2013,7 @@ function renderKcpBootstrapLeaderLines() {
     ? shortenLineEnd(ucpCrossplaneLeft, ucpCrossplaneEdgeTarget)
     : null;
 
-  const step3Routes = [
-    {
-      id: 'third-file-to-third-column-deprovision',
-      className: 'kcp-bootstrap-line-group--grey',
-      stroke: greyColor,
-      marker: 'url(#kcp-bootstrap-pipeline-arrow-grey)',
-      revealAxis: 'x',
-      visible: true,
-      d: cubicPath(
-        thirdFileStart,
-        { x: thirdFileStart.x + 145, y: thirdFileStart.y },
-        { x: shellLeft - 125, y: thirdFileStart.y },
-        { x: shellLeft, y: thirdFileStart.y }
-      )
-    },
+  const ucpManagementRoutes = [
     ...(ucpArgoBottom && ucpCrossplaneTop
       ? [{
           id: 'ucp-argo-to-crossplane',
@@ -2062,7 +2049,25 @@ function renderKcpBootstrapLeaderLines() {
       : [])
   ];
 
-  const routes = isStep3DeprovisionSlide ? step3Routes : [
+  const step3Routes = [
+    {
+      id: 'third-file-to-third-column-deprovision',
+      className: 'kcp-bootstrap-line-group--grey',
+      stroke: greyColor,
+      marker: 'url(#kcp-bootstrap-pipeline-arrow-grey)',
+      revealAxis: 'x',
+      visible: true,
+      d: cubicPath(
+        thirdFileStart,
+        { x: thirdFileStart.x + 145, y: thirdFileStart.y },
+        { x: shellLeft - 125, y: thirdFileStart.y },
+        { x: shellLeft, y: thirdFileStart.y }
+      )
+    },
+    ...ucpManagementRoutes
+  ];
+
+  const routes = isUcpOnlySlide ? ucpManagementRoutes : isStep3DeprovisionSlide ? step3Routes : [
     {
       id: 'file-to-argo',
       className: 'kcp-bootstrap-line-group--blue',
