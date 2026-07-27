@@ -1822,30 +1822,47 @@ function renderKcpBootstrapLeaderLines() {
     const shortenedEnd = shortenLineEnd(startPoint, endPoint);
     return `M ${startPoint.x.toFixed(2)} ${startPoint.y.toFixed(2)} L ${shortenedEnd.x.toFixed(2)} ${shortenedEnd.y.toFixed(2)}`;
   };
-  const finishDrawAfterAnimation = (_drawElement, finishDraw) => {
-    // Keep the bootstrap mask active for the full draw duration. In Chromium,
-    // animationend on mask content inside <defs> can fire early/cancel during
-    // fragment layout retries, briefly exposing the fully dashed target end.
-    window.setTimeout(finishDraw, 820);
+  const finishDrawAfterAnimation = (drawElement, finishDraw) => {
+    let finished = false;
+    const finishOnce = () => {
+      if (finished) return;
+      finished = true;
+      finishDraw();
+    };
+    drawElement.addEventListener('animationend', finishOnce, { once: true });
+    window.setTimeout(finishOnce, 820);
   };
   const addDrawMask = (group, route, line, length) => {
-    group.querySelector('.kcp-bootstrap-line-draw-overlay')?.remove();
+    const defs = kcpBootstrapLeaderLineLayer.querySelector('defs');
+    if (!defs) return;
+    group.dataset.cicdDrawMaskId && document.getElementById(group.dataset.cicdDrawMaskId)?.remove();
     line.removeAttribute('marker-end');
-    line.style.visibility = 'hidden';
+
+    const maskId = `kcp-bootstrap-draw-mask-${route.id.replace(/[^a-z0-9_-]/gi, '-')}`;
+    const mask = document.createElementNS('http://www.w3.org/2000/svg', 'mask');
+    mask.id = maskId;
+    mask.setAttribute('maskUnits', 'userSpaceOnUse');
+    mask.setAttribute('x', '0');
+    mask.setAttribute('y', '0');
+    mask.setAttribute('width', gridRect.width);
+    mask.setAttribute('height', gridRect.height);
 
     const drawLine = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    drawLine.classList.add('cicd-pipeline-line', 'kcp-bootstrap-line-draw-overlay');
+    drawLine.classList.add('cicd-pipeline-line-draw-mask');
     drawLine.setAttribute('d', route.d);
-    drawLine.setAttribute('stroke', route.stroke);
     drawLine.style.setProperty('--cicd-draw-length', Math.max(1, length));
-    group.appendChild(drawLine);
+    mask.appendChild(drawLine);
+    defs.appendChild(mask);
 
+    group.dataset.cicdDrawMaskId = maskId;
     group.classList.add('cicd-pipeline-group--drawing');
+    group.setAttribute('mask', `url(#${maskId})`);
     finishDrawAfterAnimation(drawLine, () => {
-      drawLine.remove();
+      group.removeAttribute('mask');
       group.classList.remove('cicd-pipeline-group--drawing');
-      line.style.visibility = '';
       line.setAttribute('marker-end', route.marker);
+      delete group.dataset.cicdDrawMaskId;
+      mask.remove();
     });
   };
 
@@ -1907,19 +1924,26 @@ function renderKcpBootstrapLeaderLines() {
   const activeIds = new Set(visibleRoutes.map((route) => route.id));
   visibleRoutes.forEach((route) => {
     let group = kcpBootstrapLeaderLineLayer.querySelector(`[data-kcp-bootstrap-route="${route.id}"]`);
+    let outline = group?.querySelector('.cicd-pipeline-line-outline');
     let line = group?.querySelector('.cicd-pipeline-line');
-    const isNew = !group || !line;
-    if (!group || !line) {
-      group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    const isNew = !group || !line || !outline;
+    if (!group || !line || !outline) {
+      group = group || document.createElementNS('http://www.w3.org/2000/svg', 'g');
       group.classList.add('cicd-pipeline-group', 'kcp-bootstrap-line-group', route.className);
       group.dataset.kcpBootstrapRoute = route.id;
+      outline?.remove();
+      line?.remove();
+      outline = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      outline.classList.add('cicd-pipeline-line-outline', 'cicd-pipeline-line-path');
       line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      line.classList.add('cicd-pipeline-line');
-      group.append(line);
-      kcpBootstrapLeaderLineLayer.append(group);
+      line.classList.add('cicd-pipeline-line', 'cicd-pipeline-line-path');
+      group.append(outline, line);
+      if (!group.parentElement) kcpBootstrapLeaderLineLayer.append(group);
     }
     group.classList.toggle('kcp-bootstrap-line-group--blue', route.className === 'kcp-bootstrap-line-group--blue');
     group.classList.toggle('kcp-bootstrap-line-group--yellow', route.className === 'kcp-bootstrap-line-group--yellow');
+    outline.setAttribute('d', route.d);
+    outline.setAttribute('stroke', 'rgba(4, 13, 34, 0.72)');
     line.setAttribute('d', route.d);
     line.setAttribute('stroke', route.stroke);
     if (group.classList.contains('cicd-pipeline-group--drawing')) {
