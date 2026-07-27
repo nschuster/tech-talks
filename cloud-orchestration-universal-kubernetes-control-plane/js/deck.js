@@ -1819,6 +1819,7 @@ function renderKcpBootstrapLeaderLines() {
   };
   const ucpArgoBottom = ucpArgoRect ? rectPoint(ucpArgoRect, 0.5, 1) : null;
   const ucpCrossplaneTop = ucpCrossplaneRect ? rectPoint(ucpCrossplaneRect, 0.5, 0) : null;
+  const ucpCrossplaneLeft = ucpCrossplaneRect ? rectPoint(ucpCrossplaneRect, 0, 0.5) : null;
 
   const arrowEndpointInset = 16;
   const shortenLineEnd = (from, to, inset = arrowEndpointInset) => {
@@ -2016,6 +2017,17 @@ function renderKcpBootstrapLeaderLines() {
           revealAxis: 'y',
           visible: true,
           d: linePath(ucpArgoBottom, ucpCrossplaneTop)
+        }]
+      : []),
+    ...(ucpCrossplaneLeft
+      ? [{
+          id: 'ucp-crossplane-to-left-edge',
+          className: 'kcp-bootstrap-line-group--yellow',
+          stroke: yellowColor,
+          marker: 'url(#kcp-bootstrap-pipeline-arrow-yellow)',
+          revealAxis: 'x',
+          visible: true,
+          d: linePath(ucpCrossplaneLeft, { x: ucpLeft, y: ucpCrossplaneLeft.y })
         }]
       : [])
   ];

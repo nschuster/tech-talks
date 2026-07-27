@@ -3085,7 +3085,22 @@ body {
 }
 
 .reveal section.kcp-bootstrap-slide--step3-deprovision .kcp-bootstrap-column--three {
-  border-color: #4c525b;
+  border-color: transparent;
+}
+
+.reveal section.kcp-bootstrap-slide--step3-deprovision .kcp-bootstrap-local-plane-shell {
+  background: #4c525b;
+}
+
+.reveal section.kcp-bootstrap-slide--step3-deprovision .kcp-bootstrap-local-plane-inner {
+  background:
+    repeating-linear-gradient(
+      135deg,
+      rgba(188, 46, 46, 0.92) 0,
+      rgba(188, 46, 46, 0.92) 18px,
+      rgba(76, 82, 91, 0.96) 18px,
+      rgba(76, 82, 91, 0.96) 36px
+    );
 }
 
 .kcp-bootstrap-git-box {
