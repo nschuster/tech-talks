@@ -3043,6 +3043,11 @@ body {
   box-shadow: none;
 }
 
+.reveal .controls .controls-event-line.is-hidden,
+.reveal .menu-author-line.is-hidden {
+  display: none;
+}
+
 .reveal .menu-author-line {
   position: absolute;
   left: 72px;

@@ -4,7 +4,7 @@
 
 .slide-menu-wrapper .slide-menu,
 .slide-menu-wrapper .slide-menu.slide-menu--wide {
-  width: min(760px, 68vw);
+  width: min(1000px, 88vw) !important;
   background:
     radial-gradient(circle at 16% 0%, rgba(29, 184, 242, 0.18), transparent 32%),
     linear-gradient(180deg, rgba(18, 26, 56, 0.98) 0%, rgba(5, 13, 33, 0.98) 100%);
@@ -97,7 +97,7 @@
 }
 
 .reveal .slide-menu-button a {
-  color: var(--capgemini-light-blue);
+  color: #ffffff;
   filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.42));
   opacity: 0.72;
   transition: color 160ms ease, filter 160ms ease, opacity 160ms ease;
@@ -105,8 +105,63 @@
 
 .reveal .slide-menu-button a:hover,
 .reveal .slide-menu-button a:focus-visible {
-  color: #ffffff;
+  color: var(--capgemini-light-blue);
   filter: drop-shadow(0 0 12px rgba(29, 184, 242, 0.58));
   opacity: 0.95;
   outline: none;
+}
+
+.slide-menu-wrapper .menu-theme-panel p {
+  margin: 0 0 16px;
+}
+
+.slide-menu-wrapper .menu-theme-options {
+  display: grid;
+  gap: 12px;
+  max-width: 420px;
+}
+
+.slide-menu-wrapper .menu-theme-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid rgba(29, 184, 242, 0.32);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.78);
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-align: left;
+  cursor: pointer;
+}
+
+.slide-menu-wrapper .menu-theme-option:hover,
+.slide-menu-wrapper .menu-theme-option:focus-visible {
+  border-color: var(--capgemini-light-blue);
+  background: rgba(29, 184, 242, 0.14);
+  color: #ffffff;
+  outline: none;
+}
+
+.slide-menu-wrapper .menu-theme-option.is-active {
+  border-color: var(--capgemini-light-blue);
+  background: linear-gradient(90deg, rgba(29, 184, 242, 0.28), rgba(0, 88, 171, 0.16));
+  color: #ffffff;
+  box-shadow: inset 5px 0 0 var(--capgemini-light-blue);
+}
+
+.slide-menu-wrapper .menu-theme-option.is-active::after {
+  content: 'ACTIVE';
+  color: var(--capgemini-light-blue);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+}
+
+.slide-menu-wrapper .menu-theme-hint {
+  margin-top: 18px;
+  color: rgba(255, 255, 255, 0.52);
+  font-size: 14px;
 }

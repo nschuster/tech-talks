@@ -19,6 +19,11 @@ const AUTHOR_DETAILS = {
   company: 'Capgemini'
 };
 
+const THEME_OPTIONS = [
+  { id: 'dark', label: 'CAPGEMINI DARK' },
+  { id: 'light', label: 'CAPGEMINI LIGHT' }
+];
+
 const CAPGEMINI_LOGOS = {
   dark: {
     full: 'assets/logos/Capgemini_Primary_Logo_White.svg',
@@ -53,6 +58,18 @@ const CONFIDENTIALITY_PATCHES = {
   }
 };
 
+function getThemeMenuContent() {
+  const themeButtons = THEME_OPTIONS.map(({ id, label }) => (
+    `<button type="button" class="menu-theme-option" data-theme="${id}">${label}</button>`
+  )).join('');
+
+  return '<div class="menu-theme-panel">' +
+    '<p>Presentation theme</p>' +
+    `<div class="menu-theme-options" role="list">${themeButtons}</div>` +
+    '<p class="menu-theme-hint">Shortcut: T cycles through themes</p>' +
+    '</div>';
+}
+
 const deck = new Reveal({
   hash: true,
   controls: true,
@@ -85,12 +102,7 @@ const deck = new Reveal({
       {
         title: 'Theme',
         icon: '<i class="fas fa-adjust"></i>',
-        content:
-          '<div class="menu-theme-panel">' +
-          '<p>Presentation theme</p>' +
-          '<button type="button" class="menu-theme-toggle">Switch theme</button>' +
-          '<p class="menu-theme-hint">Shortcut: T</p>' +
-          '</div>'
+        content: getThemeMenuContent()
       }
     ]
   },
@@ -146,11 +158,20 @@ function ensureBrandingLayer() {
   reveal?.appendChild(brandingLayer);
 }
 
+function getCurrentSlide() {
+  return document.querySelector('.reveal .slides > section.present') || deck.getCurrentSlide();
+}
+
+function isTitleSlide() {
+  return getCurrentSlide()?.classList.contains('title-slide') ?? false;
+}
+
 function updateMenuThemeButton(theme) {
-  const nextTheme = theme === 'dark' ? 'light' : 'dark';
-  document.querySelectorAll('.menu-theme-toggle').forEach((button) => {
-    button.textContent = `Switch to ${nextTheme} mode`;
-    button.setAttribute('aria-label', `Switch to ${nextTheme} mode`);
+  document.querySelectorAll('.menu-theme-option').forEach((button) => {
+    const themeId = button.getAttribute('data-theme');
+    const isActive = themeId === theme;
+    button.classList.toggle('is-active', isActive);
+    button.setAttribute('aria-pressed', String(isActive));
   });
 }
 
@@ -188,6 +209,13 @@ function updateMenuAuthorLine() {
   const authorText = formatAuthorDetails();
   authorLine.textContent = authorText;
   authorLine.setAttribute('aria-label', authorText);
+  updateFooterVisibility();
+}
+
+function updateFooterVisibility() {
+  const hideFooterDetails = isTitleSlide();
+  controlsEventLine?.classList.toggle('is-hidden', hideFooterDetails);
+  menuAuthorLine?.classList.toggle('is-hidden', hideFooterDetails);
 }
 
 function ensureControlsEventLine() {
@@ -209,13 +237,14 @@ function updateControlsEventLine() {
   const eventText = formatEventDetails();
   eventLine.textContent = eventText;
   eventLine.setAttribute('aria-label', eventText);
+  updateFooterVisibility();
 }
 
 function updateBranding() {
   ensureBrandingLayer();
 
   const theme = root.dataset.theme === 'light' ? 'light' : 'dark';
-  const currentSlide = document.querySelector('.reveal .slides > section.present') || deck.getCurrentSlide();
+  const currentSlide = getCurrentSlide();
   const isTitle = currentSlide?.classList.contains('title-slide');
   const capgeminiVariant = isTitle ? 'full' : 'spade';
   const patchVariant = isTitle ? 'full' : 'compact';
@@ -230,19 +259,26 @@ function updateBranding() {
 }
 
 function setTheme(theme) {
-  root.dataset.theme = theme;
-  localStorage.setItem('tech-talks-theme', theme);
+  const selectedTheme = THEME_OPTIONS.some((option) => option.id === theme) ? theme : THEME_OPTIONS[0].id;
+  root.dataset.theme = selectedTheme;
+  localStorage.setItem('tech-talks-theme', selectedTheme);
   if (toggle) {
-    const nextTheme = theme === 'dark' ? 'light' : 'dark';
-    toggle.textContent = theme === 'dark' ? '☀' : '☾';
-    toggle.setAttribute('aria-label', `Switch to ${nextTheme} theme`);
-    toggle.setAttribute('title', `Switch to ${nextTheme} theme`);
+    const nextTheme = getNextThemeId(selectedTheme);
+    const nextLabel = THEME_OPTIONS.find((option) => option.id === nextTheme)?.label || nextTheme;
+    toggle.textContent = selectedTheme === 'dark' ? '☀' : '☾';
+    toggle.setAttribute('aria-label', `Switch to ${nextLabel}`);
+    toggle.setAttribute('title', `Switch to ${nextLabel}`);
   }
-  updateMenuThemeButton(theme);
+  updateMenuThemeButton(selectedTheme);
   updateBranding();
   requestCicdLeaderLineUpdate();
   requestImageColumnLeaderLineUpdate();
   requestContentSplitConeUpdate();
+}
+
+function getNextThemeId(theme) {
+  const currentIndex = THEME_OPTIONS.findIndex((option) => option.id === theme);
+  return THEME_OPTIONS[(currentIndex + 1 + THEME_OPTIONS.length) % THEME_OPTIONS.length].id;
 }
 
 function clearCicdLeaderLines() {
@@ -1666,7 +1702,7 @@ function updateCicdOverlayVideos() {
 }
 
 function toggleTheme() {
-  setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark');
+  setTheme(getNextThemeId(root.dataset.theme || THEME_OPTIONS[0].id));
 }
 
 setTheme(localStorage.getItem('tech-talks-theme') || root.dataset.theme || 'dark');
@@ -1732,11 +1768,12 @@ window.addEventListener('resize', () => {
   requestThreeColumnLeaderLineUpdate();
   requestContentSplitConeUpdate();
 });
-document.addEventListener('menu-ready', () => updateMenuThemeButton(root.dataset.theme || 'dark'));
+document.addEventListener('menu-ready', () => updateMenuThemeButton(root.dataset.theme || THEME_OPTIONS[0].id));
 document.addEventListener('click', (event) => {
   const target = event.target instanceof Element ? event.target : event.target?.parentElement;
-  if (target?.closest('.menu-theme-toggle')) {
-    toggleTheme();
+  const themeOption = target?.closest('.menu-theme-option');
+  if (themeOption) {
+    setTheme(themeOption.getAttribute('data-theme'));
   }
 });
 
