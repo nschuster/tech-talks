@@ -3046,6 +3046,14 @@ body {
   stroke: var(--capgemini-yellow);
 }
 
+.kcp-bootstrap-arrow-head--blue {
+  fill: var(--capgemini-blue);
+}
+
+.kcp-bootstrap-arrow-head--yellow {
+  fill: var(--capgemini-yellow);
+}
+
 .kcp-bootstrap-column {
   position: relative;
   box-sizing: border-box;
@@ -3060,11 +3068,13 @@ body {
 }
 
 .kcp-bootstrap-column--three {
-  border: 4px solid var(--capgemini-blue);
+  border: 9px solid var(--capgemini-blue);
+  border-radius: 30px;
 }
 
 .kcp-bootstrap-column--five {
-  border: 4px solid var(--capgemini-yellow);
+  border: 9px solid var(--capgemini-yellow);
+  border-radius: 30px;
 }
 
 .kcp-bootstrap-git-box {
