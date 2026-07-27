@@ -1412,9 +1412,9 @@ function renderThreeColumnLeaderLines() {
     const box = rect(element);
     return toSvg(box.right, box.top + box.height / 2);
   };
-  const leftCenter = (element) => {
+  const leftCenter = (element, inset = 0) => {
     const box = rect(element);
-    return toSvg(box.left, box.top + box.height / 2);
+    return toSvg(box.left - inset, box.top + box.height / 2);
   };
   const makeGridPath = (from, to, busX) => {
     const x1 = from.x.toFixed(1);
@@ -1445,34 +1445,31 @@ function renderThreeColumnLeaderLines() {
     gradient.append(start, hold, end);
     defs.appendChild(gradient);
   };
-  const createPath = ({ from, to, className, index, fromColor, toColor, busX }) => {
-    const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-    group.classList.add('three-column-layout-leader-group', className);
-    group.setAttribute('data-three-column-leader', `${index + 1}`);
+  const createPathSpec = ({ from, to, className, index, fromColor, toColor, busX }) => {
     const gradientId = `three-column-layout-leader-gradient-${index + 1}-${className}`;
     createGradient({ id: gradientId, from, to, fromColor, toColor });
-    const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    line.classList.add('three-column-layout-leader-line');
-    line.setAttribute('pathLength', '1');
-    line.setAttribute('d', makeGridPath(from, to, busX));
-    line.setAttribute('stroke', `url(#${gradientId})`);
-    line.setAttribute('marker-end', `url(#three-column-layout-leader-arrow-${index + 1}-${className})`);
-    group.append(line);
-    return group;
+    return {
+      key: `${className}-${index + 1}`,
+      className,
+      index,
+      d: makeGridPath(from, to, busX),
+      stroke: `url(#${gradientId})`,
+      markerEnd: `url(#three-column-layout-leader-arrow-${index + 1}-${className})`
+    };
   };
 
   const createMarker = (id, color) => {
     const marker = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
     marker.id = id;
-    marker.setAttribute('viewBox', '-10 -10 20 20');
-    marker.setAttribute('refX', '8');
+    marker.setAttribute('viewBox', '-8 -8 16 16');
+    marker.setAttribute('refX', '-2');
     marker.setAttribute('refY', '0');
     marker.setAttribute('markerWidth', '30');
     marker.setAttribute('markerHeight', '30');
     marker.setAttribute('markerUnits', 'userSpaceOnUse');
     marker.setAttribute('orient', 'auto');
     const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-    arrow.setAttribute('points', '-8,-8 8,0 -8,8');
+    arrow.setAttribute('points', '-4,-8 4,0 -4,8 -7,5 -2,0 -7,-5');
     arrow.setAttribute('fill', color);
     marker.appendChild(arrow);
     defs.appendChild(marker);
@@ -1490,15 +1487,16 @@ function renderThreeColumnLeaderLines() {
   const isRevealedFragment = (element) => !element.closest('.fragment:not(.visible)');
   const fromBlue = rightCenter(source);
   const fromYellow = rightCenter(topConfigurationSource);
-  const configurationEndpoints = configurationTargets.filter(isRevealedFragment).map(leftCenter);
-  const managedEndpoints = managedTargets.filter(isRevealedFragment).map(leftCenter);
+  const arrowEndpointInset = 16;
+  const configurationEndpoints = configurationTargets.filter(isRevealedFragment).map((target) => leftCenter(target, arrowEndpointInset));
+  const managedEndpoints = managedTargets.filter(isRevealedFragment).map((target) => leftCenter(target, arrowEndpointInset));
   const blueBusX = configurationEndpoints.length
     ? fromBlue.x + Math.max(72, (Math.min(...configurationEndpoints.map((point) => point.x)) - fromBlue.x) * 0.5)
     : fromBlue.x + 72;
   const yellowBusX = managedEndpoints.length
     ? fromYellow.x + Math.max(72, (Math.min(...managedEndpoints.map((point) => point.x)) - fromYellow.x) * 0.5)
     : fromYellow.x + 72;
-  const blueLines = configurationEndpoints.map((target, index) => createPath({
+  const blueLines = configurationEndpoints.map((target, index) => createPathSpec({
     from: fromBlue,
     to: target,
     className: 'three-column-layout-leader-group--blue-to-yellow',
@@ -1508,7 +1506,7 @@ function renderThreeColumnLeaderLines() {
     busX: blueBusX
   }));
   const yellowLines = isRevealedFragment(topConfigurationSource)
-    ? managedEndpoints.map((target, index) => createPath({
+    ? managedEndpoints.map((target, index) => createPathSpec({
       from: fromYellow,
       to: target,
       className: 'three-column-layout-leader-group--yellow-to-turquoise',
@@ -1525,7 +1523,37 @@ function renderThreeColumnLeaderLines() {
   threeColumnLeaderLineLayer.style.removeProperty('width');
   threeColumnLeaderLineLayer.style.removeProperty('height');
   threeColumnLeaderLineLayer.setAttribute('preserveAspectRatio', 'none');
-  threeColumnLeaderLineLayer.replaceChildren(defs, ...blueLines, ...yellowLines);
+  const activeSpecs = [...blueLines, ...yellowLines];
+  const activeKeys = new Set(activeSpecs.map((spec) => spec.key));
+  const previousDefs = threeColumnLeaderLineLayer.querySelector('defs');
+  if (previousDefs) {
+    previousDefs.replaceWith(defs);
+  } else {
+    threeColumnLeaderLineLayer.prepend(defs);
+  }
+  activeSpecs.forEach((spec) => {
+    let group = threeColumnLeaderLineLayer.querySelector(`[data-three-column-leader-key="${spec.key}"]`);
+    let line = group?.querySelector('.three-column-layout-leader-line');
+    if (!group || !line) {
+      group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      group.classList.add('three-column-layout-leader-group', spec.className);
+      group.setAttribute('data-three-column-leader', `${spec.index + 1}`);
+      group.setAttribute('data-three-column-leader-key', spec.key);
+      line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      line.classList.add('three-column-layout-leader-line');
+      line.setAttribute('pathLength', '1');
+      group.append(line);
+      threeColumnLeaderLineLayer.append(group);
+    }
+    line.setAttribute('d', spec.d);
+    line.setAttribute('stroke', spec.stroke);
+    line.setAttribute('marker-end', spec.markerEnd);
+  });
+  threeColumnLeaderLineLayer.querySelectorAll('.three-column-layout-leader-group').forEach((group) => {
+    if (!activeKeys.has(group.getAttribute('data-three-column-leader-key'))) {
+      group.remove();
+    }
+  });
 }
 
 function requestThreeColumnLeaderLineUpdate() {
