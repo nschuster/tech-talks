@@ -1830,16 +1830,21 @@ function renderKcpBootstrapLeaderLines() {
     return `M ${startPoint.x.toFixed(2)} ${startPoint.y.toFixed(2)} L ${shortenedEnd.x.toFixed(2)} ${shortenedEnd.y.toFixed(2)}`;
   };
   const smoothBridgePath = (startPoint, firstExitPoint, underBoxY, straightStartX, straightEndX, targetPoint) => {
-    const dropX = firstExitPoint.x + 76;
-    const cornerRadius = 46;
+    const radius = 46;
+    const kappa = 0.5522847498;
+    const k = radius * kappa;
+    const dropX = straightStartX - radius;
+    const firstTurnStartX = dropX - radius;
+    const finalTurnStartX = targetPoint.x - radius;
     return [
       `M ${startPoint.x.toFixed(2)} ${startPoint.y.toFixed(2)}`,
-      `L ${firstExitPoint.x.toFixed(2)} ${firstExitPoint.y.toFixed(2)}`,
-      `C ${(dropX - cornerRadius).toFixed(2)} ${firstExitPoint.y.toFixed(2)} ${dropX.toFixed(2)} ${(firstExitPoint.y + cornerRadius * 0.18).toFixed(2)} ${dropX.toFixed(2)} ${(firstExitPoint.y + cornerRadius).toFixed(2)}`,
-      `L ${dropX.toFixed(2)} ${(underBoxY - cornerRadius).toFixed(2)}`,
-      `C ${dropX.toFixed(2)} ${(underBoxY - cornerRadius * 0.18).toFixed(2)} ${(straightStartX - cornerRadius).toFixed(2)} ${underBoxY.toFixed(2)} ${straightStartX.toFixed(2)} ${underBoxY.toFixed(2)}`,
-      `L ${straightEndX.toFixed(2)} ${underBoxY.toFixed(2)}`,
-      `C ${(targetPoint.x - cornerRadius).toFixed(2)} ${underBoxY.toFixed(2)} ${targetPoint.x.toFixed(2)} ${(targetPoint.y + cornerRadius).toFixed(2)} ${targetPoint.x.toFixed(2)} ${targetPoint.y.toFixed(2)}`
+      `L ${firstTurnStartX.toFixed(2)} ${startPoint.y.toFixed(2)}`,
+      `C ${(firstTurnStartX + k).toFixed(2)} ${startPoint.y.toFixed(2)} ${dropX.toFixed(2)} ${(startPoint.y + radius - k).toFixed(2)} ${dropX.toFixed(2)} ${(startPoint.y + radius).toFixed(2)}`,
+      `L ${dropX.toFixed(2)} ${(underBoxY - radius).toFixed(2)}`,
+      `C ${dropX.toFixed(2)} ${(underBoxY - radius + k).toFixed(2)} ${(straightStartX - k).toFixed(2)} ${underBoxY.toFixed(2)} ${straightStartX.toFixed(2)} ${underBoxY.toFixed(2)}`,
+      `L ${finalTurnStartX.toFixed(2)} ${underBoxY.toFixed(2)}`,
+      `C ${(finalTurnStartX + k).toFixed(2)} ${underBoxY.toFixed(2)} ${targetPoint.x.toFixed(2)} ${(underBoxY - radius + k).toFixed(2)} ${targetPoint.x.toFixed(2)} ${(underBoxY - radius).toFixed(2)}`,
+      `L ${targetPoint.x.toFixed(2)} ${targetPoint.y.toFixed(2)}`
     ].join(' ');
   };
   const easeDraw = (t) => t < 0.5
