@@ -1822,47 +1822,59 @@ function renderKcpBootstrapLeaderLines() {
     const shortenedEnd = shortenLineEnd(startPoint, endPoint);
     return `M ${startPoint.x.toFixed(2)} ${startPoint.y.toFixed(2)} L ${shortenedEnd.x.toFixed(2)} ${shortenedEnd.y.toFixed(2)}`;
   };
-  const finishDrawAfterAnimation = (drawElement, finishDraw) => {
-    let finished = false;
-    const finishOnce = () => {
-      if (finished) return;
-      finished = true;
-      finishDraw();
-    };
-    drawElement.addEventListener('animationend', finishOnce, { once: true });
-    window.setTimeout(finishOnce, 820);
+  const finishDrawAfterAnimation = (_drawElement, finishDraw) => {
+    window.setTimeout(finishDraw, 820);
   };
+  const easeDraw = (t) => t < 0.5
+    ? 2 * t * t
+    : 1 - Math.pow(-2 * t + 2, 2) / 2;
   const addDrawMask = (group, route, line, length) => {
     const defs = kcpBootstrapLeaderLineLayer.querySelector('defs');
     if (!defs) return;
     group.dataset.cicdDrawMaskId && document.getElementById(group.dataset.cicdDrawMaskId)?.remove();
     line.removeAttribute('marker-end');
 
-    const maskId = `kcp-bootstrap-draw-mask-${route.id.replace(/[^a-z0-9_-]/gi, '-')}`;
-    const mask = document.createElementNS('http://www.w3.org/2000/svg', 'mask');
-    mask.id = maskId;
-    mask.setAttribute('maskUnits', 'userSpaceOnUse');
-    mask.setAttribute('x', '0');
-    mask.setAttribute('y', '0');
-    mask.setAttribute('width', gridRect.width);
-    mask.setAttribute('height', gridRect.height);
+    const clipId = `kcp-bootstrap-draw-clip-${route.id.replace(/[^a-z0-9_-]/gi, '-')}`;
+    const clipPath = document.createElementNS('http://www.w3.org/2000/svg', 'clipPath');
+    clipPath.id = clipId;
+    clipPath.setAttribute('clipPathUnits', 'userSpaceOnUse');
+    const clipRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    clipRect.setAttribute('x', '0');
+    clipRect.setAttribute('y', '0');
+    clipRect.setAttribute('width', route.revealAxis === 'y' ? gridRect.width : 0);
+    clipRect.setAttribute('height', route.revealAxis === 'y' ? 0 : gridRect.height);
+    clipPath.appendChild(clipRect);
+    defs.appendChild(clipPath);
 
-    const drawLine = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    drawLine.classList.add('cicd-pipeline-line-draw-mask');
-    drawLine.setAttribute('d', route.d);
-    drawLine.style.setProperty('--cicd-draw-length', Math.max(1, length));
-    mask.appendChild(drawLine);
-    defs.appendChild(mask);
-
-    group.dataset.cicdDrawMaskId = maskId;
+    const drawToken = `${clipId}-${window.performance.now().toFixed(3)}`;
+    group.dataset.cicdDrawMaskId = clipId;
+    group.dataset.cicdDrawToken = drawToken;
     group.classList.add('cicd-pipeline-group--drawing');
-    group.setAttribute('mask', `url(#${maskId})`);
-    finishDrawAfterAnimation(drawLine, () => {
-      group.removeAttribute('mask');
+    group.setAttribute('clip-path', `url(#${clipId})`);
+
+    const start = window.performance.now();
+    const duration = 760;
+    const drawFrame = (now) => {
+      if (!clipPath.isConnected || group.dataset.cicdDrawMaskId !== clipId || group.dataset.cicdDrawToken !== drawToken) return;
+      const progress = Math.min(1, Math.max(0, (now - start) / duration));
+      const eased = easeDraw(progress);
+      if (route.revealAxis === 'y') {
+        clipRect.setAttribute('height', gridRect.height * eased);
+      } else {
+        clipRect.setAttribute('width', gridRect.width * eased);
+      }
+      if (progress < 1) window.requestAnimationFrame(drawFrame);
+    };
+    window.requestAnimationFrame(drawFrame);
+
+    finishDrawAfterAnimation(null, () => {
+      if (group.dataset.cicdDrawMaskId !== clipId || group.dataset.cicdDrawToken !== drawToken) return;
+      group.removeAttribute('clip-path');
       group.classList.remove('cicd-pipeline-group--drawing');
       line.setAttribute('marker-end', route.marker);
       delete group.dataset.cicdDrawMaskId;
-      mask.remove();
+      delete group.dataset.cicdDrawToken;
+      clipPath.remove();
     });
   };
 
@@ -1881,6 +1893,7 @@ function renderKcpBootstrapLeaderLines() {
       className: 'kcp-bootstrap-line-group--blue',
       stroke: blueColor,
       marker: 'url(#kcp-bootstrap-pipeline-arrow-blue)',
+      revealAxis: 'x',
       visible: localFragmentVisible,
       d: linePath(firstFileStart, argoHorizontalTarget)
     },
@@ -1889,6 +1902,7 @@ function renderKcpBootstrapLeaderLines() {
       className: 'kcp-bootstrap-line-group--blue',
       stroke: blueColor,
       marker: 'url(#kcp-bootstrap-pipeline-arrow-blue)',
+      revealAxis: 'x',
       visible: localFragmentVisible,
       d: cubicPath(
         firstFileStart,
@@ -1902,6 +1916,7 @@ function renderKcpBootstrapLeaderLines() {
       className: 'kcp-bootstrap-line-group--yellow',
       stroke: yellowColor,
       marker: 'url(#kcp-bootstrap-pipeline-arrow-yellow)',
+      revealAxis: 'y',
       visible: ucpFragmentVisible,
       d: linePath(argoBottom, crossplaneTop)
     },
@@ -1910,6 +1925,7 @@ function renderKcpBootstrapLeaderLines() {
       className: 'kcp-bootstrap-line-group--yellow',
       stroke: yellowColor,
       marker: 'url(#kcp-bootstrap-pipeline-arrow-yellow)',
+      revealAxis: 'x',
       visible: ucpFragmentVisible,
       d: cubicPath(
         crossplaneIconRight,
@@ -1958,6 +1974,8 @@ function renderKcpBootstrapLeaderLines() {
   kcpBootstrapLeaderLineLayer.querySelectorAll('.kcp-bootstrap-line-group[data-kcp-bootstrap-route]').forEach((group) => {
     if (!activeIds.has(group.dataset.kcpBootstrapRoute)) {
       group.dataset.cicdDrawMaskId && document.getElementById(group.dataset.cicdDrawMaskId)?.remove();
+      delete group.dataset.cicdDrawMaskId;
+      delete group.dataset.cicdDrawToken;
       group.remove();
     }
   });
