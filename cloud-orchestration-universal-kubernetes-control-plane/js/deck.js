@@ -1832,10 +1832,11 @@ function renderKcpBootstrapLeaderLines() {
     drawElement.addEventListener('animationend', finishOnce, { once: true });
     window.setTimeout(finishOnce, 820);
   };
-  const addDrawMask = (group, route, length) => {
+  const addDrawMask = (group, route, line, length) => {
     const defs = kcpBootstrapLeaderLineLayer.querySelector('defs');
     if (!defs) return;
     group.dataset.cicdDrawMaskId && document.getElementById(group.dataset.cicdDrawMaskId)?.remove();
+    line.removeAttribute('marker-end');
     const maskId = `kcp-bootstrap-draw-mask-${route.id.replace(/[^a-z0-9_-]/gi, '-')}`;
     const mask = document.createElementNS('http://www.w3.org/2000/svg', 'mask');
     mask.id = maskId;
@@ -1858,6 +1859,7 @@ function renderKcpBootstrapLeaderLines() {
     finishDrawAfterAnimation(drawLine, () => {
       group.removeAttribute('mask');
       group.classList.remove('cicd-pipeline-group--drawing');
+      line.setAttribute('marker-end', route.marker);
       delete group.dataset.cicdDrawMaskId;
       mask.remove();
     });
@@ -1936,9 +1938,13 @@ function renderKcpBootstrapLeaderLines() {
     group.classList.toggle('kcp-bootstrap-line-group--yellow', route.className === 'kcp-bootstrap-line-group--yellow');
     line.setAttribute('d', route.d);
     line.setAttribute('stroke', route.stroke);
-    line.setAttribute('marker-end', route.marker);
+    if (group.classList.contains('cicd-pipeline-group--drawing')) {
+      line.removeAttribute('marker-end');
+    } else {
+      line.setAttribute('marker-end', route.marker);
+    }
     if (isNew) {
-      addDrawMask(group, route, line.getTotalLength ? line.getTotalLength() : 1);
+      addDrawMask(group, route, line, line.getTotalLength ? line.getTotalLength() : 1);
     }
   });
   kcpBootstrapLeaderLineLayer.querySelectorAll('.kcp-bootstrap-line-group[data-kcp-bootstrap-route]').forEach((group) => {
