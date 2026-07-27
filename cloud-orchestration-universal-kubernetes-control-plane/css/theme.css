@@ -3019,45 +3019,31 @@ body {
   margin-top: 4rem;
 }
 
-.kcp-bootstrap-leaderlines {
+.kcp-bootstrap-grid > .cicd-pipeline-lines-layer.kcp-bootstrap-lines-layer {
   position: absolute;
   inset: 0;
-  z-index: 6;
+  z-index: 7;
   width: 100%;
   height: 100%;
   overflow: visible;
   pointer-events: none;
+  filter: drop-shadow(0 5px 12px rgba(0, 0, 0, 0.34));
 }
 
-.kcp-bootstrap-leaderline {
-  fill: none;
-  stroke-width: 5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-dasharray: 14 12;
-  animation: kcp-bootstrap-dash 1.25s linear infinite;
+.kcp-bootstrap-line-group--blue .cicd-pipeline-line-outline {
+  stroke: rgba(0, 88, 171, 0.28);
 }
 
-.kcp-bootstrap-leaderline--blue {
+.kcp-bootstrap-line-group--blue .cicd-pipeline-line {
   stroke: var(--capgemini-blue);
 }
 
-.kcp-bootstrap-leaderline--yellow {
+.kcp-bootstrap-line-group--yellow .cicd-pipeline-line-outline {
+  stroke: rgba(254, 177, 0, 0.28);
+}
+
+.kcp-bootstrap-line-group--yellow .cicd-pipeline-line {
   stroke: var(--capgemini-yellow);
-}
-
-.kcp-bootstrap-arrow-fill-blue {
-  fill: var(--capgemini-blue);
-}
-
-.kcp-bootstrap-arrow-fill-yellow {
-  fill: var(--capgemini-yellow);
-}
-
-@keyframes kcp-bootstrap-dash {
-  to {
-    stroke-dashoffset: -26;
-  }
 }
 
 .kcp-bootstrap-column {
@@ -3071,6 +3057,14 @@ body {
 .kcp-bootstrap-column--one {
   padding-right: 0;
   padding-left: 0;
+}
+
+.kcp-bootstrap-column--three {
+  border: 4px solid var(--capgemini-blue);
+}
+
+.kcp-bootstrap-column--five {
+  border: 4px solid var(--capgemini-yellow);
 }
 
 .kcp-bootstrap-git-box {
@@ -3162,7 +3156,6 @@ body {
   z-index: 2;
   box-sizing: border-box;
   overflow: hidden;
-  border: 4px solid var(--capgemini-blue);
   border-radius: 30px;
   background: var(--capgemini-white);
   box-shadow: 0 22px 52px rgba(0, 0, 0, 0.28);
@@ -3228,7 +3221,6 @@ body {
   width: auto;
   box-sizing: border-box;
   overflow: hidden;
-  border: 4px solid var(--capgemini-yellow);
   border-radius: 30px;
   background: rgba(0, 88, 171, 0.52);
   box-shadow: 0 22px 52px rgba(0, 0, 0, 0.28);
