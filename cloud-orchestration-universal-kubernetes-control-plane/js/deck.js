@@ -1825,6 +1825,8 @@ function renderKcpBootstrapLeaderLines() {
 
   const blueColor = getComputedStyle(document.documentElement).getPropertyValue('--capgemini-light-blue').trim() || '#1db8f2';
   const yellowColor = getComputedStyle(document.documentElement).getPropertyValue('--capgemini-yellow').trim() || '#feb100';
+  const localFragmentVisible = currentSlide.querySelector('.kcp-bootstrap-fragment-local')?.classList.contains('visible');
+  const ucpFragmentVisible = currentSlide.querySelector('.kcp-bootstrap-fragment-ucp')?.classList.contains('visible');
   kcpBootstrapLeaderLineLayer.querySelector('.kcp-bootstrap-arrow-head--blue')?.setAttribute('fill', blueColor);
   kcpBootstrapLeaderLineLayer.querySelector('.kcp-bootstrap-arrow-head--yellow')?.setAttribute('fill', yellowColor);
   kcpBootstrapLeaderLineLayer.setAttribute('viewBox', `0 0 ${gridRect.width} ${gridRect.height}`);
@@ -1836,6 +1838,7 @@ function renderKcpBootstrapLeaderLines() {
       className: 'kcp-bootstrap-line-group--blue',
       stroke: blueColor,
       marker: 'url(#kcp-bootstrap-pipeline-arrow-blue)',
+      visible: localFragmentVisible,
       d: linePath(firstFileStart, argoHorizontalTarget)
     },
     {
@@ -1843,6 +1846,7 @@ function renderKcpBootstrapLeaderLines() {
       className: 'kcp-bootstrap-line-group--blue',
       stroke: blueColor,
       marker: 'url(#kcp-bootstrap-pipeline-arrow-blue)',
+      visible: localFragmentVisible,
       d: cubicPath(
         firstFileStart,
         { x: firstFileStart.x + 145, y: firstFileStart.y },
@@ -1855,6 +1859,7 @@ function renderKcpBootstrapLeaderLines() {
       className: 'kcp-bootstrap-line-group--yellow',
       stroke: yellowColor,
       marker: 'url(#kcp-bootstrap-pipeline-arrow-yellow)',
+      visible: ucpFragmentVisible,
       d: linePath(argoBottom, crossplaneTop)
     },
     {
@@ -1862,6 +1867,7 @@ function renderKcpBootstrapLeaderLines() {
       className: 'kcp-bootstrap-line-group--yellow',
       stroke: yellowColor,
       marker: 'url(#kcp-bootstrap-pipeline-arrow-yellow)',
+      visible: ucpFragmentVisible,
       d: cubicPath(
         crossplaneIconRight,
         { x: crossplaneIconRight.x + 112, y: crossplaneIconRight.y },
@@ -1871,8 +1877,9 @@ function renderKcpBootstrapLeaderLines() {
     }
   ];
 
-  const activeIds = new Set(routes.map((route) => route.id));
-  routes.forEach((route) => {
+  const visibleRoutes = routes.filter((route) => route.visible);
+  const activeIds = new Set(visibleRoutes.map((route) => route.id));
+  visibleRoutes.forEach((route) => {
     let group = kcpBootstrapLeaderLineLayer.querySelector(`[data-kcp-bootstrap-route="${route.id}"]`);
     let line = group?.querySelector('.cicd-pipeline-line');
     if (!group || !line) {
