@@ -3096,11 +3096,16 @@ body {
   background:
     repeating-linear-gradient(
       135deg,
-      rgba(188, 46, 46, 0.92) 0,
-      rgba(188, 46, 46, 0.92) 18px,
-      rgba(76, 82, 91, 0.96) 18px,
-      rgba(76, 82, 91, 0.96) 36px
+      rgba(188, 46, 46, 0.78) 0,
+      rgba(188, 46, 46, 0.78) 5px,
+      rgba(76, 82, 91, 0.96) 5px,
+      rgba(76, 82, 91, 0.96) 10px
     );
+}
+
+.reveal section.kcp-bootstrap-slide--step3-deprovision .kcp-bootstrap-local-plane-heading-icon,
+.reveal section.kcp-bootstrap-slide--step3-deprovision .kcp-bootstrap-local-plane-icon {
+  filter: grayscale(1) saturate(0) brightness(0.68) opacity(0.58) drop-shadow(0 8px 18px rgba(0, 0, 0, 0.3));
 }
 
 .kcp-bootstrap-git-box {
