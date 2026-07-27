@@ -3112,19 +3112,18 @@ body {
   display: none;
 }
 
-.reveal section.kcp-bootstrap-slide--ucp-only > h2,
-.reveal section.kcp-bootstrap-slide--ucp-only > .slide-subtitle {
-  visibility: hidden;
+.reveal section.kcp-bootstrap-slide--ucp-only .kcp-bootstrap-grid {
+  grid-template-columns: 35%;
+  justify-content: center;
 }
 
-.reveal section.kcp-bootstrap-slide--ucp-only .kcp-bootstrap-column--one > *,
-.reveal section.kcp-bootstrap-slide--ucp-only .kcp-bootstrap-column--two > *,
-.reveal section.kcp-bootstrap-slide--ucp-only .kcp-bootstrap-column--three > *,
-.reveal section.kcp-bootstrap-slide--ucp-only .kcp-bootstrap-column--four > * {
-  visibility: hidden;
-}
-
+.reveal section.kcp-bootstrap-slide--ucp-only .kcp-bootstrap-column--one,
+.reveal section.kcp-bootstrap-slide--ucp-only .kcp-bootstrap-column--two,
 .reveal section.kcp-bootstrap-slide--ucp-only .kcp-bootstrap-column--three,
+.reveal section.kcp-bootstrap-slide--ucp-only .kcp-bootstrap-column--four {
+  display: none;
+}
+
 .reveal section.kcp-bootstrap-slide--ucp-only .kcp-bootstrap-column--five {
   border-color: transparent;
 }
