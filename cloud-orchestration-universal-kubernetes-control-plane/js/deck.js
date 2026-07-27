@@ -13,6 +13,12 @@ const EVENT_DETAILS = {
   event: 'Cloud Orchestration Tech Talk'
 };
 
+const AUTHOR_DETAILS = {
+  name: 'Niklas Schuster',
+  jobTitle: 'Cloud Architect',
+  company: 'Capgemini'
+};
+
 const CAPGEMINI_LOGOS = {
   dark: {
     full: 'assets/logos/Capgemini_Primary_Logo_White.svg',
@@ -110,6 +116,7 @@ let threeColumnLeaderLineLayer;
 let threeColumnLeaderLineFrame;
 let threeColumnLeaderLineTimeout;
 let controlsEventLine;
+let menuAuthorLine;
 const contentSplitDrawnXrLeaderIdsBySlide = new WeakMap();
 
 function getConfidentialityPatch() {
@@ -155,6 +162,32 @@ function formatEventDetails() {
   }).format(new Date());
 
   return `${EVENT_DETAILS.event} · ${liveDate}`;
+}
+
+function formatAuthorDetails() {
+  return [AUTHOR_DETAILS.name, AUTHOR_DETAILS.jobTitle, AUTHOR_DETAILS.company]
+    .filter(Boolean)
+    .join(' · ');
+}
+
+function ensureMenuAuthorLine() {
+  if (!reveal) return undefined;
+  if (!menuAuthorLine || menuAuthorLine.parentElement !== reveal) {
+    menuAuthorLine?.remove();
+    menuAuthorLine = document.createElement('div');
+    menuAuthorLine.className = 'menu-author-line';
+    menuAuthorLine.setAttribute('aria-live', 'polite');
+    reveal.appendChild(menuAuthorLine);
+  }
+  return menuAuthorLine;
+}
+
+function updateMenuAuthorLine() {
+  const authorLine = ensureMenuAuthorLine();
+  if (!authorLine) return;
+  const authorText = formatAuthorDetails();
+  authorLine.textContent = authorText;
+  authorLine.setAttribute('aria-label', authorText);
 }
 
 function ensureControlsEventLine() {
@@ -1640,12 +1673,14 @@ setTheme(localStorage.getItem('tech-talks-theme') || root.dataset.theme || 'dark
 deck.on('ready', () => {
   updateBranding();
   updateControlsEventLine();
+  updateMenuAuthorLine();
   updateCicdOverlayVideos();
   requestCicdLeaderLineUpdate();
   requestImageColumnLeaderLineUpdate();
   requestThreeColumnLeaderLineUpdate();
   requestContentSplitConeUpdate();
   window.setTimeout(() => {
+    updateMenuAuthorLine();
     requestCicdLeaderLineUpdate();
     requestImageColumnLeaderLineUpdate();
     requestThreeColumnLeaderLineUpdate();
@@ -1655,6 +1690,7 @@ deck.on('ready', () => {
 deck.on('slidechanged', () => {
   updateBranding();
   updateControlsEventLine();
+  updateMenuAuthorLine();
   updateCicdOverlayVideos();
   requestCicdLeaderLineUpdate();
   requestImageColumnLeaderLineUpdate();

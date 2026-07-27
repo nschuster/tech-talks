@@ -3026,6 +3026,7 @@ body {
 }
 
 .reveal .controls .controls-event-line,
+.reveal .menu-author-line,
 .reveal .slide-number {
   padding: 0;
   border: 0;
@@ -3040,6 +3041,17 @@ body {
   white-space: nowrap;
   pointer-events: none;
   box-shadow: none;
+}
+
+.reveal .menu-author-line {
+  position: absolute;
+  left: 72px;
+  bottom: 40px;
+  z-index: 60;
+  width: max-content;
+  max-width: min(560px, calc(100vw - 430px));
+  text-align: left;
+  transform: translateY(50%);
 }
 
 .reveal .controls .controls-event-line {
@@ -3064,6 +3076,7 @@ body {
 }
 
 :root[data-theme="light"] .reveal .controls .controls-event-line,
+:root[data-theme="light"] .reveal .menu-author-line,
 :root[data-theme="light"] .reveal .slide-number {
   background: transparent;
   color: var(--capgemini-dark-blue);
