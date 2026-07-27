@@ -3064,7 +3064,7 @@ body {
 }
 
 .kcp-bootstrap-slide--ucp-start .kcp-bootstrap-column--three {
-  border: 0;
+  border-color: var(--capgemini-turquoise);
 }
 
 .kcp-bootstrap-column--five {

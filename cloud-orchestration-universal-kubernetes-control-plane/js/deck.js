@@ -1891,6 +1891,31 @@ function renderKcpBootstrapLeaderLines() {
   kcpBootstrapLeaderLineLayer.setAttribute('viewBox', `0 0 ${gridRect.width} ${gridRect.height}`);
   kcpBootstrapLeaderLineLayer.setAttribute('preserveAspectRatio', 'none');
 
+  const crossplaneToFifthRoute = (id, verticalOffset = 0) => {
+    const start = {
+      x: crossplaneIconRight.x,
+      y: crossplaneIconRight.y + verticalOffset
+    };
+    const end = {
+      x: fifthBorder.x,
+      y: fifthBorder.y + verticalOffset
+    };
+    return {
+      id,
+      className: 'kcp-bootstrap-line-group--yellow',
+      stroke: yellowColor,
+      marker: 'url(#kcp-bootstrap-pipeline-arrow-yellow)',
+      revealAxis: 'x',
+      visible: ucpFragmentVisible,
+      d: cubicPath(
+        start,
+        { x: start.x + 112, y: start.y },
+        { x: end.x - 112, y: end.y },
+        end
+      )
+    };
+  };
+
   const routes = [
     {
       id: 'file-to-argo',
@@ -1924,20 +1949,9 @@ function renderKcpBootstrapLeaderLines() {
       visible: ucpFragmentVisible,
       d: linePath(argoBottom, crossplaneTop)
     },
-    {
-      id: 'crossplane-to-fifth-column',
-      className: 'kcp-bootstrap-line-group--yellow',
-      stroke: yellowColor,
-      marker: 'url(#kcp-bootstrap-pipeline-arrow-yellow)',
-      revealAxis: 'x',
-      visible: ucpFragmentVisible,
-      d: cubicPath(
-        crossplaneIconRight,
-        { x: crossplaneIconRight.x + 112, y: crossplaneIconRight.y },
-        { x: fifthBorder.x - 112, y: fifthBorder.y },
-        fifthBorder
-      )
-    }
+    ...(isUcpStartSlide
+      ? [-144, -96, -48, 0, 48].map((offset, index) => crossplaneToFifthRoute(`crossplane-to-fifth-column-${index + 1}`, offset))
+      : [crossplaneToFifthRoute('crossplane-to-fifth-column')])
   ];
 
   const visibleRoutes = routes.filter((route) => route.visible);
