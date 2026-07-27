@@ -630,7 +630,7 @@ function renderCicdLeaderLines() {
   if (showNextSlideControlPlanePipelines && deploymentManifestItem) {
     const desiredStateY = elementYInGrid(deploymentManifestItem, 0.5);
     const desiredStatePoints = horizontalPipelineAtY(desiredStateY);
-    const middleBoxStart = desiredStatePoints[1];
+    const middleBoxStart = desiredStatePoints[0];
     const middleBoxEnd = desiredStatePoints[4];
     const rightColumnStart = desiredStatePoints[5];
     const registryBranchY = registryCenterY + 34;
@@ -651,7 +651,7 @@ function renderCicdLeaderLines() {
     };
     const desiredStateReverseY = desiredStateY + desiredStateReverseOffset;
     const desiredStateReversePoints = horizontalPipelineAtY(desiredStateReverseY);
-    const middleBoxStartReverse = desiredStateReversePoints[1];
+    const middleBoxStartReverse = desiredStateReversePoints[0];
     const middleBoxEndReverse = desiredStateReversePoints[4];
     const rightColumnStartReverse = desiredStateReversePoints[5];
     const branchBackToControlPlane = (id, targetY) => {
@@ -797,7 +797,7 @@ function renderCicdLeaderLines() {
       segments: routedPipeline(
         elementYInGrid(deploymentManifestItem, 0.12),
         kubernetesCenterY,
-        { curveStartIndex: 1, curveEndIndex: 4, controlFactor: 0.28 }
+        { curveStartIndex: 0, curveEndIndex: 4, controlFactor: 0.28 }
       )
     });
   }
@@ -807,7 +807,7 @@ function renderCicdLeaderLines() {
       segments: routedPipeline(
         elementYInGrid(deploymentManifestItem, 0.5),
         cloudMiddleRowY,
-        { curveStartIndex: 1, curveEndIndex: 4, controlFactor: 0.24 }
+        { curveStartIndex: 0, curveEndIndex: 4, controlFactor: 0.24 }
       )
     });
   }
@@ -817,7 +817,7 @@ function renderCicdLeaderLines() {
       segments: routedPipeline(
         elementYInGrid(deploymentManifestItem, 0.88),
         thirdPartyLowerY,
-        { curveStartIndex: 1, curveEndIndex: 4, controlFactor: 0.28 }
+        { curveStartIndex: 0, curveEndIndex: 4, controlFactor: 0.28 }
       )
     });
   }
