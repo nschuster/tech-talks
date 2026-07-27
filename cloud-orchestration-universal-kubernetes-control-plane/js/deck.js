@@ -185,10 +185,22 @@ function formatEventDetails() {
   return `${EVENT_DETAILS.event} · ${liveDate}`;
 }
 
+function formatAuthorRole() {
+  return [AUTHOR_DETAILS.jobTitle, AUTHOR_DETAILS.company]
+    .filter(Boolean)
+    .join(' @ ');
+}
+
 function formatAuthorDetails() {
-  return [AUTHOR_DETAILS.name, AUTHOR_DETAILS.jobTitle, AUTHOR_DETAILS.company]
+  return [AUTHOR_DETAILS.name, formatAuthorRole()]
     .filter(Boolean)
     .join(' · ');
+}
+
+function formatSpeakerDetails() {
+  return [AUTHOR_DETAILS.name, formatAuthorRole(), 'XX.XX.2026']
+    .filter(Boolean)
+    .join(' | ');
 }
 
 function ensureMenuAuthorLine() {
@@ -210,6 +222,14 @@ function updateMenuAuthorLine() {
   authorLine.textContent = authorText;
   authorLine.setAttribute('aria-label', authorText);
   updateFooterVisibility();
+}
+
+function updateSpeakerInfo() {
+  document.querySelectorAll('.speaker-line').forEach((speakerLine) => {
+    const speakerText = formatSpeakerDetails();
+    speakerLine.textContent = speakerText;
+    speakerLine.setAttribute('aria-label', speakerText);
+  });
 }
 
 function updateFooterVisibility() {
@@ -777,7 +797,7 @@ function renderCicdLeaderLines() {
       segments: routedPipeline(
         elementYInGrid(deploymentManifestItem, 0.12),
         kubernetesCenterY,
-        { curveStartIndex: 2, curveEndIndex: 4, controlFactor: 0.28 }
+        { curveStartIndex: 1, curveEndIndex: 4, controlFactor: 0.28 }
       )
     });
   }
@@ -787,7 +807,7 @@ function renderCicdLeaderLines() {
       segments: routedPipeline(
         elementYInGrid(deploymentManifestItem, 0.5),
         cloudMiddleRowY,
-        { curveStartIndex: 2, curveEndIndex: 4, controlFactor: 0.24 }
+        { curveStartIndex: 1, curveEndIndex: 4, controlFactor: 0.24 }
       )
     });
   }
@@ -797,7 +817,7 @@ function renderCicdLeaderLines() {
       segments: routedPipeline(
         elementYInGrid(deploymentManifestItem, 0.88),
         thirdPartyLowerY,
-        { curveStartIndex: 2, curveEndIndex: 4, controlFactor: 0.28 }
+        { curveStartIndex: 1, curveEndIndex: 4, controlFactor: 0.28 }
       )
     });
   }
@@ -1708,6 +1728,7 @@ function toggleTheme() {
 setTheme(localStorage.getItem('tech-talks-theme') || root.dataset.theme || 'dark');
 deck.on('ready', () => {
   updateBranding();
+  updateSpeakerInfo();
   updateControlsEventLine();
   updateMenuAuthorLine();
   updateCicdOverlayVideos();
