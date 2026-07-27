@@ -3015,7 +3015,7 @@ body {
   grid-template-columns: 15% 15% 20% 15% 35%;
   width: 100%;
   height: 64vh;
-  margin-top: 2.55rem;
+  margin-top: 4rem;
 }
 
 .kcp-bootstrap-column {
@@ -3033,8 +3033,8 @@ body {
 
 .kcp-bootstrap-git-box {
   position: absolute;
-  inset: 0;
-  min-height: 100%;
+  inset: 0.9rem 0;
+  min-height: 0;
 }
 
 .kcp-bootstrap-git-box .cicd-column-caption-square {
@@ -3110,7 +3110,7 @@ body {
 .kcp-bootstrap-control-plane,
 .kcp-bootstrap-local-plane {
   position: absolute;
-  inset: 0;
+  inset: 0.9rem;
   pointer-events: none;
 }
 
