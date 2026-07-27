@@ -1724,12 +1724,10 @@ function renderKcpBootstrapLeaderLines() {
   }
 
   const grid = currentSlide.querySelector('.kcp-bootstrap-grid');
-  if (currentSlide.classList.contains('kcp-bootstrap-slide--no-lines')) {
-    clearKcpBootstrapLeaderLines();
-    return;
-  }
+  const isStep3DeprovisionSlide = currentSlide.classList.contains('kcp-bootstrap-slide--step3-deprovision');
   const firstFileIcon = currentSlide.querySelector('.kcp-bootstrap-file-row--one .kcp-bootstrap-file-icon');
   const secondFileIcon = currentSlide.querySelector('.kcp-bootstrap-file-row--two .kcp-bootstrap-file-icon');
+  const thirdFileIcon = currentSlide.querySelector('.kcp-bootstrap-file-row--three .kcp-bootstrap-file-icon');
   const argoIcon = currentSlide.querySelector('.kcp-bootstrap-local-plane-icon--argo');
   const argoAnchor = currentSlide.querySelector('.kcp-bootstrap-local-plane-icon-anchor--argo');
   const crossplaneIcon = currentSlide.querySelector('.kcp-bootstrap-local-plane-icon--crossplane');
@@ -1741,7 +1739,9 @@ function renderKcpBootstrapLeaderLines() {
   const fifthColumn = currentSlide.querySelector('.kcp-bootstrap-column--five');
   const localPlaneShell = currentSlide.querySelector('.kcp-bootstrap-local-plane-shell');
   const ucpPlane = currentSlide.querySelector('.kcp-bootstrap-control-plane');
-  if (!grid || !firstFileIcon || !secondFileIcon || !argoIcon || !argoAnchor || !crossplaneIcon || !crossplaneAnchor || !firstColumn || !secondColumn || !thirdColumn || !fourthColumn || !fifthColumn || !localPlaneShell || !ucpPlane) {
+  const ucpArgoAnchor = currentSlide.querySelector('.kcp-bootstrap-ucp-icon-anchor--argo');
+  const ucpCrossplaneAnchor = currentSlide.querySelector('.kcp-bootstrap-ucp-icon-anchor--crossplane');
+  if (!grid || !firstFileIcon || !secondFileIcon || !thirdFileIcon || !argoIcon || !argoAnchor || !crossplaneIcon || !crossplaneAnchor || !firstColumn || !secondColumn || !thirdColumn || !fourthColumn || !fifthColumn || !localPlaneShell || !ucpPlane || (isStep3DeprovisionSlide && (!ucpArgoAnchor || !ucpCrossplaneAnchor))) {
     clearKcpBootstrapLeaderLines();
     return;
   }
@@ -1762,6 +1762,9 @@ function renderKcpBootstrapLeaderLines() {
         <marker id="kcp-bootstrap-pipeline-arrow-turquoise" viewBox="-8 -8 16 16" markerWidth="30" markerHeight="30" refX="-2" refY="0" orient="auto" markerUnits="userSpaceOnUse">
           <polygon class="kcp-bootstrap-arrow-head kcp-bootstrap-arrow-head--turquoise" points="-4,-8 4,0 -4,8 -7,5 -2,0 -7,-5"></polygon>
         </marker>
+        <marker id="kcp-bootstrap-pipeline-arrow-grey" viewBox="-8 -8 16 16" markerWidth="30" markerHeight="30" refX="-2" refY="0" orient="auto" markerUnits="userSpaceOnUse">
+          <polygon class="kcp-bootstrap-arrow-head kcp-bootstrap-arrow-head--grey" points="-4,-8 4,0 -4,8 -7,5 -2,0 -7,-5"></polygon>
+        </marker>
       </defs>
     `;
     grid.appendChild(kcpBootstrapLeaderLineLayer);
@@ -1774,6 +1777,7 @@ function renderKcpBootstrapLeaderLines() {
   });
   const firstFileRect = firstFileIcon.getBoundingClientRect();
   const secondFileRect = secondFileIcon.getBoundingClientRect();
+  const thirdFileRect = thirdFileIcon.getBoundingClientRect();
   const argoIconRect = argoIcon.getBoundingClientRect();
   const argoRect = argoAnchor.getBoundingClientRect();
   const crossplaneIconRect = crossplaneIcon.getBoundingClientRect();
@@ -1785,9 +1789,12 @@ function renderKcpBootstrapLeaderLines() {
   const fifthRect = fifthColumn.getBoundingClientRect();
   const shellRect = localPlaneShell.getBoundingClientRect();
   const ucpRect = ucpPlane.getBoundingClientRect();
+  const ucpArgoRect = ucpArgoAnchor?.getBoundingClientRect();
+  const ucpCrossplaneRect = ucpCrossplaneAnchor?.getBoundingClientRect();
 
   const firstFileStart = rectPoint(firstFileRect, 1, 0.5);
   const secondFileStart = rectPoint(secondFileRect, 1, 0.5);
+  const thirdFileStart = rectPoint(thirdFileRect, 1, 0.5);
   const argoIconLeft = rectPoint(argoIconRect, 0, 0.5);
   const argoBottom = rectPoint(argoRect, 0.5, 1);
   const crossplaneTop = rectPoint(crossplaneRect, 0.5, 0);
@@ -1810,6 +1817,8 @@ function renderKcpBootstrapLeaderLines() {
     x: ucpLeft,
     y: crossplaneIconRight.y
   };
+  const ucpArgoBottom = ucpArgoRect ? rectPoint(ucpArgoRect, 0.5, 1) : null;
+  const ucpCrossplaneTop = ucpCrossplaneRect ? rectPoint(ucpCrossplaneRect, 0.5, 0) : null;
 
   const arrowEndpointInset = 16;
   const shortenLineEnd = (from, to, inset = arrowEndpointInset) => {
@@ -1921,6 +1930,7 @@ function renderKcpBootstrapLeaderLines() {
   const blueColor = getComputedStyle(document.documentElement).getPropertyValue('--capgemini-light-blue').trim() || '#1db8f2';
   const yellowColor = getComputedStyle(document.documentElement).getPropertyValue('--capgemini-yellow').trim() || '#feb100';
   const turquoiseColor = getComputedStyle(document.documentElement).getPropertyValue('--capgemini-turquoise').trim() || '#00d5d0';
+  const greyColor = '#4c525b';
   const localFragmentVisible = currentSlide.querySelector('.kcp-bootstrap-fragment-local')?.classList.contains('visible');
   const isUcpStartSlide = currentSlide.classList.contains('kcp-bootstrap-slide--ucp-start');
   const ucpFragmentVisible = isUcpStartSlide
@@ -1929,6 +1939,7 @@ function renderKcpBootstrapLeaderLines() {
   kcpBootstrapLeaderLineLayer.querySelector('.kcp-bootstrap-arrow-head--blue')?.setAttribute('fill', blueColor);
   kcpBootstrapLeaderLineLayer.querySelector('.kcp-bootstrap-arrow-head--yellow')?.setAttribute('fill', yellowColor);
   kcpBootstrapLeaderLineLayer.querySelector('.kcp-bootstrap-arrow-head--turquoise')?.setAttribute('fill', turquoiseColor);
+  kcpBootstrapLeaderLineLayer.querySelector('.kcp-bootstrap-arrow-head--grey')?.setAttribute('fill', greyColor);
   kcpBootstrapLeaderLineLayer.setAttribute('viewBox', `0 0 ${gridRect.width} ${gridRect.height}`);
   kcpBootstrapLeaderLineLayer.setAttribute('preserveAspectRatio', 'none');
 
@@ -1981,7 +1992,35 @@ function renderKcpBootstrapLeaderLines() {
     };
   };
 
-  const routes = [
+  const step3Routes = [
+    {
+      id: 'third-file-to-third-column-deprovision',
+      className: 'kcp-bootstrap-line-group--grey',
+      stroke: greyColor,
+      marker: 'url(#kcp-bootstrap-pipeline-arrow-grey)',
+      revealAxis: 'x',
+      visible: true,
+      d: cubicPath(
+        thirdFileStart,
+        { x: thirdFileStart.x + 145, y: thirdFileStart.y },
+        { x: shellLeft - 125, y: thirdFileStart.y },
+        { x: shellLeft, y: thirdFileStart.y }
+      )
+    },
+    ...(ucpArgoBottom && ucpCrossplaneTop
+      ? [{
+          id: 'ucp-argo-to-crossplane',
+          className: 'kcp-bootstrap-line-group--yellow',
+          stroke: yellowColor,
+          marker: 'url(#kcp-bootstrap-pipeline-arrow-yellow)',
+          revealAxis: 'y',
+          visible: true,
+          d: linePath(ucpArgoBottom, ucpCrossplaneTop)
+        }]
+      : [])
+  ];
+
+  const routes = isStep3DeprovisionSlide ? step3Routes : [
     {
       id: 'file-to-argo',
       className: 'kcp-bootstrap-line-group--blue',
@@ -2047,6 +2086,7 @@ function renderKcpBootstrapLeaderLines() {
     group.classList.toggle('kcp-bootstrap-line-group--blue', route.className === 'kcp-bootstrap-line-group--blue');
     group.classList.toggle('kcp-bootstrap-line-group--yellow', route.className === 'kcp-bootstrap-line-group--yellow');
     group.classList.toggle('kcp-bootstrap-line-group--turquoise', route.className === 'kcp-bootstrap-line-group--turquoise');
+    group.classList.toggle('kcp-bootstrap-line-group--grey', route.className === 'kcp-bootstrap-line-group--grey');
     outline.setAttribute('d', route.d);
     outline.setAttribute('stroke', 'rgba(4, 13, 34, 0.72)');
     line.setAttribute('d', route.d);

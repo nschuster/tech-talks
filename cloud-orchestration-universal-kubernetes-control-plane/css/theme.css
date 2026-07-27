@@ -3080,17 +3080,12 @@ body {
   border-radius: 40px;
 }
 
-.reveal section.kcp-bootstrap-slide--borderless .kcp-bootstrap-column--three,
 .reveal section.kcp-bootstrap-slide--borderless .kcp-bootstrap-column--five {
   border-color: transparent;
 }
 
-.reveal section.kcp-bootstrap-slide--borderless .kcp-bootstrap-control-plane .cicd-desired-state-gradient-box {
-  background: var(--capgemini-dark-blue) !important;
-}
-
-.reveal section.kcp-bootstrap-slide--borderless .kcp-bootstrap-control-plane .cicd-desired-state-background-video {
-  opacity: 0 !important;
+.reveal section.kcp-bootstrap-slide--step3-deprovision .kcp-bootstrap-column--three {
+  border-color: #4c525b;
 }
 
 .kcp-bootstrap-git-box {
@@ -3149,6 +3144,10 @@ body {
 
 .reveal section.kcp-bootstrap-slide .kcp-bootstrap-legend .cicd-pipeline-legend-swatch--migrate {
   background: var(--capgemini-turquoise);
+}
+
+.reveal section.kcp-bootstrap-slide .kcp-bootstrap-legend .cicd-pipeline-legend-swatch--deprovision {
+  background: #4c525b;
 }
 
 .reveal section.kcp-bootstrap-slide .kcp-bootstrap-legend .cicd-pipeline-legend-swatch--manage {
@@ -3290,6 +3289,40 @@ body {
 }
 
 .kcp-bootstrap-local-plane-icon {
+  position: relative;
+  z-index: 2;
+  display: block;
+  width: 90px;
+  height: 98px;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.34));
+}
+
+.kcp-bootstrap-ucp-icon-stack {
+  position: absolute;
+  left: 50%;
+  top: 210px;
+  bottom: 30px;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 116px;
+  align-items: center;
+  width: min(84%, 210px);
+  transform: translateX(-50%);
+}
+
+.kcp-bootstrap-ucp-icon-anchor {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 130px;
+  height: 118px;
+}
+
+.kcp-bootstrap-ucp-icon {
   position: relative;
   z-index: 2;
   display: block;
