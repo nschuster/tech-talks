@@ -3012,20 +3012,21 @@ body {
 
 .reveal .controls {
   color: var(--color-primary);
-  opacity: 0.52;
+  opacity: 1;
 }
 
-.reveal .controls:hover {
+.reveal .controls button {
+  opacity: 0.52;
+  transition: opacity 0.2s ease;
+}
+
+.reveal .controls:hover button,
+.reveal .controls button:hover {
   opacity: 0.9;
 }
 
-.reveal .controls .controls-event-line {
-  position: absolute;
-  right: calc(100% + 0.85rem);
-  top: -32px;
-  z-index: 2;
-  width: max-content;
-  max-width: min(660px, calc(100vw - 260px));
+.reveal .controls .controls-event-line,
+.reveal .slide-number {
   padding: 5px 9px;
   border: 1px solid color-mix(in srgb, var(--color-primary) 28%, transparent);
   border-radius: 999px;
@@ -3036,14 +3037,33 @@ body {
   font-weight: 500;
   letter-spacing: 0.02em;
   line-height: 1;
-  text-align: right;
   white-space: nowrap;
   pointer-events: none;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.28);
+}
+
+.reveal .controls .controls-event-line {
+  position: absolute;
+  right: calc(100% + 8rem);
+  top: -32px;
+  z-index: 2;
+  width: max-content;
+  max-width: min(660px, calc(100vw - 470px));
+  text-align: right;
   transform: translateY(-50%);
 }
 
-:root[data-theme="light"] .reveal .controls .controls-event-line {
+.reveal .slide-number {
+  right: 1.15rem;
+  bottom: 40px;
+  z-index: 31;
+  opacity: 1;
+  text-align: center;
+  transform: translateY(50%);
+}
+
+:root[data-theme="light"] .reveal .controls .controls-event-line,
+:root[data-theme="light"] .reveal .slide-number {
   background: rgba(255, 255, 255, 0.88);
   color: var(--capgemini-dark-blue);
 }
