@@ -1994,13 +1994,17 @@ function renderKcpBootstrapLeaderLines() {
   };
 
   const ucpSelfLoopPath = (anchor) => {
-    const radiusX = 132;
-    const radiusY = 86;
-    const outerX = anchor.x - radiusX;
+    const loopAnchor = { x: anchor.x - 24, y: anchor.y };
+    const gap = 42;
+    const radiusX = 126;
+    const radiusY = 82;
+    const outerX = loopAnchor.x - radiusX;
+    const start = { x: loopAnchor.x, y: loopAnchor.y - gap / 2 };
+    const end = { x: loopAnchor.x, y: loopAnchor.y + gap / 2 };
     return [
-      `M ${anchor.x.toFixed(2)} ${anchor.y.toFixed(2)}`,
-      `C ${(anchor.x - 34).toFixed(2)} ${(anchor.y - radiusY).toFixed(2)} ${outerX.toFixed(2)} ${(anchor.y - radiusY).toFixed(2)} ${outerX.toFixed(2)} ${anchor.y.toFixed(2)}`,
-      `C ${outerX.toFixed(2)} ${(anchor.y + radiusY).toFixed(2)} ${(anchor.x - 34).toFixed(2)} ${(anchor.y + radiusY).toFixed(2)} ${anchor.x.toFixed(2)} ${anchor.y.toFixed(2)}`
+      `M ${start.x.toFixed(2)} ${start.y.toFixed(2)}`,
+      `C ${(loopAnchor.x - 38).toFixed(2)} ${(loopAnchor.y - radiusY).toFixed(2)} ${outerX.toFixed(2)} ${(loopAnchor.y - radiusY).toFixed(2)} ${outerX.toFixed(2)} ${loopAnchor.y.toFixed(2)}`,
+      `C ${outerX.toFixed(2)} ${(loopAnchor.y + radiusY).toFixed(2)} ${(loopAnchor.x - 38).toFixed(2)} ${(loopAnchor.y + radiusY).toFixed(2)} ${end.x.toFixed(2)} ${end.y.toFixed(2)}`
     ].join(' ');
   };
   const ucpCrossplaneEdgeTarget = ucpCrossplaneLeft ? { x: ucpLeft, y: ucpCrossplaneLeft.y } : null;
