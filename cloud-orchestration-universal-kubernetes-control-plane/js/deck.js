@@ -1730,11 +1730,12 @@ function renderKcpBootstrapLeaderLines() {
   const argoAnchor = currentSlide.querySelector('.kcp-bootstrap-local-plane-icon-anchor--argo');
   const crossplaneIcon = currentSlide.querySelector('.kcp-bootstrap-local-plane-icon--crossplane');
   const crossplaneAnchor = currentSlide.querySelector('.kcp-bootstrap-local-plane-icon-anchor--crossplane');
+  const firstColumn = currentSlide.querySelector('.kcp-bootstrap-column--one');
   const thirdColumn = currentSlide.querySelector('.kcp-bootstrap-column--three');
   const fifthColumn = currentSlide.querySelector('.kcp-bootstrap-column--five');
   const localPlaneShell = currentSlide.querySelector('.kcp-bootstrap-local-plane-shell');
   const ucpPlane = currentSlide.querySelector('.kcp-bootstrap-control-plane');
-  if (!grid || !firstFileIcon || !secondFileIcon || !argoIcon || !argoAnchor || !crossplaneIcon || !crossplaneAnchor || !thirdColumn || !fifthColumn || !localPlaneShell || !ucpPlane) {
+  if (!grid || !firstFileIcon || !secondFileIcon || !argoIcon || !argoAnchor || !crossplaneIcon || !crossplaneAnchor || !firstColumn || !thirdColumn || !fifthColumn || !localPlaneShell || !ucpPlane) {
     clearKcpBootstrapLeaderLines();
     return;
   }
@@ -1771,6 +1772,7 @@ function renderKcpBootstrapLeaderLines() {
   const argoRect = argoAnchor.getBoundingClientRect();
   const crossplaneIconRect = crossplaneIcon.getBoundingClientRect();
   const crossplaneRect = crossplaneAnchor.getBoundingClientRect();
+  const firstColumnRect = firstColumn.getBoundingClientRect();
   const thirdRect = thirdColumn.getBoundingClientRect();
   const fifthRect = fifthColumn.getBoundingClientRect();
   const shellRect = localPlaneShell.getBoundingClientRect();
@@ -1782,6 +1784,7 @@ function renderKcpBootstrapLeaderLines() {
   const argoBottom = rectPoint(argoRect, 0.5, 1);
   const crossplaneTop = rectPoint(crossplaneRect, 0.5, 0);
   const crossplaneIconRight = rectPoint(crossplaneIconRect, 1, 0.5);
+  const firstColumnRight = firstColumnRect.right - gridRect.left;
   const thirdRight = thirdRect.right - gridRect.left;
   const shellLeft = shellRect.left - gridRect.left;
   const ucpLeft = ucpRect.left - gridRect.left;
@@ -1940,6 +1943,7 @@ function renderKcpBootstrapLeaderLines() {
       y: bottomLineStart.y
     };
     const underThirdBoxY = thirdRect.bottom - gridRect.top + 72;
+    const firstBoxExitX = firstColumnRight + 28;
     return {
       id: 'second-file-to-bottom-turquoise-midpoint',
       className: 'kcp-bootstrap-line-group--turquoise',
@@ -1949,7 +1953,8 @@ function renderKcpBootstrapLeaderLines() {
       visible: isUcpStartSlide,
       d: polylinePath([
         secondFileStart,
-        { x: secondFileStart.x, y: underThirdBoxY },
+        { x: firstBoxExitX, y: secondFileStart.y },
+        { x: firstBoxExitX, y: underThirdBoxY },
         { x: target.x, y: underThirdBoxY },
         target
       ])
