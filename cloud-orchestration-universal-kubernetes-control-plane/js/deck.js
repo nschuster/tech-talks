@@ -1823,7 +1823,7 @@ function renderKcpBootstrapLeaderLines() {
   const yellowColor = getComputedStyle(document.documentElement).getPropertyValue('--capgemini-yellow').trim() || '#feb100';
   kcpBootstrapLeaderLineLayer.querySelector('.kcp-bootstrap-arrow-head--blue')?.setAttribute('fill', blueColor);
   kcpBootstrapLeaderLineLayer.querySelector('.kcp-bootstrap-arrow-head--yellow')?.setAttribute('fill', yellowColor);
-  kcpBootstrapLeaderLineLayer.setAttribute('viewBox', `0 0 ${grid.offsetWidth} ${grid.offsetHeight}`);
+  kcpBootstrapLeaderLineLayer.setAttribute('viewBox', `0 0 ${gridRect.width} ${gridRect.height}`);
   kcpBootstrapLeaderLineLayer.setAttribute('preserveAspectRatio', 'none');
 
   const routes = [
