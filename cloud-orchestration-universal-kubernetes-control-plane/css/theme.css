@@ -3090,12 +3090,12 @@ body {
 
 .reveal section.kcp-bootstrap-slide .kcp-bootstrap-legend {
   position: absolute;
-  left: 50%;
-  bottom: -68px;
+  left: 0;
+  top: calc(100% + 26px);
   z-index: 16;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 28px;
   width: max-content;
   color: var(--capgemini-white);
@@ -3106,7 +3106,6 @@ body {
   line-height: 1;
   text-transform: uppercase;
   text-shadow: 0 5px 16px rgba(0, 0, 0, 0.42);
-  transform: translateX(-50%);
 }
 
 .reveal section.kcp-bootstrap-slide .kcp-bootstrap-legend .cicd-pipeline-legend-item {
