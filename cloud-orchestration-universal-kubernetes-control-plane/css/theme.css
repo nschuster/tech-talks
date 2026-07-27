@@ -3134,6 +3134,10 @@ body {
   background: var(--capgemini-light-blue);
 }
 
+.reveal section.kcp-bootstrap-slide .kcp-bootstrap-legend .cicd-pipeline-legend-swatch--migrate {
+  background: var(--capgemini-turquoise);
+}
+
 .reveal section.kcp-bootstrap-slide .kcp-bootstrap-legend .cicd-pipeline-legend-swatch--manage {
   background: var(--capgemini-yellow);
 }
@@ -3161,6 +3165,10 @@ body {
 
 .kcp-bootstrap-stack-caption--cluster {
   top: 122px;
+}
+
+.kcp-bootstrap-stack-caption--migrate-state {
+  top: 129px;
 }
 
 .kcp-bootstrap-file-stack {

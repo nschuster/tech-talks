@@ -1731,11 +1731,13 @@ function renderKcpBootstrapLeaderLines() {
   const crossplaneIcon = currentSlide.querySelector('.kcp-bootstrap-local-plane-icon--crossplane');
   const crossplaneAnchor = currentSlide.querySelector('.kcp-bootstrap-local-plane-icon-anchor--crossplane');
   const firstColumn = currentSlide.querySelector('.kcp-bootstrap-column--one');
+  const secondColumn = currentSlide.querySelector('.kcp-bootstrap-column--two');
   const thirdColumn = currentSlide.querySelector('.kcp-bootstrap-column--three');
+  const fourthColumn = currentSlide.querySelector('.kcp-bootstrap-column--four');
   const fifthColumn = currentSlide.querySelector('.kcp-bootstrap-column--five');
   const localPlaneShell = currentSlide.querySelector('.kcp-bootstrap-local-plane-shell');
   const ucpPlane = currentSlide.querySelector('.kcp-bootstrap-control-plane');
-  if (!grid || !firstFileIcon || !secondFileIcon || !argoIcon || !argoAnchor || !crossplaneIcon || !crossplaneAnchor || !firstColumn || !thirdColumn || !fifthColumn || !localPlaneShell || !ucpPlane) {
+  if (!grid || !firstFileIcon || !secondFileIcon || !argoIcon || !argoAnchor || !crossplaneIcon || !crossplaneAnchor || !firstColumn || !secondColumn || !thirdColumn || !fourthColumn || !fifthColumn || !localPlaneShell || !ucpPlane) {
     clearKcpBootstrapLeaderLines();
     return;
   }
@@ -1773,7 +1775,9 @@ function renderKcpBootstrapLeaderLines() {
   const crossplaneIconRect = crossplaneIcon.getBoundingClientRect();
   const crossplaneRect = crossplaneAnchor.getBoundingClientRect();
   const firstColumnRect = firstColumn.getBoundingClientRect();
+  const secondColumnRect = secondColumn.getBoundingClientRect();
   const thirdRect = thirdColumn.getBoundingClientRect();
+  const fourthColumnRect = fourthColumn.getBoundingClientRect();
   const fifthRect = fifthColumn.getBoundingClientRect();
   const shellRect = localPlaneShell.getBoundingClientRect();
   const ucpRect = ucpPlane.getBoundingClientRect();
@@ -1785,7 +1789,9 @@ function renderKcpBootstrapLeaderLines() {
   const crossplaneTop = rectPoint(crossplaneRect, 0.5, 0);
   const crossplaneIconRight = rectPoint(crossplaneIconRect, 1, 0.5);
   const firstColumnRight = firstColumnRect.right - gridRect.left;
+  const secondColumnCenter = secondColumnRect.left - gridRect.left + secondColumnRect.width / 2;
   const thirdRight = thirdRect.right - gridRect.left;
+  const fourthColumnCenter = fourthColumnRect.left - gridRect.left + fourthColumnRect.width / 2;
   const shellLeft = shellRect.left - gridRect.left;
   const ucpLeft = ucpRect.left - gridRect.left;
   const argoHorizontalTarget = {
@@ -1829,22 +1835,22 @@ function renderKcpBootstrapLeaderLines() {
     const shortenedEnd = shortenLineEnd(startPoint, endPoint);
     return `M ${startPoint.x.toFixed(2)} ${startPoint.y.toFixed(2)} L ${shortenedEnd.x.toFixed(2)} ${shortenedEnd.y.toFixed(2)}`;
   };
-  const smoothBridgePath = (startPoint, firstExitPoint, underBoxY, straightStartX, straightEndX, targetPoint) => {
+  const smoothBridgePath = (startPoint, secondColumnX, fourthColumnX, underBoxY, targetPoint) => {
     const radius = 46;
     const kappa = 0.5522847498;
     const k = radius * kappa;
-    const dropX = straightStartX - radius;
-    const firstTurnStartX = dropX - radius;
-    const finalTurnStartX = targetPoint.x - radius;
+    const firstTurnStartX = secondColumnX - radius;
+    const straightStartX = secondColumnX + radius;
+    const finalTurnStartX = fourthColumnX - radius;
     return [
       `M ${startPoint.x.toFixed(2)} ${startPoint.y.toFixed(2)}`,
       `L ${firstTurnStartX.toFixed(2)} ${startPoint.y.toFixed(2)}`,
-      `C ${(firstTurnStartX + k).toFixed(2)} ${startPoint.y.toFixed(2)} ${dropX.toFixed(2)} ${(startPoint.y + radius - k).toFixed(2)} ${dropX.toFixed(2)} ${(startPoint.y + radius).toFixed(2)}`,
-      `L ${dropX.toFixed(2)} ${(underBoxY - radius).toFixed(2)}`,
-      `C ${dropX.toFixed(2)} ${(underBoxY - radius + k).toFixed(2)} ${(straightStartX - k).toFixed(2)} ${underBoxY.toFixed(2)} ${straightStartX.toFixed(2)} ${underBoxY.toFixed(2)}`,
+      `C ${(firstTurnStartX + k).toFixed(2)} ${startPoint.y.toFixed(2)} ${secondColumnX.toFixed(2)} ${(startPoint.y + radius - k).toFixed(2)} ${secondColumnX.toFixed(2)} ${(startPoint.y + radius).toFixed(2)}`,
+      `L ${secondColumnX.toFixed(2)} ${(underBoxY - radius).toFixed(2)}`,
+      `C ${secondColumnX.toFixed(2)} ${(underBoxY - radius + k).toFixed(2)} ${(straightStartX - k).toFixed(2)} ${underBoxY.toFixed(2)} ${straightStartX.toFixed(2)} ${underBoxY.toFixed(2)}`,
       `L ${finalTurnStartX.toFixed(2)} ${underBoxY.toFixed(2)}`,
-      `C ${(finalTurnStartX + k).toFixed(2)} ${underBoxY.toFixed(2)} ${targetPoint.x.toFixed(2)} ${(underBoxY - radius + k).toFixed(2)} ${targetPoint.x.toFixed(2)} ${(underBoxY - radius).toFixed(2)}`,
-      `L ${targetPoint.x.toFixed(2)} ${targetPoint.y.toFixed(2)}`
+      `C ${(finalTurnStartX + k).toFixed(2)} ${underBoxY.toFixed(2)} ${fourthColumnX.toFixed(2)} ${(underBoxY - radius + k).toFixed(2)} ${fourthColumnX.toFixed(2)} ${(underBoxY - radius).toFixed(2)}`,
+      `L ${fourthColumnX.toFixed(2)} ${targetPoint.y.toFixed(2)}`
     ].join(' ');
   };
   const easeDraw = (t) => t < 0.5
@@ -1959,10 +1965,6 @@ function renderKcpBootstrapLeaderLines() {
       y: bottomLineStart.y
     };
     const underThirdBoxY = thirdRect.bottom - gridRect.top + 72;
-    const firstBoxExitX = firstColumnRight + 28;
-    const firstExitPoint = { x: firstBoxExitX, y: secondFileStart.y };
-    const straightStartX = thirdRect.left - gridRect.left + 28;
-    const straightEndX = thirdRight - 28;
     return {
       id: 'second-file-to-bottom-turquoise-midpoint',
       className: 'kcp-bootstrap-line-group--turquoise',
@@ -1971,7 +1973,7 @@ function renderKcpBootstrapLeaderLines() {
       endDot: { x: target.x, y: target.y, radius: 13 },
       revealAxis: 'x',
       visible: isUcpStartSlide,
-      d: smoothBridgePath(secondFileStart, firstExitPoint, underThirdBoxY, straightStartX, straightEndX, target)
+      d: smoothBridgePath(secondFileStart, secondColumnCenter, fourthColumnCenter, underThirdBoxY, target)
     };
   };
 
