@@ -263,7 +263,7 @@ function imageColumnArcPath(start, end, bendDirection) {
   return `M ${start.x.toFixed(2)} ${start.y.toFixed(2)} C ${(start.x + distance * 0.32 * Math.sign(end.x - start.x)).toFixed(2)} ${controlY.toFixed(2)} ${(end.x - distance * 0.32 * Math.sign(end.x - start.x)).toFixed(2)} ${controlY.toFixed(2)} ${end.x.toFixed(2)} ${end.y.toFixed(2)}`;
 }
 
-function getImageColumnArrowLineEnd(start, end, bendDirection, inset = 11.25) {
+function getImageColumnArrowLineEnd(start, end, bendDirection, inset = 16) {
   const distance = Math.abs(end.x - start.x);
   const direction = Math.sign(end.x - start.x) || 1;
   const bend = Math.max(96, Math.min(178, distance * 0.22));
@@ -758,19 +758,19 @@ function renderCicdLeaderLines() {
     cicdLeaderLineLayer.setAttribute('aria-hidden', 'true');
     cicdLeaderLineLayer.innerHTML = `
       <defs>
-        <marker id="cicd-pipeline-arrowhead" viewBox="-8 -8 16 16" markerWidth="30" markerHeight="30" refX="4" refY="0" orient="auto" markerUnits="userSpaceOnUse">
+        <marker id="cicd-pipeline-arrowhead" viewBox="-8 -8 16 16" markerWidth="30" markerHeight="30" refX="-2" refY="0" orient="auto" markerUnits="userSpaceOnUse">
           <polygon class="cicd-pipeline-arrowhead-path" points="-4,-8 4,0 -4,8 -7,5 -2,0 -7,-5"></polygon>
         </marker>
-        <marker id="cicd-pipeline-arrowhead-static" viewBox="-8 -8 16 16" markerWidth="30" markerHeight="30" refX="4" refY="0" orient="auto" markerUnits="userSpaceOnUse">
+        <marker id="cicd-pipeline-arrowhead-static" viewBox="-8 -8 16 16" markerWidth="30" markerHeight="30" refX="-2" refY="0" orient="auto" markerUnits="userSpaceOnUse">
           <polygon class="cicd-pipeline-arrowhead-path-static" points="-4,-8 4,0 -4,8 -7,5 -2,0 -7,-5"></polygon>
         </marker>
-        <marker id="cicd-pipeline-arrowhead-desired" viewBox="-8 -8 16 16" markerWidth="30" markerHeight="30" refX="4" refY="0" orient="auto" markerUnits="userSpaceOnUse">
+        <marker id="cicd-pipeline-arrowhead-desired" viewBox="-8 -8 16 16" markerWidth="30" markerHeight="30" refX="-2" refY="0" orient="auto" markerUnits="userSpaceOnUse">
           <polygon class="cicd-pipeline-arrowhead-path-desired" points="-4,-8 4,0 -4,8 -7,5 -2,0 -7,-5"></polygon>
         </marker>
-        <marker id="cicd-pipeline-arrowhead-desired-reverse" viewBox="-8 -8 16 16" markerWidth="30" markerHeight="30" refX="4" refY="0" orient="auto" markerUnits="userSpaceOnUse">
+        <marker id="cicd-pipeline-arrowhead-desired-reverse" viewBox="-8 -8 16 16" markerWidth="30" markerHeight="30" refX="-2" refY="0" orient="auto" markerUnits="userSpaceOnUse">
           <polygon class="cicd-pipeline-arrowhead-path-desired-reverse" points="-4,-8 4,0 -4,8 -7,5 -2,0 -7,-5"></polygon>
         </marker>
-        <marker id="cicd-pipeline-arrowhead-muted" viewBox="-8 -8 16 16" markerWidth="30" markerHeight="30" refX="4" refY="0" orient="auto" markerUnits="userSpaceOnUse">
+        <marker id="cicd-pipeline-arrowhead-muted" viewBox="-8 -8 16 16" markerWidth="30" markerHeight="30" refX="-2" refY="0" orient="auto" markerUnits="userSpaceOnUse">
           <polygon class="cicd-pipeline-arrowhead-path-muted" points="-4,-8 4,0 -4,8 -7,5 -2,0 -7,-5"></polygon>
         </marker>
       </defs>
@@ -882,6 +882,46 @@ function renderCicdLeaderLines() {
     window.setTimeout(finishOnce, 820);
   };
 
+  const arrowEndpointInset = 16;
+  const lineHasArrow = (stroke) => stroke !== desiredStateMutedColor && stroke !== desiredStateMutedReverseColor;
+  const shortenLineAttributes = (attributes, inset = arrowEndpointInset) => {
+    const x1 = Number.parseFloat(attributes.x1);
+    const y1 = Number.parseFloat(attributes.y1);
+    const x2 = Number.parseFloat(attributes.x2);
+    const y2 = Number.parseFloat(attributes.y2);
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+    const length = Math.hypot(dx, dy) || 1;
+    if (length <= inset) return attributes;
+    return {
+      ...attributes,
+      x2: x2 - (dx / length) * inset,
+      y2: y2 - (dy / length) * inset
+    };
+  };
+  const shortenCubicPathAttributes = (attributes, inset = arrowEndpointInset) => {
+    const d = attributes.d || '';
+    const match = d.match(/^M\s+(-?[\d.]+)\s+(-?[\d.]+)\s+C\s+(-?[\d.]+)\s+(-?[\d.]+)\s+(-?[\d.]+)\s+(-?[\d.]+)\s+(-?[\d.]+)\s+(-?[\d.]+)$/);
+    if (!match) return attributes;
+    const values = match.slice(1).map(Number);
+    const [startX, startY, control1X, control1Y, control2X, control2Y, endX, endY] = values;
+    const tangentX = endX - control2X;
+    const tangentY = endY - control2Y;
+    const tangentLength = Math.hypot(tangentX, tangentY) || 1;
+    const shortenedEndX = endX - (tangentX / tangentLength) * inset;
+    const shortenedEndY = endY - (tangentY / tangentLength) * inset;
+    return {
+      ...attributes,
+      d: `M ${startX} ${startY} C ${control1X} ${control1Y} ${control2X} ${control2Y} ${shortenedEndX} ${shortenedEndY}`
+    };
+  };
+  const shortenArrowAttributes = (tagName, attributes, stroke) => {
+    if (!lineHasArrow(stroke)) return attributes;
+    return tagName === 'path'
+      ? shortenCubicPathAttributes(attributes)
+      : shortenLineAttributes(attributes);
+  };
+
   const addDrawMask = (group, tagName, attributes, length) => {
     const defs = cicdLeaderLineLayer.querySelector('defs');
     if (!defs) return;
@@ -955,14 +995,15 @@ function renderCicdLeaderLines() {
         line.classList.add('cicd-pipeline-line');
         group.appendChild(line);
       }
-      const attrs = { x1: start.x, y1: start.y, x2: end.x, y2: end.y };
+      const segmentStrokeColor = segmentStroke || (shouldDash ? color : staticColor);
+      const attrs = shortenArrowAttributes('line', { x1: start.x, y1: start.y, x2: end.x, y2: end.y }, segmentStrokeColor);
       Object.entries(attrs).forEach(([name, value]) => {
         outline.setAttribute(name, value);
         line.setAttribute(name, value);
       });
       outline.setAttribute('stroke', outlineColor);
-      setCommonLineAttributes(line, segmentStroke || (shouldDash ? color : staticColor));
-      if (isNew && shouldDraw) addDrawMask(group, 'line', attrs, Math.hypot(end.x - start.x, end.y - start.y));
+      setCommonLineAttributes(line, segmentStrokeColor);
+      if (isNew && shouldDraw) addDrawMask(group, 'line', attrs, Math.hypot(attrs.x2 - attrs.x1, attrs.y2 - attrs.y1));
     });
   });
 
@@ -991,12 +1032,13 @@ function renderCicdLeaderLines() {
         if (tagName === 'path') line.classList.add('cicd-pipeline-line-path');
         group.appendChild(line);
       }
-      Object.entries(attributes).forEach(([name, value]) => {
+      const segmentStroke = stroke || (shouldDash ? color : staticColor);
+      const attrs = shortenArrowAttributes(tagName, attributes, segmentStroke);
+      Object.entries(attrs).forEach(([name, value]) => {
         outline.setAttribute(name, value);
         line.setAttribute(name, value);
       });
       outline.setAttribute('stroke', outlineColor);
-      const segmentStroke = stroke || (shouldDash ? color : staticColor);
       setCommonLineAttributes(line, segmentStroke);
       group.querySelectorAll('.cicd-control-plane-line-marker').forEach((marker) => marker.remove());
       if (
@@ -1027,7 +1069,7 @@ function renderCicdLeaderLines() {
       }
       if (isNew && shouldDraw) {
         const segmentLength = length || (line.getTotalLength ? line.getTotalLength() : 1);
-        addDrawMask(group, tagName, attributes, segmentLength);
+        addDrawMask(group, tagName, attrs, segmentLength);
       }
     });
   });
@@ -1119,7 +1161,7 @@ function renderContentSplitCones() {
   xrArrowMarker.setAttribute('viewBox', '-8 -8 16 16');
   xrArrowMarker.setAttribute('markerWidth', '30');
   xrArrowMarker.setAttribute('markerHeight', '30');
-  xrArrowMarker.setAttribute('refX', '4');
+  xrArrowMarker.setAttribute('refX', '-2');
   xrArrowMarker.setAttribute('refY', '0');
   xrArrowMarker.setAttribute('orient', 'auto');
   xrArrowMarker.setAttribute('markerUnits', 'userSpaceOnUse');
@@ -1252,13 +1294,22 @@ function renderContentSplitCones() {
       const end = targetPoint(targetRatios[index]);
       const dx = end.x - start.x;
       const verticalNudge = index % 2 === 0 ? -8 : 8;
+      const control1 = { x: start.x + dx * 0.32, y: start.y + verticalNudge };
+      const control2 = { x: start.x + dx * 0.62, y: end.y - verticalNudge };
+      const tangentX = end.x - control2.x;
+      const tangentY = end.y - control2.y;
+      const tangentLength = Math.hypot(tangentX, tangentY) || 1;
+      const shortenedEnd = {
+        x: end.x - (tangentX / tangentLength) * 16,
+        y: end.y - (tangentY / tangentLength) * 16
+      };
       return {
         sourceIndex,
         points: [
           start,
-          { x: start.x + dx * 0.32, y: start.y + verticalNudge },
-          { x: start.x + dx * 0.62, y: end.y - verticalNudge },
-          end
+          control1,
+          control2,
+          shortenedEnd
         ]
       };
     });
