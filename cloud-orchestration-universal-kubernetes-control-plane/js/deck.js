@@ -15,7 +15,7 @@ const EVENT_DETAILS = {
 
 const AUTHOR_DETAILS = {
   name: 'Niklas Schuster',
-  jobTitle: 'Cloud Architect',
+  jobTitle: 'Senior Cloud Solution Architect',
   company: 'Capgemini'
 };
 
