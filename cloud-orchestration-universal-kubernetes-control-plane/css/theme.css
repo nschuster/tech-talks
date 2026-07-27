@@ -3027,11 +3027,10 @@ body {
   height: 100%;
   overflow: visible;
   pointer-events: none;
-  filter: drop-shadow(0 5px 12px rgba(0, 0, 0, 0.34));
 }
 
 .kcp-bootstrap-line-group--blue .cicd-pipeline-line {
-  stroke: var(--capgemini-blue);
+  stroke: var(--capgemini-light-blue);
 }
 
 .kcp-bootstrap-line-group--yellow .cicd-pipeline-line {
@@ -3039,7 +3038,7 @@ body {
 }
 
 .kcp-bootstrap-arrow-head--blue {
-  fill: var(--capgemini-blue);
+  fill: var(--capgemini-light-blue);
 }
 
 .kcp-bootstrap-arrow-head--yellow {
@@ -3060,12 +3059,12 @@ body {
 }
 
 .kcp-bootstrap-column--three {
-  border: 9px solid var(--capgemini-blue);
+  border: 5px solid var(--capgemini-light-blue);
   border-radius: 45px;
 }
 
 .kcp-bootstrap-column--five {
-  border: 9px solid var(--capgemini-yellow);
+  border: 5px solid var(--capgemini-yellow);
   border-radius: 45px;
 }
 
