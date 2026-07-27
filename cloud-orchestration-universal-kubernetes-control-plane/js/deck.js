@@ -1822,9 +1822,6 @@ function renderKcpBootstrapLeaderLines() {
     const shortenedEnd = shortenLineEnd(startPoint, endPoint);
     return `M ${startPoint.x.toFixed(2)} ${startPoint.y.toFixed(2)} L ${shortenedEnd.x.toFixed(2)} ${shortenedEnd.y.toFixed(2)}`;
   };
-  const finishDrawAfterAnimation = (_drawElement, finishDraw) => {
-    window.setTimeout(finishDraw, 820);
-  };
   const easeDraw = (t) => t < 0.5
     ? 2 * t * t
     : 1 - Math.pow(-2 * t + 2, 2) / 2;
@@ -1854,6 +1851,15 @@ function renderKcpBootstrapLeaderLines() {
 
     const start = window.performance.now();
     const duration = 760;
+    const finishDraw = () => {
+      if (group.dataset.cicdDrawMaskId !== clipId || group.dataset.cicdDrawToken !== drawToken) return;
+      group.removeAttribute('clip-path');
+      group.classList.remove('cicd-pipeline-group--drawing');
+      line.setAttribute('marker-end', route.marker);
+      delete group.dataset.cicdDrawMaskId;
+      delete group.dataset.cicdDrawToken;
+      clipPath.remove();
+    };
     const drawFrame = (now) => {
       if (!clipPath.isConnected || group.dataset.cicdDrawMaskId !== clipId || group.dataset.cicdDrawToken !== drawToken) return;
       const progress = Math.min(1, Math.max(0, (now - start) / duration));
@@ -1863,25 +1869,23 @@ function renderKcpBootstrapLeaderLines() {
       } else {
         clipRect.setAttribute('width', gridRect.width * eased);
       }
-      if (progress < 1) window.requestAnimationFrame(drawFrame);
+      if (progress < 1) {
+        window.requestAnimationFrame(drawFrame);
+      } else {
+        finishDraw();
+      }
     };
     window.requestAnimationFrame(drawFrame);
-
-    finishDrawAfterAnimation(null, () => {
-      if (group.dataset.cicdDrawMaskId !== clipId || group.dataset.cicdDrawToken !== drawToken) return;
-      group.removeAttribute('clip-path');
-      group.classList.remove('cicd-pipeline-group--drawing');
-      line.setAttribute('marker-end', route.marker);
-      delete group.dataset.cicdDrawMaskId;
-      delete group.dataset.cicdDrawToken;
-      clipPath.remove();
-    });
+    window.setTimeout(finishDraw, duration + 80);
   };
 
   const blueColor = getComputedStyle(document.documentElement).getPropertyValue('--capgemini-light-blue').trim() || '#1db8f2';
   const yellowColor = getComputedStyle(document.documentElement).getPropertyValue('--capgemini-yellow').trim() || '#feb100';
   const localFragmentVisible = currentSlide.querySelector('.kcp-bootstrap-fragment-local')?.classList.contains('visible');
-  const ucpFragmentVisible = currentSlide.querySelector('.kcp-bootstrap-fragment-ucp')?.classList.contains('visible');
+  const isUcpStartSlide = currentSlide.classList.contains('kcp-bootstrap-slide--ucp-start');
+  const ucpFragmentVisible = isUcpStartSlide
+    || currentSlide.querySelector('.kcp-bootstrap-fragment-ucp')?.classList.contains('visible');
+  const blueRoutesVisible = localFragmentVisible && !isUcpStartSlide;
   kcpBootstrapLeaderLineLayer.querySelector('.kcp-bootstrap-arrow-head--blue')?.setAttribute('fill', blueColor);
   kcpBootstrapLeaderLineLayer.querySelector('.kcp-bootstrap-arrow-head--yellow')?.setAttribute('fill', yellowColor);
   kcpBootstrapLeaderLineLayer.setAttribute('viewBox', `0 0 ${gridRect.width} ${gridRect.height}`);
@@ -1894,7 +1898,7 @@ function renderKcpBootstrapLeaderLines() {
       stroke: blueColor,
       marker: 'url(#kcp-bootstrap-pipeline-arrow-blue)',
       revealAxis: 'x',
-      visible: localFragmentVisible,
+      visible: blueRoutesVisible,
       d: linePath(firstFileStart, argoHorizontalTarget)
     },
     {
@@ -1903,7 +1907,7 @@ function renderKcpBootstrapLeaderLines() {
       stroke: blueColor,
       marker: 'url(#kcp-bootstrap-pipeline-arrow-blue)',
       revealAxis: 'x',
-      visible: localFragmentVisible,
+      visible: blueRoutesVisible,
       d: cubicPath(
         firstFileStart,
         { x: firstFileStart.x + 145, y: firstFileStart.y },
@@ -1967,7 +1971,7 @@ function renderKcpBootstrapLeaderLines() {
     } else {
       line.setAttribute('marker-end', route.marker);
     }
-    if (isNew) {
+    if (isNew && !isUcpStartSlide) {
       addDrawMask(group, route, line, line.getTotalLength ? line.getTotalLength() : 1);
     }
   });

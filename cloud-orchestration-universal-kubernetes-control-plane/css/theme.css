@@ -3063,6 +3063,10 @@ body {
   border-radius: 40px;
 }
 
+.kcp-bootstrap-slide--ucp-start .kcp-bootstrap-column--three {
+  border: 0;
+}
+
 .kcp-bootstrap-column--five {
   border: 8px solid var(--capgemini-yellow);
   border-radius: 40px;
