@@ -1725,11 +1725,16 @@ function renderKcpBootstrapLeaderLines() {
 
   const grid = currentSlide.querySelector('.kcp-bootstrap-grid');
   const firstFileIcon = currentSlide.querySelector('.kcp-bootstrap-file-row--one .kcp-bootstrap-file-icon');
+  const secondFileIcon = currentSlide.querySelector('.kcp-bootstrap-file-row--two .kcp-bootstrap-file-icon');
+  const argoIcon = currentSlide.querySelector('.kcp-bootstrap-local-plane-icon--argo');
   const argoAnchor = currentSlide.querySelector('.kcp-bootstrap-local-plane-icon-anchor--argo');
+  const crossplaneIcon = currentSlide.querySelector('.kcp-bootstrap-local-plane-icon--crossplane');
   const crossplaneAnchor = currentSlide.querySelector('.kcp-bootstrap-local-plane-icon-anchor--crossplane');
   const thirdColumn = currentSlide.querySelector('.kcp-bootstrap-column--three');
   const fifthColumn = currentSlide.querySelector('.kcp-bootstrap-column--five');
-  if (!grid || !firstFileIcon || !argoAnchor || !crossplaneAnchor || !thirdColumn || !fifthColumn) {
+  const localPlaneShell = currentSlide.querySelector('.kcp-bootstrap-local-plane-shell');
+  const ucpPlane = currentSlide.querySelector('.kcp-bootstrap-control-plane');
+  if (!grid || !firstFileIcon || !secondFileIcon || !argoIcon || !argoAnchor || !crossplaneIcon || !crossplaneAnchor || !thirdColumn || !fifthColumn || !localPlaneShell || !ucpPlane) {
     clearKcpBootstrapLeaderLines();
     return;
   }
@@ -1758,23 +1763,31 @@ function renderKcpBootstrapLeaderLines() {
     y: rect.top - gridRect.top + rect.height * yFactor
   });
   const firstFileRect = firstFileIcon.getBoundingClientRect();
+  const secondFileRect = secondFileIcon.getBoundingClientRect();
+  const argoIconRect = argoIcon.getBoundingClientRect();
   const argoRect = argoAnchor.getBoundingClientRect();
+  const crossplaneIconRect = crossplaneIcon.getBoundingClientRect();
   const crossplaneRect = crossplaneAnchor.getBoundingClientRect();
   const thirdRect = thirdColumn.getBoundingClientRect();
   const fifthRect = fifthColumn.getBoundingClientRect();
+  const shellRect = localPlaneShell.getBoundingClientRect();
+  const ucpRect = ucpPlane.getBoundingClientRect();
 
-  const start = rectPoint(firstFileRect, 1, 0.5);
-  const argoLeft = rectPoint(argoRect, 0, 0.5);
+  const firstFileStart = rectPoint(firstFileRect, 1, 0.5);
+  const secondFileStart = rectPoint(secondFileRect, 1, 0.5);
+  const argoIconLeft = rectPoint(argoIconRect, 0, 0.5);
   const argoBottom = rectPoint(argoRect, 0.5, 1);
   const crossplaneTop = rectPoint(crossplaneRect, 0.5, 0);
-  const crossplaneRight = rectPoint(crossplaneRect, 1, 0.5);
+  const crossplaneIconRight = rectPoint(crossplaneIconRect, 1, 0.5);
+  const shellLeft = shellRect.left - gridRect.left;
+  const ucpLeft = ucpRect.left - gridRect.left;
   const thirdBorder = {
-    x: thirdRect.left - gridRect.left,
-    y: argoRect.top - gridRect.top + argoRect.height * 0.28
+    x: shellLeft,
+    y: secondFileStart.y
   };
   const fifthBorder = {
-    x: fifthRect.left - gridRect.left,
-    y: crossplaneRight.y
+    x: ucpLeft,
+    y: crossplaneIconRight.y
   };
 
   const arrowEndpointInset = 16;
@@ -1819,7 +1832,7 @@ function renderKcpBootstrapLeaderLines() {
       className: 'kcp-bootstrap-line-group--blue',
       stroke: blueColor,
       marker: 'url(#kcp-bootstrap-pipeline-arrow-blue)',
-      d: linePath(start, argoLeft)
+      d: linePath(firstFileStart, argoIconLeft)
     },
     {
       id: 'file-to-third-column',
@@ -1827,9 +1840,9 @@ function renderKcpBootstrapLeaderLines() {
       stroke: blueColor,
       marker: 'url(#kcp-bootstrap-pipeline-arrow-blue)',
       d: cubicPath(
-        start,
-        { x: start.x + 120, y: start.y },
-        { x: thirdBorder.x - 92, y: thirdBorder.y },
+        secondFileStart,
+        { x: secondFileStart.x + 130, y: secondFileStart.y },
+        { x: thirdBorder.x - 110, y: thirdBorder.y },
         thirdBorder
       )
     },
@@ -1846,9 +1859,9 @@ function renderKcpBootstrapLeaderLines() {
       stroke: yellowColor,
       marker: 'url(#kcp-bootstrap-pipeline-arrow-yellow)',
       d: cubicPath(
-        crossplaneRight,
-        { x: crossplaneRight.x + 88, y: crossplaneRight.y },
-        { x: fifthBorder.x - 90, y: fifthBorder.y },
+        crossplaneIconRight,
+        { x: crossplaneIconRight.x + 112, y: crossplaneIconRight.y },
+        { x: fifthBorder.x - 112, y: fifthBorder.y },
         fifthBorder
       )
     }

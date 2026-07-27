@@ -3022,7 +3022,7 @@ body {
 .kcp-bootstrap-grid > .cicd-pipeline-lines-layer.kcp-bootstrap-lines-layer {
   position: absolute;
   inset: 0;
-  z-index: 7;
+  z-index: 30;
   width: 100%;
   height: 100%;
   overflow: visible;
