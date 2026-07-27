@@ -1829,13 +1829,19 @@ function renderKcpBootstrapLeaderLines() {
     const shortenedEnd = shortenLineEnd(startPoint, endPoint);
     return `M ${startPoint.x.toFixed(2)} ${startPoint.y.toFixed(2)} L ${shortenedEnd.x.toFixed(2)} ${shortenedEnd.y.toFixed(2)}`;
   };
-  const smoothBridgePath = (startPoint, firstExitPoint, underBoxY, straightStartX, straightEndX, targetPoint) => [
-    `M ${startPoint.x.toFixed(2)} ${startPoint.y.toFixed(2)}`,
-    `C ${firstExitPoint.x.toFixed(2)} ${startPoint.y.toFixed(2)} ${(firstExitPoint.x + 14).toFixed(2)} ${startPoint.y.toFixed(2)} ${(firstExitPoint.x + 32).toFixed(2)} ${(startPoint.y + 32).toFixed(2)}`,
-    `C ${(firstExitPoint.x + 64).toFixed(2)} ${(startPoint.y + 128).toFixed(2)} ${(straightStartX - 112).toFixed(2)} ${(underBoxY - 38).toFixed(2)} ${straightStartX.toFixed(2)} ${underBoxY.toFixed(2)}`,
-    `L ${straightEndX.toFixed(2)} ${underBoxY.toFixed(2)}`,
-    `C ${(straightEndX + 118).toFixed(2)} ${underBoxY.toFixed(2)} ${(targetPoint.x - 34).toFixed(2)} ${(underBoxY - 8).toFixed(2)} ${targetPoint.x.toFixed(2)} ${targetPoint.y.toFixed(2)}`
-  ].join(' ');
+  const smoothBridgePath = (startPoint, firstExitPoint, underBoxY, straightStartX, straightEndX, targetPoint) => {
+    const dropX = firstExitPoint.x + 76;
+    const cornerRadius = 46;
+    return [
+      `M ${startPoint.x.toFixed(2)} ${startPoint.y.toFixed(2)}`,
+      `L ${firstExitPoint.x.toFixed(2)} ${firstExitPoint.y.toFixed(2)}`,
+      `C ${(dropX - cornerRadius).toFixed(2)} ${firstExitPoint.y.toFixed(2)} ${dropX.toFixed(2)} ${(firstExitPoint.y + cornerRadius * 0.18).toFixed(2)} ${dropX.toFixed(2)} ${(firstExitPoint.y + cornerRadius).toFixed(2)}`,
+      `L ${dropX.toFixed(2)} ${(underBoxY - cornerRadius).toFixed(2)}`,
+      `C ${dropX.toFixed(2)} ${(underBoxY - cornerRadius * 0.18).toFixed(2)} ${(straightStartX - cornerRadius).toFixed(2)} ${underBoxY.toFixed(2)} ${straightStartX.toFixed(2)} ${underBoxY.toFixed(2)}`,
+      `L ${straightEndX.toFixed(2)} ${underBoxY.toFixed(2)}`,
+      `C ${(targetPoint.x - cornerRadius).toFixed(2)} ${underBoxY.toFixed(2)} ${targetPoint.x.toFixed(2)} ${(targetPoint.y + cornerRadius).toFixed(2)} ${targetPoint.x.toFixed(2)} ${targetPoint.y.toFixed(2)}`
+    ].join(' ');
+  };
   const easeDraw = (t) => t < 0.5
     ? 2 * t * t
     : 1 - Math.pow(-2 * t + 2, 2) / 2;
@@ -1869,7 +1875,11 @@ function renderKcpBootstrapLeaderLines() {
       if (group.dataset.cicdDrawMaskId !== clipId || group.dataset.cicdDrawToken !== drawToken) return;
       group.removeAttribute('clip-path');
       group.classList.remove('cicd-pipeline-group--drawing');
-      line.setAttribute('marker-end', route.marker);
+      if (route.marker) {
+        line.setAttribute('marker-end', route.marker);
+      } else {
+        line.removeAttribute('marker-end');
+      }
       delete group.dataset.cicdDrawMaskId;
       delete group.dataset.cicdDrawToken;
       clipPath.remove();
@@ -1953,7 +1963,7 @@ function renderKcpBootstrapLeaderLines() {
       className: 'kcp-bootstrap-line-group--turquoise',
       stroke: turquoiseColor,
       marker: null,
-      endDot: { x: target.x, y: target.y, radius: 8 },
+      endDot: { x: target.x, y: target.y, radius: 13 },
       revealAxis: 'x',
       visible: isUcpStartSlide,
       d: smoothBridgePath(secondFileStart, firstExitPoint, underThirdBoxY, straightStartX, straightEndX, target)
