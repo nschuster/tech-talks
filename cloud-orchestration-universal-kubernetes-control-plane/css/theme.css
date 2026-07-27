@@ -3037,12 +3037,20 @@ body {
   stroke: var(--capgemini-yellow);
 }
 
+.kcp-bootstrap-line-group--turquoise .cicd-pipeline-line {
+  stroke: var(--capgemini-turquoise);
+}
+
 .kcp-bootstrap-arrow-head--blue {
   fill: var(--capgemini-light-blue);
 }
 
 .kcp-bootstrap-arrow-head--yellow {
   fill: var(--capgemini-yellow);
+}
+
+.kcp-bootstrap-arrow-head--turquoise {
+  fill: var(--capgemini-turquoise);
 }
 
 .kcp-bootstrap-column {

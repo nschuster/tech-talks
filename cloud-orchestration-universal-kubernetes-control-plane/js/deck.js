@@ -1752,6 +1752,9 @@ function renderKcpBootstrapLeaderLines() {
         <marker id="kcp-bootstrap-pipeline-arrow-yellow" viewBox="-8 -8 16 16" markerWidth="30" markerHeight="30" refX="-2" refY="0" orient="auto" markerUnits="userSpaceOnUse">
           <polygon class="kcp-bootstrap-arrow-head kcp-bootstrap-arrow-head--yellow" points="-4,-8 4,0 -4,8 -7,5 -2,0 -7,-5"></polygon>
         </marker>
+        <marker id="kcp-bootstrap-pipeline-arrow-turquoise" viewBox="-8 -8 16 16" markerWidth="30" markerHeight="30" refX="-2" refY="0" orient="auto" markerUnits="userSpaceOnUse">
+          <polygon class="kcp-bootstrap-arrow-head kcp-bootstrap-arrow-head--turquoise" points="-4,-8 4,0 -4,8 -7,5 -2,0 -7,-5"></polygon>
+        </marker>
       </defs>
     `;
     grid.appendChild(kcpBootstrapLeaderLineLayer);
@@ -1779,6 +1782,7 @@ function renderKcpBootstrapLeaderLines() {
   const argoBottom = rectPoint(argoRect, 0.5, 1);
   const crossplaneTop = rectPoint(crossplaneRect, 0.5, 0);
   const crossplaneIconRight = rectPoint(crossplaneIconRect, 1, 0.5);
+  const thirdRight = thirdRect.right - gridRect.left;
   const shellLeft = shellRect.left - gridRect.left;
   const ucpLeft = ucpRect.left - gridRect.left;
   const argoHorizontalTarget = {
@@ -1881,6 +1885,7 @@ function renderKcpBootstrapLeaderLines() {
 
   const blueColor = getComputedStyle(document.documentElement).getPropertyValue('--capgemini-light-blue').trim() || '#1db8f2';
   const yellowColor = getComputedStyle(document.documentElement).getPropertyValue('--capgemini-yellow').trim() || '#feb100';
+  const turquoiseColor = getComputedStyle(document.documentElement).getPropertyValue('--capgemini-turquoise').trim() || '#00d5d0';
   const localFragmentVisible = currentSlide.querySelector('.kcp-bootstrap-fragment-local')?.classList.contains('visible');
   const isUcpStartSlide = currentSlide.classList.contains('kcp-bootstrap-slide--ucp-start');
   const ucpFragmentVisible = isUcpStartSlide
@@ -1888,12 +1893,18 @@ function renderKcpBootstrapLeaderLines() {
   const blueRoutesVisible = localFragmentVisible && !isUcpStartSlide;
   kcpBootstrapLeaderLineLayer.querySelector('.kcp-bootstrap-arrow-head--blue')?.setAttribute('fill', blueColor);
   kcpBootstrapLeaderLineLayer.querySelector('.kcp-bootstrap-arrow-head--yellow')?.setAttribute('fill', yellowColor);
+  kcpBootstrapLeaderLineLayer.querySelector('.kcp-bootstrap-arrow-head--turquoise')?.setAttribute('fill', turquoiseColor);
   kcpBootstrapLeaderLineLayer.setAttribute('viewBox', `0 0 ${gridRect.width} ${gridRect.height}`);
   kcpBootstrapLeaderLineLayer.setAttribute('preserveAspectRatio', 'none');
 
   const crossplaneToFifthRoute = (id, verticalOffset = 0) => {
+    const isEdgeRoute = isUcpStartSlide && id.startsWith('crossplane-to-fifth-column');
+    const strokeColor = isEdgeRoute ? turquoiseColor : yellowColor;
+    const markerId = isEdgeRoute
+      ? 'url(#kcp-bootstrap-pipeline-arrow-turquoise)'
+      : 'url(#kcp-bootstrap-pipeline-arrow-yellow)';
     const start = {
-      x: crossplaneIconRight.x,
+      x: isEdgeRoute ? thirdRight : crossplaneIconRight.x,
       y: crossplaneIconRight.y + verticalOffset
     };
     const end = {
@@ -1902,9 +1913,9 @@ function renderKcpBootstrapLeaderLines() {
     };
     return {
       id,
-      className: 'kcp-bootstrap-line-group--yellow',
-      stroke: yellowColor,
-      marker: 'url(#kcp-bootstrap-pipeline-arrow-yellow)',
+      className: isEdgeRoute ? 'kcp-bootstrap-line-group--turquoise' : 'kcp-bootstrap-line-group--yellow',
+      stroke: strokeColor,
+      marker: markerId,
       revealAxis: 'x',
       visible: ucpFragmentVisible,
       d: cubicPath(
@@ -1950,7 +1961,7 @@ function renderKcpBootstrapLeaderLines() {
       d: linePath(argoBottom, crossplaneTop)
     },
     ...(isUcpStartSlide
-      ? [-144, -96, -48, 0, 48].map((offset, index) => crossplaneToFifthRoute(`crossplane-to-fifth-column-${index + 1}`, offset))
+      ? [-288, -240, -192, -144, -96, -48, 0, 48].map((offset, index) => crossplaneToFifthRoute(`crossplane-to-fifth-column-${index + 1}`, offset))
       : [crossplaneToFifthRoute('crossplane-to-fifth-column')])
   ];
 
@@ -1976,6 +1987,7 @@ function renderKcpBootstrapLeaderLines() {
     }
     group.classList.toggle('kcp-bootstrap-line-group--blue', route.className === 'kcp-bootstrap-line-group--blue');
     group.classList.toggle('kcp-bootstrap-line-group--yellow', route.className === 'kcp-bootstrap-line-group--yellow');
+    group.classList.toggle('kcp-bootstrap-line-group--turquoise', route.className === 'kcp-bootstrap-line-group--turquoise');
     outline.setAttribute('d', route.d);
     outline.setAttribute('stroke', 'rgba(4, 13, 34, 0.72)');
     line.setAttribute('d', route.d);
