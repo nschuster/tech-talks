@@ -3010,6 +3010,34 @@ body {
   line-height: 1.28;
 }
 
+.kcp-bootstrap-slide .kcp-bootstrap-grid {
+  display: grid;
+  grid-template-columns: 20% 15% 20% 15% 30%;
+  width: 100%;
+  height: 66vh;
+  margin-top: 1.6rem;
+}
+
+.kcp-bootstrap-column--one {
+  background: rgba(0, 112, 173, 0.36);
+}
+
+.kcp-bootstrap-column--two {
+  background: rgba(29, 184, 242, 0.28);
+}
+
+.kcp-bootstrap-column--three {
+  background: rgba(255, 184, 28, 0.3);
+}
+
+.kcp-bootstrap-column--four {
+  background: rgba(0, 163, 173, 0.3);
+}
+
+.kcp-bootstrap-column--five {
+  background: rgba(46, 204, 113, 0.24);
+}
+
 .reveal .controls {
   color: var(--color-primary);
   opacity: 1;
