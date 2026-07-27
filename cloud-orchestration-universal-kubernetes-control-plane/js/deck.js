@@ -1829,21 +1829,13 @@ function renderKcpBootstrapLeaderLines() {
     const shortenedEnd = shortenLineEnd(startPoint, endPoint);
     return `M ${startPoint.x.toFixed(2)} ${startPoint.y.toFixed(2)} L ${shortenedEnd.x.toFixed(2)} ${shortenedEnd.y.toFixed(2)}`;
   };
-  const smoothBridgePath = (startPoint, firstExitPoint, underBoxY, targetPoint) => {
-    const shortenedTarget = shortenCubicEnd(
-      { x: targetPoint.x - 130, y: underBoxY },
-      { x: targetPoint.x - 96, y: underBoxY },
-      { x: targetPoint.x, y: underBoxY + 18 },
-      targetPoint
-    );
-    return [
-      `M ${startPoint.x.toFixed(2)} ${startPoint.y.toFixed(2)}`,
-      `C ${firstExitPoint.x.toFixed(2)} ${startPoint.y.toFixed(2)} ${(firstExitPoint.x + 8).toFixed(2)} ${startPoint.y.toFixed(2)} ${(firstExitPoint.x + 18).toFixed(2)} ${(startPoint.y + 28).toFixed(2)}`,
-      `C ${(firstExitPoint.x + 42).toFixed(2)} ${(startPoint.y + 92).toFixed(2)} ${(firstExitPoint.x + 24).toFixed(2)} ${(underBoxY - 18).toFixed(2)} ${(firstExitPoint.x + 84).toFixed(2)} ${underBoxY.toFixed(2)}`,
-      `C ${(firstExitPoint.x + 230).toFixed(2)} ${underBoxY.toFixed(2)} ${(targetPoint.x - 170).toFixed(2)} ${underBoxY.toFixed(2)} ${(targetPoint.x - 108).toFixed(2)} ${underBoxY.toFixed(2)}`,
-      `C ${(targetPoint.x - 64).toFixed(2)} ${underBoxY.toFixed(2)} ${(targetPoint.x - 4).toFixed(2)} ${(underBoxY - 8).toFixed(2)} ${shortenedTarget.x.toFixed(2)} ${shortenedTarget.y.toFixed(2)}`
-    ].join(' ');
-  };
+  const smoothBridgePath = (startPoint, firstExitPoint, underBoxY, straightStartX, straightEndX, targetPoint) => [
+    `M ${startPoint.x.toFixed(2)} ${startPoint.y.toFixed(2)}`,
+    `C ${firstExitPoint.x.toFixed(2)} ${startPoint.y.toFixed(2)} ${(firstExitPoint.x + 14).toFixed(2)} ${startPoint.y.toFixed(2)} ${(firstExitPoint.x + 32).toFixed(2)} ${(startPoint.y + 32).toFixed(2)}`,
+    `C ${(firstExitPoint.x + 64).toFixed(2)} ${(startPoint.y + 128).toFixed(2)} ${(straightStartX - 112).toFixed(2)} ${(underBoxY - 38).toFixed(2)} ${straightStartX.toFixed(2)} ${underBoxY.toFixed(2)}`,
+    `L ${straightEndX.toFixed(2)} ${underBoxY.toFixed(2)}`,
+    `C ${(straightEndX + 118).toFixed(2)} ${underBoxY.toFixed(2)} ${(targetPoint.x - 34).toFixed(2)} ${(underBoxY - 8).toFixed(2)} ${targetPoint.x.toFixed(2)} ${targetPoint.y.toFixed(2)}`
+  ].join(' ');
   const easeDraw = (t) => t < 0.5
     ? 2 * t * t
     : 1 - Math.pow(-2 * t + 2, 2) / 2;
@@ -1954,14 +1946,17 @@ function renderKcpBootstrapLeaderLines() {
     const underThirdBoxY = thirdRect.bottom - gridRect.top + 72;
     const firstBoxExitX = firstColumnRight + 28;
     const firstExitPoint = { x: firstBoxExitX, y: secondFileStart.y };
+    const straightStartX = thirdRect.left - gridRect.left + 28;
+    const straightEndX = thirdRight - 28;
     return {
       id: 'second-file-to-bottom-turquoise-midpoint',
       className: 'kcp-bootstrap-line-group--turquoise',
       stroke: turquoiseColor,
-      marker: 'url(#kcp-bootstrap-pipeline-arrow-turquoise)',
+      marker: null,
+      endDot: { x: target.x, y: target.y, radius: 8 },
       revealAxis: 'x',
       visible: isUcpStartSlide,
-      d: smoothBridgePath(secondFileStart, firstExitPoint, underThirdBoxY, target)
+      d: smoothBridgePath(secondFileStart, firstExitPoint, underThirdBoxY, straightStartX, straightEndX, target)
     };
   };
 
@@ -2013,6 +2008,7 @@ function renderKcpBootstrapLeaderLines() {
     let group = kcpBootstrapLeaderLineLayer.querySelector(`[data-kcp-bootstrap-route="${route.id}"]`);
     let outline = group?.querySelector('.cicd-pipeline-line-outline');
     let line = group?.querySelector('.cicd-pipeline-line');
+    let endDot = group?.querySelector('.kcp-bootstrap-line-end-dot');
     const isNew = !group || !line || !outline;
     if (!group || !line || !outline) {
       group = group || document.createElementNS('http://www.w3.org/2000/svg', 'g');
@@ -2036,8 +2032,25 @@ function renderKcpBootstrapLeaderLines() {
     line.setAttribute('stroke', route.stroke);
     if (group.classList.contains('cicd-pipeline-group--drawing')) {
       line.removeAttribute('marker-end');
-    } else {
+    } else if (route.marker) {
       line.setAttribute('marker-end', route.marker);
+    } else {
+      line.removeAttribute('marker-end');
+    }
+    if (route.endDot) {
+      if (!endDot) {
+        endDot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        endDot.classList.add('kcp-bootstrap-line-end-dot');
+        group.append(endDot);
+      }
+      endDot.setAttribute('cx', route.endDot.x.toFixed(2));
+      endDot.setAttribute('cy', route.endDot.y.toFixed(2));
+      endDot.setAttribute('r', String(route.endDot.radius));
+      endDot.setAttribute('fill', route.stroke);
+      endDot.setAttribute('stroke', 'rgba(4, 13, 34, 0.82)');
+      endDot.setAttribute('stroke-width', '4');
+    } else {
+      endDot?.remove();
     }
     if (isNew && !isUcpStartSlide) {
       addDrawMask(group, route, line, line.getTotalLength ? line.getTotalLength() : 1);
