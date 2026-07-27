@@ -3088,6 +3088,49 @@ body {
   height: 3.9rem;
 }
 
+.reveal section.kcp-bootstrap-slide .kcp-bootstrap-legend {
+  position: absolute;
+  left: 50%;
+  bottom: -68px;
+  z-index: 16;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  width: max-content;
+  color: var(--capgemini-white);
+  font-family: var(--font-display);
+  font-size: 0.36em;
+  font-weight: 800;
+  letter-spacing: 0.055em;
+  line-height: 1;
+  text-transform: uppercase;
+  text-shadow: 0 5px 16px rgba(0, 0, 0, 0.42);
+  transform: translateX(-50%);
+}
+
+.reveal section.kcp-bootstrap-slide .kcp-bootstrap-legend .cicd-pipeline-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  white-space: nowrap;
+}
+
+.reveal section.kcp-bootstrap-slide .kcp-bootstrap-legend .cicd-pipeline-legend-swatch {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.26);
+}
+
+.reveal section.kcp-bootstrap-slide .kcp-bootstrap-legend .cicd-pipeline-legend-swatch--provision {
+  background: var(--capgemini-light-blue);
+}
+
+.reveal section.kcp-bootstrap-slide .kcp-bootstrap-legend .cicd-pipeline-legend-swatch--manage {
+  background: var(--capgemini-yellow);
+}
+
 .kcp-bootstrap-stack-caption {
   position: absolute;
   left: 50%;
