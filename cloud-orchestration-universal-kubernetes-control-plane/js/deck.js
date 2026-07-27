@@ -1781,6 +1781,10 @@ function renderKcpBootstrapLeaderLines() {
   const crossplaneIconRight = rectPoint(crossplaneIconRect, 1, 0.5);
   const shellLeft = shellRect.left - gridRect.left;
   const ucpLeft = ucpRect.left - gridRect.left;
+  const argoHorizontalTarget = {
+    x: argoIconLeft.x,
+    y: firstFileStart.y
+  };
   const thirdBorder = {
     x: shellLeft,
     y: secondFileStart.y
@@ -1832,7 +1836,7 @@ function renderKcpBootstrapLeaderLines() {
       className: 'kcp-bootstrap-line-group--blue',
       stroke: blueColor,
       marker: 'url(#kcp-bootstrap-pipeline-arrow-blue)',
-      d: linePath(firstFileStart, argoIconLeft)
+      d: linePath(firstFileStart, argoHorizontalTarget)
     },
     {
       id: 'file-to-third-column',
@@ -1840,9 +1844,9 @@ function renderKcpBootstrapLeaderLines() {
       stroke: blueColor,
       marker: 'url(#kcp-bootstrap-pipeline-arrow-blue)',
       d: cubicPath(
-        secondFileStart,
-        { x: secondFileStart.x + 130, y: secondFileStart.y },
-        { x: thirdBorder.x - 110, y: thirdBorder.y },
+        firstFileStart,
+        { x: firstFileStart.x + 145, y: firstFileStart.y },
+        { x: thirdBorder.x - 125, y: thirdBorder.y },
         thirdBorder
       )
     },

@@ -3050,7 +3050,7 @@ body {
   box-sizing: border-box;
   min-width: 0;
   min-height: 0;
-  padding: 0.9rem;
+  padding: 0.35rem;
 }
 
 .kcp-bootstrap-column--one {
@@ -3070,7 +3070,7 @@ body {
 
 .kcp-bootstrap-git-box {
   position: absolute;
-  inset: 0.9rem 0;
+  inset: 0.35rem 0;
   min-height: 0;
 }
 
@@ -3147,7 +3147,7 @@ body {
 .kcp-bootstrap-control-plane,
 .kcp-bootstrap-local-plane {
   position: absolute;
-  inset: 0.9rem;
+  inset: 0.35rem;
   pointer-events: none;
 }
 
