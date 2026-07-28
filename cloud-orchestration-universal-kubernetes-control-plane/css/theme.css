@@ -3675,7 +3675,7 @@ body {
 .kcp-platform-layout-primary-row--lower {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 6.4rem;
+  gap: 7.6rem;
   align-items: end;
 }
 
@@ -3754,13 +3754,13 @@ body {
 
 .kcp-platform-ucp-icon-row {
   position: absolute;
-  left: 4.4rem;
-  right: 4.4rem;
+  left: 6.2rem;
+  right: 6.2rem;
   top: 54%;
   z-index: 5;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-evenly;
   transform: translateY(-50%);
   pointer-events: none;
 }
@@ -3789,7 +3789,7 @@ body {
 .kcp-platform-static-double-line {
   fill: none;
   stroke: var(--capgemini-white);
-  stroke-width: 5;
+  stroke-width: 3;
   stroke-linecap: square;
   opacity: 0.96;
 }

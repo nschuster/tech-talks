@@ -2209,7 +2209,9 @@ function renderKcpPlatformConnections() {
   const lowerBoxes = Array.from(slide.querySelectorAll('.kcp-platform-lower-box'));
   const githubBox = lowerBoxes.find((box) => box.querySelector('.kcp-platform-provider-title')?.textContent.trim() === 'GitHub');
   const backstageBox = lowerBoxes.find((box) => box.querySelector('.kcp-platform-provider-title')?.textContent.trim() === 'Backstage');
-  if (!grid || !ucpBox || !githubBox || !backstageBox) {
+  const gcpBox = slide.querySelector('.content-split-target-box--gcp');
+  const gcpBadge = gcpBox?.querySelector('.content-split-box-badge');
+  if (!grid || !ucpBox || !githubBox || !backstageBox || !gcpBadge) {
     clearKcpPlatformConnections();
     return;
   }
@@ -2226,6 +2228,7 @@ function renderKcpPlatformConnections() {
   const ucpRect = ucpBox.getBoundingClientRect();
   const githubRect = githubBox.getBoundingClientRect();
   const backstageRect = backstageBox.getBoundingClientRect();
+  const gcpBadgeRect = gcpBadge.getBoundingClientRect();
   kcpPlatformConnectionLayer.setAttribute('viewBox', `0 0 ${gridRect.width.toFixed(2)} ${gridRect.height.toFixed(2)}`);
   kcpPlatformConnectionLayer.setAttribute('width', gridRect.width.toFixed(2));
   kcpPlatformConnectionLayer.setAttribute('height', gridRect.height.toFixed(2));
@@ -2235,11 +2238,29 @@ function renderKcpPlatformConnections() {
   const backstageLeft = pt(backstageRect.left, backstageRect.top + backstageRect.height * 0.5);
   const githubRight = pt(githubRect.right, githubRect.top + githubRect.height * 0.5);
   const ucpBottom = pt(ucpRect.left + ucpRect.width * 0.5, ucpRect.bottom);
+  const ucpRight = pt(ucpRect.right, ucpRect.top + ucpRect.height * 0.5);
+  const gcpBadgeLeft = pt(gcpBadgeRect.left, gcpBadgeRect.top + gcpBadgeRect.height * 0.5);
   const staticOffsets = [-34, 0, 34];
   const dashedOffsets = [-32, 0, 32];
-  const squareSize = 12;
+  const squareSize = 18;
 
   kcpPlatformConnectionLayer.replaceChildren();
+  const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+  const yellowMarker = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
+  yellowMarker.setAttribute('id', 'kcp-platform-arrow2-yellow');
+  yellowMarker.setAttribute('viewBox', '-8 -8 16 16');
+  yellowMarker.setAttribute('refX', '-2');
+  yellowMarker.setAttribute('refY', '0');
+  yellowMarker.setAttribute('markerWidth', '30');
+  yellowMarker.setAttribute('markerHeight', '30');
+  yellowMarker.setAttribute('orient', 'auto');
+  yellowMarker.setAttribute('markerUnits', 'userSpaceOnUse');
+  const arrowPath = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+  arrowPath.setAttribute('points', '-4,-8 4,0 -4,8 -7,5 -2,0 -7,-5');
+  arrowPath.setAttribute('fill', 'var(--capgemini-yellow)');
+  yellowMarker.appendChild(arrowPath);
+  defs.appendChild(yellowMarker);
+  kcpPlatformConnectionLayer.appendChild(defs);
   staticOffsets.forEach((offset, index) => {
     const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     group.dataset.kcpPlatformRoute = `backstage-to-ucp-double-${index + 1}`;
@@ -2270,9 +2291,20 @@ function renderKcpPlatformConnections() {
     const start = { x: backstageLeft.x, y: backstageLeft.y + offset };
     const end = { x: githubRight.x, y: githubRight.y + offset };
     path.setAttribute('d', `M ${start.x.toFixed(2)} ${start.y.toFixed(2)} C ${(start.x - 90).toFixed(2)} ${start.y.toFixed(2)}, ${(end.x + 90).toFixed(2)} ${end.y.toFixed(2)}, ${end.x.toFixed(2)} ${end.y.toFixed(2)}`);
+    path.setAttribute('marker-end', 'url(#kcp-platform-arrow2-yellow)');
     path.style.animationDelay = `${index * -0.28}s`;
     kcpPlatformConnectionLayer.appendChild(path);
   });
+
+  const gcpLine = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  gcpLine.classList.add('cicd-pipeline-line', 'cicd-pipeline-line-path', 'kcp-platform-dashed-line');
+  gcpLine.dataset.kcpPlatformRoute = 'ucp-to-gcp-badge-dashed';
+  const gcpStart = { x: ucpRight.x, y: gcpBadgeLeft.y };
+  const gcpEnd = { x: gcpBadgeLeft.x, y: gcpBadgeLeft.y };
+  gcpLine.setAttribute('d', `M ${gcpStart.x.toFixed(2)} ${gcpStart.y.toFixed(2)} L ${gcpEnd.x.toFixed(2)} ${gcpEnd.y.toFixed(2)}`);
+  gcpLine.setAttribute('marker-end', 'url(#kcp-platform-arrow2-yellow)');
+  gcpLine.style.animationDelay = '-0.42s';
+  kcpPlatformConnectionLayer.appendChild(gcpLine);
 }
 
 function requestKcpPlatformConnectionUpdate() {
