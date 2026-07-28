@@ -3788,29 +3788,20 @@ body {
 
 .kcp-platform-static-double-line {
   fill: none;
-  stroke: var(--capgemini-blue);
+  stroke: var(--capgemini-white);
   stroke-width: 5;
   stroke-linecap: square;
   opacity: 0.96;
 }
 
 .kcp-platform-static-line-square {
-  fill: var(--capgemini-blue);
-  stroke: var(--capgemini-white);
-  stroke-width: 2;
+  fill: var(--capgemini-white);
+  stroke: none;
 }
 
 .kcp-platform-dashed-line {
   fill: none;
   stroke: var(--capgemini-yellow);
-  stroke-width: 5;
-  stroke-linecap: round;
-  stroke-dasharray: 16 14;
-  animation: kcp-platform-dash-flow 1.7s linear infinite;
-}
-
-@keyframes kcp-platform-dash-flow {
-  to { stroke-dashoffset: -60; }
 }
 
 .kcp-platform-layout-ucp-title {
@@ -3870,12 +3861,12 @@ body {
 
 .kcp-platform-provider-title {
   position: absolute;
-  left: 4.05rem;
-  top: 0.5rem;
+  left: 3.95rem;
+  top: 0.58rem;
   z-index: 2;
   color: var(--capgemini-white);
   font-family: var(--font-display);
-  font-size: 0.72em;
+  font-size: 0.52em;
   font-weight: 800;
   line-height: 1;
   letter-spacing: 0.08em;

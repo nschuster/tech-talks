@@ -2244,11 +2244,11 @@ function renderKcpPlatformConnections() {
     const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     group.dataset.kcpPlatformRoute = `backstage-to-ucp-double-${index + 1}`;
     const start = { x: backstageTop.x + offset, y: backstageTop.y };
-    const end = { x: ucpBottom.x + offset, y: ucpBottom.y };
+    const end = { x: start.x, y: ucpBottom.y };
     [-6, 6].forEach((parallelOffset) => {
       const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       path.classList.add('kcp-platform-static-double-line');
-      path.setAttribute('d', `M ${start.x.toFixed(2)} ${(start.y + parallelOffset).toFixed(2)} C ${start.x.toFixed(2)} ${(start.y - 120).toFixed(2)}, ${end.x.toFixed(2)} ${(end.y + 120).toFixed(2)}, ${end.x.toFixed(2)} ${(end.y + parallelOffset).toFixed(2)}`);
+      path.setAttribute('d', `M ${(start.x + parallelOffset).toFixed(2)} ${start.y.toFixed(2)} L ${(end.x + parallelOffset).toFixed(2)} ${end.y.toFixed(2)}`);
       group.appendChild(path);
     });
     [start, end].forEach((point) => {
@@ -2265,7 +2265,7 @@ function renderKcpPlatformConnections() {
 
   dashedOffsets.forEach((offset, index) => {
     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    path.classList.add('kcp-platform-dashed-line');
+    path.classList.add('cicd-pipeline-line', 'cicd-pipeline-line-path', 'kcp-platform-dashed-line');
     path.dataset.kcpPlatformRoute = `backstage-to-github-dashed-${index + 1}`;
     const start = { x: backstageLeft.x, y: backstageLeft.y + offset };
     const end = { x: githubRight.x, y: githubRight.y + offset };
