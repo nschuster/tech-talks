@@ -113,6 +113,16 @@ body {
   text-align: left;
 }
 
+.reveal .progress {
+  height: 5px;
+  background: rgba(255, 255, 255, 0.13);
+}
+
+.reveal .progress span {
+  background: var(--capgemini-gradient-element);
+  box-shadow: 0 0 14px rgba(29, 184, 242, 0.38);
+}
+
 .reveal section {
   box-sizing: border-box;
   width: 100%;
