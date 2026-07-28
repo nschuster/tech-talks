@@ -3837,8 +3837,8 @@ body {
 }
 
 .kcp-platform-github-file-row img {
-  width: 3.2rem;
-  height: 3.8rem;
+  width: 4.8rem;
+  height: 5.7rem;
   object-fit: contain;
   filter: invert(1) brightness(1.35) drop-shadow(0 8px 14px rgba(0, 0, 0, 0.34));
 }
