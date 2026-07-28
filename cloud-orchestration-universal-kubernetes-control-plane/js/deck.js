@@ -2208,10 +2208,12 @@ function renderKcpPlatformConnections() {
   const ucpBox = slide.querySelector('.kcp-platform-layout-ucp-box');
   const lowerBoxes = Array.from(slide.querySelectorAll('.kcp-platform-lower-box'));
   const githubBox = lowerBoxes.find((box) => box.querySelector('.kcp-platform-provider-title')?.textContent.trim() === 'GitHub');
-  const backstageBox = lowerBoxes.find((box) => box.querySelector('.kcp-platform-provider-title')?.textContent.trim() === 'Backstage');
-  const gcpBox = slide.querySelector('.content-split-target-box--gcp');
-  const gcpBadge = gcpBox?.querySelector('.content-split-box-badge');
-  if (!grid || !ucpBox || !githubBox || !backstageBox || !gcpBadge) {
+  const backstageBox = lowerBoxes.find((box) => ['Backstage', 'Port.io'].includes(box.querySelector('.kcp-platform-provider-title')?.textContent.trim()));
+  const providerBox = (name) => slide.querySelector(`.content-split-target-box--${name}`);
+  const awsBadge = providerBox('aws')?.querySelector('.content-split-box-badge');
+  const gcpBadge = providerBox('gcp')?.querySelector('.content-split-box-badge');
+  const azureBadge = providerBox('azure')?.querySelector('.content-split-box-badge');
+  if (!grid || !ucpBox || !githubBox || !backstageBox || !awsBadge || !gcpBadge || !azureBadge) {
     clearKcpPlatformConnections();
     return;
   }
@@ -2228,7 +2230,9 @@ function renderKcpPlatformConnections() {
   const ucpRect = ucpBox.getBoundingClientRect();
   const githubRect = githubBox.getBoundingClientRect();
   const backstageRect = backstageBox.getBoundingClientRect();
+  const awsBadgeRect = awsBadge.getBoundingClientRect();
   const gcpBadgeRect = gcpBadge.getBoundingClientRect();
+  const azureBadgeRect = azureBadge.getBoundingClientRect();
   kcpPlatformConnectionLayer.setAttribute('viewBox', `0 0 ${gridRect.width.toFixed(2)} ${gridRect.height.toFixed(2)}`);
   kcpPlatformConnectionLayer.setAttribute('width', gridRect.width.toFixed(2));
   kcpPlatformConnectionLayer.setAttribute('height', gridRect.height.toFixed(2));
@@ -2239,10 +2243,13 @@ function renderKcpPlatformConnections() {
   const githubRight = pt(githubRect.right, githubRect.top + githubRect.height * 0.5);
   const ucpBottom = pt(ucpRect.left + ucpRect.width * 0.5, ucpRect.bottom);
   const ucpRight = pt(ucpRect.right, ucpRect.top + ucpRect.height * 0.5);
+  const awsBadgeLeft = pt(awsBadgeRect.left, awsBadgeRect.top + awsBadgeRect.height * 0.5);
   const gcpBadgeLeft = pt(gcpBadgeRect.left, gcpBadgeRect.top + gcpBadgeRect.height * 0.5);
+  const azureBadgeLeft = pt(azureBadgeRect.left, azureBadgeRect.top + azureBadgeRect.height * 0.5);
   const staticOffsets = [-34, 0, 34];
   const dashedOffsets = [-32, 0, 32];
   const squareSize = 18;
+  const arrowTipCompensation = 6;
 
   kcpPlatformConnectionLayer.replaceChildren();
   const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
@@ -2279,6 +2286,7 @@ function renderKcpPlatformConnections() {
       rect.setAttribute('y', (point.y - squareSize / 2).toFixed(2));
       rect.setAttribute('width', String(squareSize));
       rect.setAttribute('height', String(squareSize));
+      rect.setAttribute('transform', `rotate(45 ${point.x.toFixed(2)} ${point.y.toFixed(2)})`);
       group.appendChild(rect);
     });
     kcpPlatformConnectionLayer.appendChild(group);
@@ -2289,22 +2297,33 @@ function renderKcpPlatformConnections() {
     path.classList.add('cicd-pipeline-line', 'cicd-pipeline-line-path', 'kcp-platform-dashed-line');
     path.dataset.kcpPlatformRoute = `backstage-to-github-dashed-${index + 1}`;
     const start = { x: backstageLeft.x, y: backstageLeft.y + offset };
-    const end = { x: githubRight.x, y: githubRight.y + offset };
+    const end = { x: githubRight.x + arrowTipCompensation, y: githubRight.y + offset };
     path.setAttribute('d', `M ${start.x.toFixed(2)} ${start.y.toFixed(2)} C ${(start.x - 90).toFixed(2)} ${start.y.toFixed(2)}, ${(end.x + 90).toFixed(2)} ${end.y.toFixed(2)}, ${end.x.toFixed(2)} ${end.y.toFixed(2)}`);
     path.setAttribute('marker-end', 'url(#kcp-platform-arrow2-yellow)');
     path.style.animationDelay = `${index * -0.28}s`;
     kcpPlatformConnectionLayer.appendChild(path);
   });
 
-  const gcpLine = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-  gcpLine.classList.add('cicd-pipeline-line', 'cicd-pipeline-line-path', 'kcp-platform-dashed-line');
-  gcpLine.dataset.kcpPlatformRoute = 'ucp-to-gcp-badge-dashed';
-  const gcpStart = { x: ucpRight.x, y: gcpBadgeLeft.y };
-  const gcpEnd = { x: gcpBadgeLeft.x, y: gcpBadgeLeft.y };
-  gcpLine.setAttribute('d', `M ${gcpStart.x.toFixed(2)} ${gcpStart.y.toFixed(2)} L ${gcpEnd.x.toFixed(2)} ${gcpEnd.y.toFixed(2)}`);
-  gcpLine.setAttribute('marker-end', 'url(#kcp-platform-arrow2-yellow)');
-  gcpLine.style.animationDelay = '-0.42s';
-  kcpPlatformConnectionLayer.appendChild(gcpLine);
+  const providerStart = { x: ucpRight.x, y: gcpBadgeLeft.y };
+  [
+    { id: 'ucp-to-aws-badge-dashed', target: awsBadgeLeft, delay: '-0.18s', fluid: true },
+    { id: 'ucp-to-gcp-badge-dashed', target: gcpBadgeLeft, delay: '-0.42s', fluid: false },
+    { id: 'ucp-to-azure-badge-dashed', target: azureBadgeLeft, delay: '-0.66s', fluid: true },
+  ].forEach((route) => {
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    line.classList.add('cicd-pipeline-line', 'cicd-pipeline-line-path', 'kcp-platform-dashed-line');
+    line.dataset.kcpPlatformRoute = route.id;
+    const end = { x: route.target.x - arrowTipCompensation, y: route.target.y };
+    if (route.fluid) {
+      const controlDistance = Math.max(130, Math.abs(end.x - providerStart.x) * 0.42);
+      line.setAttribute('d', `M ${providerStart.x.toFixed(2)} ${providerStart.y.toFixed(2)} C ${(providerStart.x + controlDistance).toFixed(2)} ${providerStart.y.toFixed(2)}, ${(end.x - controlDistance).toFixed(2)} ${end.y.toFixed(2)}, ${end.x.toFixed(2)} ${end.y.toFixed(2)}`);
+    } else {
+      line.setAttribute('d', `M ${providerStart.x.toFixed(2)} ${providerStart.y.toFixed(2)} L ${end.x.toFixed(2)} ${end.y.toFixed(2)}`);
+    }
+    line.setAttribute('marker-end', 'url(#kcp-platform-arrow2-yellow)');
+    line.style.animationDelay = route.delay;
+    kcpPlatformConnectionLayer.appendChild(line);
+  });
 }
 
 function requestKcpPlatformConnectionUpdate() {

@@ -3653,8 +3653,17 @@ body {
   gap: 1.8rem;
 }
 
+.reveal section.kcp-platform-layout-slide .kcp-platform-layout-column--middle {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+
 .kcp-platform-layout-primary-row,
-.kcp-platform-layout-column--middle,
 .kcp-platform-layout-right-row {
   position: relative;
   min-width: 0;
@@ -3772,8 +3781,10 @@ body {
   filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.32));
 }
 
-.kcp-platform-ucp-icon-row img[alt="Backstage"] {
-  filter: none;
+.kcp-platform-ucp-icon-row img[alt="Port.io"] {
+  width: 8.4rem;
+  height: 4.2rem;
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.32));
 }
 
 .kcp-platform-connection-layer {
