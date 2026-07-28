@@ -2206,6 +2206,7 @@ function renderKcpPlatformConnections() {
   }
   const grid = slide.querySelector('.kcp-platform-layout-grid');
   const ucpBox = slide.querySelector('.kcp-platform-layout-ucp-box');
+  const ucpIcons = Array.from(slide.querySelectorAll('.kcp-platform-ucp-icon-row img'));
   const argoIcon = slide.querySelector('.kcp-platform-ucp-icon-row img[alt="Argo CD"]');
   const lowerBoxes = Array.from(slide.querySelectorAll('.kcp-platform-lower-box'));
   const githubBox = lowerBoxes.find((box) => box.querySelector('.kcp-platform-provider-title')?.textContent.trim() === 'GitHub');
@@ -2240,7 +2241,11 @@ function renderKcpPlatformConnections() {
   kcpPlatformConnectionLayer.setAttribute('height', gridRect.height.toFixed(2));
 
   const pt = (x, y) => ({ x: x - gridRect.left, y: y - gridRect.top });
-  const argoRight = pt(argoRect.right, gcpBadgeRect.top + gcpBadgeRect.height * 0.5);
+  const ucpIconCenters = ucpIcons.map((icon) => {
+    const rect = icon.getBoundingClientRect();
+    return pt(rect.left + rect.width * 0.5, gcpBadgeRect.top + gcpBadgeRect.height * 0.5);
+  });
+  const argoCenter = pt(argoRect.left + argoRect.width * 0.5, gcpBadgeRect.top + gcpBadgeRect.height * 0.5);
   const backstageTop = pt(backstageRect.left + backstageRect.width * 0.5, backstageRect.top);
   const backstageLeft = pt(backstageRect.left, backstageRect.top + backstageRect.height * 0.5);
   const githubRight = pt(githubRect.right, githubRect.top + githubRect.height * 0.5);
@@ -2311,9 +2316,19 @@ function renderKcpPlatformConnections() {
   const gcpInBoxLine = document.createElementNS('http://www.w3.org/2000/svg', 'path');
   gcpInBoxLine.classList.add('cicd-pipeline-line', 'cicd-pipeline-line-path', 'kcp-platform-grey-line');
   gcpInBoxLine.dataset.kcpPlatformRoute = 'argo-to-ucp-edge-gcp-grey';
-  gcpInBoxLine.setAttribute('d', `M ${argoRight.x.toFixed(2)} ${providerStart.y.toFixed(2)} L ${providerStart.x.toFixed(2)} ${providerStart.y.toFixed(2)}`);
+  gcpInBoxLine.setAttribute('d', `M ${argoCenter.x.toFixed(2)} ${providerStart.y.toFixed(2)} L ${providerStart.x.toFixed(2)} ${providerStart.y.toFixed(2)}`);
   gcpInBoxLine.style.animationDelay = '-0.42s';
   kcpPlatformConnectionLayer.appendChild(gcpInBoxLine);
+
+  ucpIconCenters.forEach((center, index) => {
+    const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    dot.classList.add('kcp-platform-grey-line-dot');
+    dot.dataset.kcpPlatformRoute = `ucp-grey-dot-${index + 1}`;
+    dot.setAttribute('cx', center.x.toFixed(2));
+    dot.setAttribute('cy', providerStart.y.toFixed(2));
+    dot.setAttribute('r', '13');
+    kcpPlatformConnectionLayer.appendChild(dot);
+  });
 
   [
     { id: 'ucp-to-aws-badge-dashed', target: awsBadgeLeft, delay: '-0.18s', fluid: true },

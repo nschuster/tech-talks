@@ -3818,6 +3818,30 @@ body {
   stroke: #4c525b;
 }
 
+.kcp-platform-grey-line-dot {
+  fill: #4c525b;
+  stroke: rgba(4, 13, 34, 0.82);
+  stroke-width: 4;
+}
+
+.kcp-platform-github-file-row {
+  position: absolute;
+  left: 2.4rem;
+  right: 2.4rem;
+  top: 52%;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  transform: translateY(-40%);
+}
+
+.kcp-platform-github-file-row img {
+  width: 3.2rem;
+  height: 3.8rem;
+  object-fit: contain;
+  filter: invert(1) brightness(1.35) drop-shadow(0 8px 14px rgba(0, 0, 0, 0.34));
+}
 
 .kcp-platform-layout-ucp-title {
   display: none;
