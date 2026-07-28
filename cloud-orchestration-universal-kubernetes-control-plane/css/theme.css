@@ -3779,7 +3779,8 @@ body {
   overflow: hidden;
 }
 
-.reveal section.kcp-platform-layout-slide .kcp-platform-provider-box .content-split-box-badge {
+.reveal section.kcp-platform-layout-slide .kcp-platform-provider-box .content-split-box-badge,
+.reveal section.kcp-platform-layout-slide .kcp-platform-lower-box .content-split-box-badge {
   width: 3.35rem;
   height: 3.35rem;
 }
@@ -3788,6 +3789,10 @@ body {
   width: 78%;
   height: 78%;
   object-fit: contain;
+}
+
+.reveal section.kcp-platform-layout-slide .kcp-platform-lower-box img[alt="Backstage"] {
+  filter: brightness(0) saturate(100%);
 }
 
 .reveal section.kcp-platform-layout-slide .kcp-platform-provider-badge--light {
