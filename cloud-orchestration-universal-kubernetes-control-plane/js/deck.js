@@ -2334,18 +2334,23 @@ function renderKcpPlatformConnections() {
   });
 
   const argoDotPoint = { x: argoCenter.x, y: providerStart.y };
-  const ovalWidth = Math.max(330, Math.abs(githubFileTarget.x - argoDotPoint.x) + 130);
-  const ovalHeight = Math.max(220, Math.abs(githubFileTarget.y - argoDotPoint.y) + 120);
+  const dx = githubFileTarget.x - argoDotPoint.x;
+  const dy = githubFileTarget.y - argoDotPoint.y;
+  const length = Math.max(1, Math.hypot(dx, dy));
+  const normal = { x: -dy / length, y: dx / length };
+  const radius = Math.min(150, Math.max(112, length * 0.31));
+  const controlScale = 0.44;
+  const makeSemicircle = (side) => `M ${argoDotPoint.x.toFixed(2)} ${argoDotPoint.y.toFixed(2)} C ${(argoDotPoint.x + dx * controlScale + normal.x * radius * side).toFixed(2)} ${(argoDotPoint.y + dy * controlScale + normal.y * radius * side).toFixed(2)}, ${(githubFileTarget.x - dx * controlScale + normal.x * radius * side).toFixed(2)} ${(githubFileTarget.y - dy * controlScale + normal.y * radius * side).toFixed(2)}, ${githubFileTarget.x.toFixed(2)} ${githubFileTarget.y.toFixed(2)}`;
   [
     {
       id: 'argo-dot-to-github-oval-clockwise',
-      d: `M ${argoDotPoint.x.toFixed(2)} ${argoDotPoint.y.toFixed(2)} C ${(argoDotPoint.x + ovalWidth * 0.18).toFixed(2)} ${(argoDotPoint.y - ovalHeight * 0.62).toFixed(2)}, ${(githubFileTarget.x - ovalWidth * 0.84).toFixed(2)} ${(githubFileTarget.y + ovalHeight * 0.18).toFixed(2)}, ${(githubFileTarget.x - 42).toFixed(2)} ${(githubFileTarget.y - 38).toFixed(2)} C ${(githubFileTarget.x + ovalWidth * 0.58).toFixed(2)} ${(githubFileTarget.y + ovalHeight * 0.08).toFixed(2)}, ${(argoDotPoint.x + ovalWidth * 0.62).toFixed(2)} ${(argoDotPoint.y + ovalHeight * 0.56).toFixed(2)}, ${githubFileTarget.x.toFixed(2)} ${githubFileTarget.y.toFixed(2)}`,
+      d: makeSemicircle(1),
       delay: '-0.12s',
       reverse: false,
     },
     {
       id: 'argo-dot-to-github-oval-counter',
-      d: `M ${argoDotPoint.x.toFixed(2)} ${argoDotPoint.y.toFixed(2)} C ${(argoDotPoint.x + ovalWidth * 0.48).toFixed(2)} ${(argoDotPoint.y + ovalHeight * 0.68).toFixed(2)}, ${(githubFileTarget.x - ovalWidth * 0.62).toFixed(2)} ${(githubFileTarget.y - ovalHeight * 0.20).toFixed(2)}, ${(githubFileTarget.x + 42).toFixed(2)} ${(githubFileTarget.y + 38).toFixed(2)} C ${(githubFileTarget.x - ovalWidth * 0.58).toFixed(2)} ${(githubFileTarget.y - ovalHeight * 0.12).toFixed(2)}, ${(argoDotPoint.x + ovalWidth * 0.18).toFixed(2)} ${(argoDotPoint.y - ovalHeight * 0.58).toFixed(2)}, ${githubFileTarget.x.toFixed(2)} ${githubFileTarget.y.toFixed(2)}`,
+      d: makeSemicircle(-1),
       delay: '-0.58s',
       reverse: true,
     },
