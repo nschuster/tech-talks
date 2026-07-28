@@ -3750,6 +3750,73 @@ body {
   gap: 1.45rem;
 }
 
+.reveal section.kcp-platform-layout-slide .kcp-platform-provider-box {
+  flex: none;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  padding: 0.82rem 0.5rem 0.52rem;
+  overflow: hidden;
+}
+
+.reveal section.kcp-platform-layout-slide .kcp-platform-provider-box .content-split-box-badge {
+  width: 2.45rem;
+  height: 2.45rem;
+}
+
+.reveal section.kcp-platform-layout-slide .kcp-platform-provider-badge {
+  width: 72%;
+  height: 72%;
+  object-fit: contain;
+}
+
+.reveal section.kcp-platform-layout-slide .kcp-platform-provider-badge--light {
+  display: none;
+}
+
+:root[data-theme="light"] .reveal section.kcp-platform-layout-slide .kcp-platform-provider-badge--dark {
+  display: none;
+}
+
+:root[data-theme="light"] .reveal section.kcp-platform-layout-slide .kcp-platform-provider-badge--light {
+  display: block;
+}
+
+.kcp-platform-provider-title {
+  position: absolute;
+  left: 3rem;
+  top: 0.38rem;
+  z-index: 2;
+  color: var(--capgemini-white);
+  font-family: var(--font-display);
+  font-size: 0.52em;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.reveal section.kcp-platform-layout-slide .kcp-platform-provider-grid {
+  grid-template-columns: repeat(5, 1.42rem);
+  grid-template-rows: repeat(3, 1.42rem);
+  gap: 0.38rem;
+  margin-top: 1.05rem;
+}
+
+.reveal section.kcp-platform-layout-slide .kcp-platform-provider-grid > :first-child {
+  grid-column: auto;
+}
+
+.reveal section.kcp-platform-layout-slide .kcp-platform-provider-grid img {
+  width: 1.42rem;
+  height: 1.42rem;
+  object-fit: contain;
+}
+
+:root[data-theme="light"] .kcp-platform-provider-title {
+  color: var(--capgemini-dark-blue);
+}
+
 @media (max-width: 900px) {
   .reveal {
     font-size: 34.5px;
