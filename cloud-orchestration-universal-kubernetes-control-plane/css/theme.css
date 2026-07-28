@@ -3782,8 +3782,8 @@ body {
 }
 
 .kcp-platform-ucp-icon-row img[alt="Port.io"] {
-  width: 8.4rem;
-  height: 4.2rem;
+  width: 12.8rem;
+  height: 5.15rem;
   filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.32));
 }
 
@@ -3811,9 +3811,13 @@ body {
 }
 
 .kcp-platform-dashed-line {
-  fill: none;
   stroke: var(--capgemini-yellow);
 }
+
+.kcp-platform-grey-line {
+  stroke: #4c525b;
+}
+
 
 .kcp-platform-layout-ucp-title {
   display: none;
