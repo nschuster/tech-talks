@@ -2337,10 +2337,32 @@ function renderKcpPlatformConnections() {
   const dx = githubFileTarget.x - argoDotPoint.x;
   const dy = githubFileTarget.y - argoDotPoint.y;
   const length = Math.max(1, Math.hypot(dx, dy));
+  const trimRatio = 0.08;
+  const ovalStart = {
+    x: argoDotPoint.x + dx * trimRatio,
+    y: argoDotPoint.y + dy * trimRatio,
+  };
+  const ovalEnd = {
+    x: githubFileTarget.x - dx * trimRatio,
+    y: githubFileTarget.y - dy * trimRatio,
+  };
   const normal = { x: -dy / length, y: dx / length };
   const radius = Math.min(150, Math.max(112, length * 0.31));
   const controlScale = 0.44;
-  const makeSemicircle = (side) => `M ${argoDotPoint.x.toFixed(2)} ${argoDotPoint.y.toFixed(2)} C ${(argoDotPoint.x + dx * controlScale + normal.x * radius * side).toFixed(2)} ${(argoDotPoint.y + dy * controlScale + normal.y * radius * side).toFixed(2)}, ${(githubFileTarget.x - dx * controlScale + normal.x * radius * side).toFixed(2)} ${(githubFileTarget.y - dy * controlScale + normal.y * radius * side).toFixed(2)}, ${githubFileTarget.x.toFixed(2)} ${githubFileTarget.y.toFixed(2)}`;
+  const endSeparation = 18;
+  const makeSemicircle = (side) => {
+    const sideStart = {
+      x: ovalStart.x + normal.x * endSeparation * side,
+      y: ovalStart.y + normal.y * endSeparation * side,
+    };
+    const sideEnd = {
+      x: ovalEnd.x + normal.x * endSeparation * side,
+      y: ovalEnd.y + normal.y * endSeparation * side,
+    };
+    const sideDx = sideEnd.x - sideStart.x;
+    const sideDy = sideEnd.y - sideStart.y;
+    return `M ${sideStart.x.toFixed(2)} ${sideStart.y.toFixed(2)} C ${(sideStart.x + sideDx * controlScale + normal.x * radius * side).toFixed(2)} ${(sideStart.y + sideDy * controlScale + normal.y * radius * side).toFixed(2)}, ${(sideEnd.x - sideDx * controlScale + normal.x * radius * side).toFixed(2)} ${(sideEnd.y - sideDy * controlScale + normal.y * radius * side).toFixed(2)}, ${sideEnd.x.toFixed(2)} ${sideEnd.y.toFixed(2)}`;
+  };
   [
     {
       id: 'argo-dot-to-github-oval-clockwise',
