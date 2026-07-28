@@ -3800,10 +3800,15 @@ body {
 }
 
 .reveal section.kcp-platform-layout-slide .kcp-platform-provider-grid {
-  grid-template-columns: repeat(5, 1.92rem);
-  grid-template-rows: repeat(3, 1.92rem);
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  grid-template-columns: repeat(5, 2.9rem);
+  grid-template-rows: repeat(3, 2.9rem);
   gap: 0.5rem;
-  margin-top: 1.7rem;
+  margin: 0;
+  transform: translate(-50%, -50%);
 }
 
 .reveal section.kcp-platform-layout-slide .kcp-platform-provider-grid > :first-child {
@@ -3811,8 +3816,8 @@ body {
 }
 
 .reveal section.kcp-platform-layout-slide .kcp-platform-provider-grid img {
-  width: 1.92rem;
-  height: 1.92rem;
+  width: 2.9rem;
+  height: 2.9rem;
   object-fit: contain;
 }
 
