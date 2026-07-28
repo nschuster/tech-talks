@@ -3675,7 +3675,7 @@ body {
 .kcp-platform-layout-primary-row--lower {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1.8rem;
+  gap: 6.4rem;
   align-items: end;
 }
 
@@ -3750,6 +3750,67 @@ body {
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.08),
     0 16px 34px rgba(0, 0, 0, 0.24);
+}
+
+.kcp-platform-ucp-icon-row {
+  position: absolute;
+  left: 4.4rem;
+  right: 4.4rem;
+  top: 54%;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.kcp-platform-ucp-icon-row img {
+  width: 5.15rem;
+  height: 5.15rem;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.32));
+}
+
+.kcp-platform-ucp-icon-row img[alt="Backstage"] {
+  filter: none;
+}
+
+.kcp-platform-connection-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.kcp-platform-static-double-line {
+  fill: none;
+  stroke: var(--capgemini-blue);
+  stroke-width: 5;
+  stroke-linecap: square;
+  opacity: 0.96;
+}
+
+.kcp-platform-static-line-square {
+  fill: var(--capgemini-blue);
+  stroke: var(--capgemini-white);
+  stroke-width: 2;
+}
+
+.kcp-platform-dashed-line {
+  fill: none;
+  stroke: var(--capgemini-yellow);
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-dasharray: 16 14;
+  animation: kcp-platform-dash-flow 1.7s linear infinite;
+}
+
+@keyframes kcp-platform-dash-flow {
+  to { stroke-dashoffset: -60; }
 }
 
 .kcp-platform-layout-ucp-title {

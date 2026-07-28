@@ -130,6 +130,9 @@ let threeColumnLeaderLineTimeout;
 let kcpBootstrapLeaderLineLayer;
 let kcpBootstrapLeaderLineFrame;
 let kcpBootstrapLeaderLineTimeout;
+let kcpPlatformConnectionLayer;
+let kcpPlatformConnectionFrame;
+let kcpPlatformConnectionTimeout;
 let controlsEventLine;
 let menuAuthorLine;
 const contentSplitDrawnXrLeaderIdsBySlide = new WeakMap();
@@ -2190,6 +2193,104 @@ function requestKcpBootstrapLeaderLineUpdate() {
   }, 420);
 }
 
+function clearKcpPlatformConnections() {
+  kcpPlatformConnectionLayer?.remove();
+  kcpPlatformConnectionLayer = undefined;
+}
+
+function renderKcpPlatformConnections() {
+  const slide = getCurrentSlide();
+  if (!slide?.classList.contains('kcp-platform-layout-slide')) {
+    clearKcpPlatformConnections();
+    return;
+  }
+  const grid = slide.querySelector('.kcp-platform-layout-grid');
+  const ucpBox = slide.querySelector('.kcp-platform-layout-ucp-box');
+  const lowerBoxes = Array.from(slide.querySelectorAll('.kcp-platform-lower-box'));
+  const githubBox = lowerBoxes.find((box) => box.querySelector('.kcp-platform-provider-title')?.textContent.trim() === 'GitHub');
+  const backstageBox = lowerBoxes.find((box) => box.querySelector('.kcp-platform-provider-title')?.textContent.trim() === 'Backstage');
+  if (!grid || !ucpBox || !githubBox || !backstageBox) {
+    clearKcpPlatformConnections();
+    return;
+  }
+
+  if (!kcpPlatformConnectionLayer || kcpPlatformConnectionLayer.parentElement !== grid) {
+    clearKcpPlatformConnections();
+    kcpPlatformConnectionLayer = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    kcpPlatformConnectionLayer.classList.add('kcp-platform-connection-layer');
+    kcpPlatformConnectionLayer.setAttribute('aria-hidden', 'true');
+    grid.appendChild(kcpPlatformConnectionLayer);
+  }
+
+  const gridRect = grid.getBoundingClientRect();
+  const ucpRect = ucpBox.getBoundingClientRect();
+  const githubRect = githubBox.getBoundingClientRect();
+  const backstageRect = backstageBox.getBoundingClientRect();
+  kcpPlatformConnectionLayer.setAttribute('viewBox', `0 0 ${gridRect.width.toFixed(2)} ${gridRect.height.toFixed(2)}`);
+  kcpPlatformConnectionLayer.setAttribute('width', gridRect.width.toFixed(2));
+  kcpPlatformConnectionLayer.setAttribute('height', gridRect.height.toFixed(2));
+
+  const pt = (x, y) => ({ x: x - gridRect.left, y: y - gridRect.top });
+  const backstageTop = pt(backstageRect.left + backstageRect.width * 0.5, backstageRect.top);
+  const backstageLeft = pt(backstageRect.left, backstageRect.top + backstageRect.height * 0.5);
+  const githubRight = pt(githubRect.right, githubRect.top + githubRect.height * 0.5);
+  const ucpBottom = pt(ucpRect.left + ucpRect.width * 0.5, ucpRect.bottom);
+  const staticOffsets = [-34, 0, 34];
+  const dashedOffsets = [-32, 0, 32];
+  const squareSize = 12;
+
+  kcpPlatformConnectionLayer.replaceChildren();
+  staticOffsets.forEach((offset, index) => {
+    const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    group.dataset.kcpPlatformRoute = `backstage-to-ucp-double-${index + 1}`;
+    const start = { x: backstageTop.x + offset, y: backstageTop.y };
+    const end = { x: ucpBottom.x + offset, y: ucpBottom.y };
+    [-6, 6].forEach((parallelOffset) => {
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.classList.add('kcp-platform-static-double-line');
+      path.setAttribute('d', `M ${start.x.toFixed(2)} ${(start.y + parallelOffset).toFixed(2)} C ${start.x.toFixed(2)} ${(start.y - 120).toFixed(2)}, ${end.x.toFixed(2)} ${(end.y + 120).toFixed(2)}, ${end.x.toFixed(2)} ${(end.y + parallelOffset).toFixed(2)}`);
+      group.appendChild(path);
+    });
+    [start, end].forEach((point) => {
+      const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      rect.classList.add('kcp-platform-static-line-square');
+      rect.setAttribute('x', (point.x - squareSize / 2).toFixed(2));
+      rect.setAttribute('y', (point.y - squareSize / 2).toFixed(2));
+      rect.setAttribute('width', String(squareSize));
+      rect.setAttribute('height', String(squareSize));
+      group.appendChild(rect);
+    });
+    kcpPlatformConnectionLayer.appendChild(group);
+  });
+
+  dashedOffsets.forEach((offset, index) => {
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.classList.add('kcp-platform-dashed-line');
+    path.dataset.kcpPlatformRoute = `backstage-to-github-dashed-${index + 1}`;
+    const start = { x: backstageLeft.x, y: backstageLeft.y + offset };
+    const end = { x: githubRight.x, y: githubRight.y + offset };
+    path.setAttribute('d', `M ${start.x.toFixed(2)} ${start.y.toFixed(2)} C ${(start.x - 90).toFixed(2)} ${start.y.toFixed(2)}, ${(end.x + 90).toFixed(2)} ${end.y.toFixed(2)}, ${end.x.toFixed(2)} ${end.y.toFixed(2)}`);
+    path.style.animationDelay = `${index * -0.28}s`;
+    kcpPlatformConnectionLayer.appendChild(path);
+  });
+}
+
+function requestKcpPlatformConnectionUpdate() {
+  if (kcpPlatformConnectionFrame) window.cancelAnimationFrame(kcpPlatformConnectionFrame);
+  if (kcpPlatformConnectionTimeout) window.clearTimeout(kcpPlatformConnectionTimeout);
+  kcpPlatformConnectionFrame = window.requestAnimationFrame(() => {
+    kcpPlatformConnectionFrame = window.requestAnimationFrame(() => {
+      kcpPlatformConnectionFrame = undefined;
+      renderKcpPlatformConnections();
+    });
+  });
+  window.setTimeout(renderKcpPlatformConnections, 160);
+  kcpPlatformConnectionTimeout = window.setTimeout(() => {
+    kcpPlatformConnectionTimeout = undefined;
+    renderKcpPlatformConnections();
+  }, 420);
+}
+
 function updateCicdOverlayVideos() {
   document.querySelectorAll('.cicd-static-pipeline-video-overlay, .cicd-desired-state-background-video, .limitless-potential-background-video').forEach((video) => {
     if (!(video instanceof HTMLVideoElement)) return;
@@ -2218,6 +2319,7 @@ deck.on('ready', () => {
   requestImageColumnLeaderLineUpdate();
   requestThreeColumnLeaderLineUpdate();
   requestKcpBootstrapLeaderLineUpdate();
+  requestKcpPlatformConnectionUpdate();
   requestContentSplitConeUpdate();
   window.setTimeout(() => {
     updateMenuAuthorLine();
@@ -2225,6 +2327,7 @@ deck.on('ready', () => {
     requestImageColumnLeaderLineUpdate();
     requestThreeColumnLeaderLineUpdate();
     requestKcpBootstrapLeaderLineUpdate();
+    requestKcpPlatformConnectionUpdate();
     requestContentSplitConeUpdate();
   }, 650);
 });
@@ -2237,6 +2340,7 @@ deck.on('slidechanged', () => {
   requestImageColumnLeaderLineUpdate();
   requestThreeColumnLeaderLineUpdate();
   requestKcpBootstrapLeaderLineUpdate();
+  requestKcpPlatformConnectionUpdate();
   requestContentSplitConeUpdate();
 });
 deck.on('fragmentshown', () => {
@@ -2244,6 +2348,7 @@ deck.on('fragmentshown', () => {
   requestImageColumnLeaderLineUpdate();
   requestThreeColumnLeaderLineUpdate();
   requestKcpBootstrapLeaderLineUpdate();
+  requestKcpPlatformConnectionUpdate();
   requestContentSplitConeUpdate();
 });
 deck.on('fragmenthidden', () => {
@@ -2251,6 +2356,7 @@ deck.on('fragmenthidden', () => {
   requestImageColumnLeaderLineUpdate();
   requestThreeColumnLeaderLineUpdate();
   requestKcpBootstrapLeaderLineUpdate();
+  requestKcpPlatformConnectionUpdate();
   requestContentSplitConeUpdate();
 });
 deck.on('resize', () => {
@@ -2258,6 +2364,7 @@ deck.on('resize', () => {
   requestImageColumnLeaderLineUpdate();
   requestThreeColumnLeaderLineUpdate();
   requestKcpBootstrapLeaderLineUpdate();
+  requestKcpPlatformConnectionUpdate();
   requestContentSplitConeUpdate();
 });
 deck.on('overviewshown', () => {
@@ -2265,12 +2372,14 @@ deck.on('overviewshown', () => {
   clearImageColumnLeaderLines();
   clearThreeColumnLeaderLines();
   clearKcpBootstrapLeaderLines();
+  clearKcpPlatformConnections();
 });
 deck.on('overviewhidden', () => {
   requestCicdLeaderLineUpdate();
   requestImageColumnLeaderLineUpdate();
   requestThreeColumnLeaderLineUpdate();
   requestKcpBootstrapLeaderLineUpdate();
+  requestKcpPlatformConnectionUpdate();
   requestContentSplitConeUpdate();
 });
 window.addEventListener('resize', () => {
@@ -2278,6 +2387,7 @@ window.addEventListener('resize', () => {
   requestImageColumnLeaderLineUpdate();
   requestThreeColumnLeaderLineUpdate();
   requestKcpBootstrapLeaderLineUpdate();
+  requestKcpPlatformConnectionUpdate();
   requestContentSplitConeUpdate();
 });
 document.addEventListener('menu-ready', () => updateMenuThemeButton(root.dataset.theme || THEME_OPTIONS[0].id));
