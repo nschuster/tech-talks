@@ -2210,12 +2210,13 @@ function renderKcpPlatformConnections() {
   const argoIcon = slide.querySelector('.kcp-platform-ucp-icon-row img[alt="Argo CD"]');
   const lowerBoxes = Array.from(slide.querySelectorAll('.kcp-platform-lower-box'));
   const githubBox = lowerBoxes.find((box) => box.querySelector('.kcp-platform-provider-title')?.textContent.trim() === 'GitHub');
+  const githubFileRow = githubBox?.querySelector('.kcp-platform-github-file-row');
   const backstageBox = lowerBoxes.find((box) => ['Backstage', 'Port.io'].includes(box.querySelector('.kcp-platform-provider-title')?.textContent.trim()));
   const providerBox = (name) => slide.querySelector(`.content-split-target-box--${name}`);
   const awsBadge = providerBox('aws')?.querySelector('.content-split-box-badge');
   const gcpBadge = providerBox('gcp')?.querySelector('.content-split-box-badge');
   const azureBadge = providerBox('azure')?.querySelector('.content-split-box-badge');
-  if (!grid || !ucpBox || !argoIcon || !githubBox || !backstageBox || !awsBadge || !gcpBadge || !azureBadge) {
+  if (!grid || !ucpBox || !argoIcon || !githubBox || !githubFileRow || !backstageBox || !awsBadge || !gcpBadge || !azureBadge) {
     clearKcpPlatformConnections();
     return;
   }
@@ -2232,6 +2233,7 @@ function renderKcpPlatformConnections() {
   const argoRect = argoIcon.getBoundingClientRect();
   const ucpRect = ucpBox.getBoundingClientRect();
   const githubRect = githubBox.getBoundingClientRect();
+  const githubFileRowRect = githubFileRow.getBoundingClientRect();
   const backstageRect = backstageBox.getBoundingClientRect();
   const awsBadgeRect = awsBadge.getBoundingClientRect();
   const gcpBadgeRect = gcpBadge.getBoundingClientRect();
@@ -2249,6 +2251,7 @@ function renderKcpPlatformConnections() {
   const backstageTop = pt(backstageRect.left + backstageRect.width * 0.5, backstageRect.top);
   const backstageLeft = pt(backstageRect.left, backstageRect.top + backstageRect.height * 0.5);
   const githubRight = pt(githubRect.right, githubRect.top + githubRect.height * 0.5);
+  const githubFileTarget = pt(githubFileRowRect.left + githubFileRowRect.width * 0.5, githubFileRowRect.top + githubFileRowRect.height * 0.52);
   const ucpBottom = pt(ucpRect.left + ucpRect.width * 0.5, ucpRect.bottom);
   const ucpRight = pt(ucpRect.right, ucpRect.top + ucpRect.height * 0.5);
   const awsBadgeLeft = pt(awsBadgeRect.left, awsBadgeRect.top + awsBadgeRect.height * 0.5);
@@ -2328,6 +2331,32 @@ function renderKcpPlatformConnections() {
     dot.setAttribute('cy', providerStart.y.toFixed(2));
     dot.setAttribute('r', '13');
     kcpPlatformConnectionLayer.appendChild(dot);
+  });
+
+  const argoDotPoint = { x: argoCenter.x, y: providerStart.y };
+  const ovalWidth = Math.max(330, Math.abs(githubFileTarget.x - argoDotPoint.x) + 130);
+  const ovalHeight = Math.max(220, Math.abs(githubFileTarget.y - argoDotPoint.y) + 120);
+  [
+    {
+      id: 'argo-dot-to-github-oval-clockwise',
+      d: `M ${argoDotPoint.x.toFixed(2)} ${argoDotPoint.y.toFixed(2)} C ${(argoDotPoint.x + ovalWidth * 0.18).toFixed(2)} ${(argoDotPoint.y - ovalHeight * 0.62).toFixed(2)}, ${(githubFileTarget.x - ovalWidth * 0.84).toFixed(2)} ${(githubFileTarget.y + ovalHeight * 0.18).toFixed(2)}, ${(githubFileTarget.x - 42).toFixed(2)} ${(githubFileTarget.y - 38).toFixed(2)} C ${(githubFileTarget.x + ovalWidth * 0.58).toFixed(2)} ${(githubFileTarget.y + ovalHeight * 0.08).toFixed(2)}, ${(argoDotPoint.x + ovalWidth * 0.62).toFixed(2)} ${(argoDotPoint.y + ovalHeight * 0.56).toFixed(2)}, ${githubFileTarget.x.toFixed(2)} ${githubFileTarget.y.toFixed(2)}`,
+      delay: '-0.12s',
+      reverse: false,
+    },
+    {
+      id: 'argo-dot-to-github-oval-counter',
+      d: `M ${argoDotPoint.x.toFixed(2)} ${argoDotPoint.y.toFixed(2)} C ${(argoDotPoint.x + ovalWidth * 0.48).toFixed(2)} ${(argoDotPoint.y + ovalHeight * 0.68).toFixed(2)}, ${(githubFileTarget.x - ovalWidth * 0.62).toFixed(2)} ${(githubFileTarget.y - ovalHeight * 0.20).toFixed(2)}, ${(githubFileTarget.x + 42).toFixed(2)} ${(githubFileTarget.y + 38).toFixed(2)} C ${(githubFileTarget.x - ovalWidth * 0.58).toFixed(2)} ${(githubFileTarget.y - ovalHeight * 0.12).toFixed(2)}, ${(argoDotPoint.x + ovalWidth * 0.18).toFixed(2)} ${(argoDotPoint.y - ovalHeight * 0.58).toFixed(2)}, ${githubFileTarget.x.toFixed(2)} ${githubFileTarget.y.toFixed(2)}`,
+      delay: '-0.58s',
+      reverse: true,
+    },
+  ].forEach((route) => {
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    line.classList.add('cicd-pipeline-line', 'cicd-pipeline-line-path', 'kcp-platform-dashed-line', 'kcp-platform-oval-route');
+    line.dataset.kcpPlatformRoute = route.id;
+    line.setAttribute('d', route.d);
+    line.style.animationDelay = route.delay;
+    if (route.reverse) line.style.animationDirection = 'reverse';
+    kcpPlatformConnectionLayer.appendChild(line);
   });
 
   [
