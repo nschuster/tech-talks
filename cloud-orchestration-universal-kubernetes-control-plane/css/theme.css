@@ -3745,28 +3745,31 @@ body {
 
 .kcp-platform-layout-column--right {
   display: grid;
-  grid-template-rows: 30fr 30fr 30fr;
+  grid-template-rows: 1fr 1fr 1fr;
   align-content: stretch;
-  gap: 1.45rem;
+  align-items: stretch;
+  gap: 0;
 }
 
 .reveal section.kcp-platform-layout-slide .kcp-platform-provider-box {
   flex: none;
   width: 100%;
-  height: 100%;
+  height: auto;
   min-height: 0;
-  padding: 0.82rem 0.5rem 0.52rem;
+  align-self: stretch;
+  margin: 0;
+  padding: 0.52rem 0.35rem 0.28rem;
   overflow: hidden;
 }
 
 .reveal section.kcp-platform-layout-slide .kcp-platform-provider-box .content-split-box-badge {
-  width: 2.45rem;
-  height: 2.45rem;
+  width: 3.35rem;
+  height: 3.35rem;
 }
 
 .reveal section.kcp-platform-layout-slide .kcp-platform-provider-badge {
-  width: 72%;
-  height: 72%;
+  width: 78%;
+  height: 78%;
   object-fit: contain;
 }
 
@@ -3784,12 +3787,12 @@ body {
 
 .kcp-platform-provider-title {
   position: absolute;
-  left: 3rem;
-  top: 0.38rem;
+  left: 4.05rem;
+  top: 0.5rem;
   z-index: 2;
   color: var(--capgemini-white);
   font-family: var(--font-display);
-  font-size: 0.52em;
+  font-size: 0.72em;
   font-weight: 800;
   line-height: 1;
   letter-spacing: 0.08em;
@@ -3797,10 +3800,10 @@ body {
 }
 
 .reveal section.kcp-platform-layout-slide .kcp-platform-provider-grid {
-  grid-template-columns: repeat(5, 1.42rem);
-  grid-template-rows: repeat(3, 1.42rem);
-  gap: 0.38rem;
-  margin-top: 1.05rem;
+  grid-template-columns: repeat(5, 1.92rem);
+  grid-template-rows: repeat(3, 1.92rem);
+  gap: 0.5rem;
+  margin-top: 1.7rem;
 }
 
 .reveal section.kcp-platform-layout-slide .kcp-platform-provider-grid > :first-child {
@@ -3808,8 +3811,8 @@ body {
 }
 
 .reveal section.kcp-platform-layout-slide .kcp-platform-provider-grid img {
-  width: 1.42rem;
-  height: 1.42rem;
+  width: 1.92rem;
+  height: 1.92rem;
   object-fit: contain;
 }
 
