@@ -132,7 +132,7 @@ let kcpBootstrapLeaderLineFrame;
 let kcpBootstrapLeaderLineTimeout;
 let kcpPlatformConnectionLayer;
 let kcpPlatformConnectionFrame;
-let kcpPlatformConnectionTimeout;
+let kcpPlatformConnectionSignature;
 let controlsEventLine;
 let menuAuthorLine;
 const contentSplitDrawnXrLeaderIdsBySlide = new WeakMap();
@@ -2196,6 +2196,7 @@ function requestKcpBootstrapLeaderLineUpdate() {
 function clearKcpPlatformConnections() {
   kcpPlatformConnectionLayer?.remove();
   kcpPlatformConnectionLayer = undefined;
+  kcpPlatformConnectionSignature = undefined;
 }
 
 function renderKcpPlatformConnections() {
@@ -2209,7 +2210,7 @@ function renderKcpPlatformConnections() {
   const ucpIcons = Array.from(slide.querySelectorAll('.kcp-platform-ucp-icon-row img'));
   const argoIcon = slide.querySelector('.kcp-platform-ucp-icon-row img[alt="Argo CD"]');
   const lowerBoxes = Array.from(slide.querySelectorAll('.kcp-platform-lower-box'));
-  const githubBox = lowerBoxes.find((box) => box.querySelector('.kcp-platform-provider-title')?.textContent.trim() === 'GitHub');
+  const githubBox = slide.querySelector('.kcp-platform-lower-box[aria-label="GitHub source control"]');
   const githubFileRow = githubBox?.querySelector('.kcp-platform-github-file-row');
   const backstageBox = lowerBoxes.find((box) => ['Backstage', 'Port.io'].includes(box.querySelector('.kcp-platform-provider-title')?.textContent.trim()));
   const providerBox = (name) => slide.querySelector(`.content-split-target-box--${name}`);
@@ -2238,6 +2239,23 @@ function renderKcpPlatformConnections() {
   const awsBadgeRect = awsBadge.getBoundingClientRect();
   const gcpBadgeRect = gcpBadge.getBoundingClientRect();
   const azureBadgeRect = azureBadge.getBoundingClientRect();
+  const geometrySignature = [
+    gridRect,
+    argoRect,
+    ucpRect,
+    githubRect,
+    githubFileRowRect,
+    backstageRect,
+    awsBadgeRect,
+    gcpBadgeRect,
+    azureBadgeRect,
+  ].flatMap((rect) => [rect.left, rect.top, rect.width, rect.height])
+    .map((value) => value.toFixed(2))
+    .join('|');
+  if (kcpPlatformConnectionSignature === geometrySignature && kcpPlatformConnectionLayer.childElementCount > 0) {
+    return;
+  }
+  kcpPlatformConnectionSignature = geometrySignature;
   kcpPlatformConnectionLayer.setAttribute('viewBox', `0 0 ${gridRect.width.toFixed(2)} ${gridRect.height.toFixed(2)}`);
   kcpPlatformConnectionLayer.setAttribute('width', gridRect.width.toFixed(2));
   kcpPlatformConnectionLayer.setAttribute('height', gridRect.height.toFixed(2));
@@ -2377,8 +2395,9 @@ function renderKcpPlatformConnections() {
     y: githubFileTarget.y - dy * trimRatio,
   };
   const normal = { x: -dy / length, y: dx / length };
-  const radius = Math.min(124, Math.max(112, length * 0.26));
   const endSeparation = 24;
+  const ovalWidth = 200;
+  const radius = ovalWidth * 0.5 - endSeparation;
   const controlInset = length * 0.1;
   const makeSemicircle = (side, reverse = false) => {
     const sideStart = {
@@ -2458,18 +2477,12 @@ function renderKcpPlatformConnections() {
 
 function requestKcpPlatformConnectionUpdate() {
   if (kcpPlatformConnectionFrame) window.cancelAnimationFrame(kcpPlatformConnectionFrame);
-  if (kcpPlatformConnectionTimeout) window.clearTimeout(kcpPlatformConnectionTimeout);
   kcpPlatformConnectionFrame = window.requestAnimationFrame(() => {
     kcpPlatformConnectionFrame = window.requestAnimationFrame(() => {
       kcpPlatformConnectionFrame = undefined;
       renderKcpPlatformConnections();
     });
   });
-  window.setTimeout(renderKcpPlatformConnections, 160);
-  kcpPlatformConnectionTimeout = window.setTimeout(() => {
-    kcpPlatformConnectionTimeout = undefined;
-    renderKcpPlatformConnections();
-  }, 420);
 }
 
 function updateCicdOverlayVideos() {

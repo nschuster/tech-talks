@@ -3941,6 +3941,7 @@ body {
   z-index: 7;
   padding-right: 0.42rem;
   background: rgba(4, 13, 34, 0.96);
+  text-transform: none;
 }
 
 .reveal section.kcp-platform-layout-slide .kcp-platform-provider-grid {
