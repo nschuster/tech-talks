@@ -4067,6 +4067,65 @@ body {
   color: var(--capgemini-light-blue) !important;
 }
 
+.capgemini-image-split-copy-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-content: start;
+  gap: 3rem;
+  width: 100%;
+  margin-top: 2.35rem;
+  flex: 1 1 auto;
+}
+
+.capgemini-image-split-passage {
+  min-width: 0;
+  color: var(--capgemini-white);
+}
+
+.reveal section.capgemini-image-split-slide .capgemini-image-split-passage h3 {
+  margin: 0 0 0.7rem;
+  color: var(--capgemini-white);
+  font-family: var(--font-display);
+  font-size: 0.68em;
+  font-weight: 700;
+  line-height: 1.08;
+}
+
+.reveal section.capgemini-image-split-slide .capgemini-image-split-passage p {
+  max-width: 100%;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 0.48em;
+  font-weight: 400;
+  line-height: 1.42;
+}
+
+.capgemini-image-split-ribbon {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 5.4rem;
+  margin-top: 1.5rem;
+  padding: 1rem 4.5rem;
+  flex: none;
+  clip-path: polygon(
+    0 50%,
+    3rem 0,
+    calc(100% - 3rem) 0,
+    100% 50%,
+    calc(100% - 3rem) 100%,
+    3rem 100%
+  );
+  background: var(--capgemini-gradient-element);
+  color: var(--capgemini-white);
+  font-size: 0.58em;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-align: center;
+}
+
 :root[data-theme="light"] .kcp-platform-provider-title {
   color: var(--capgemini-dark-blue);
 }
