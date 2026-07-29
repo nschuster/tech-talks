@@ -2252,7 +2252,7 @@ function renderKcpPlatformConnections() {
   const backstageLeft = pt(backstageRect.left, backstageRect.top + backstageRect.height * 0.5);
   const githubRight = pt(githubRect.right, githubRect.top + githubRect.height * 0.5);
   const githubFileTarget = pt(
-    githubFileRowRect.left + githubFileRowRect.width * 0.68,
+    argoRect.left + argoRect.width * 0.5,
     githubFileRowRect.top - Math.max(20, githubRect.height * 0.07)
   );
   const ucpBottom = pt(ucpRect.left + ucpRect.width * 0.5, ucpRect.bottom);
@@ -2377,7 +2377,7 @@ function renderKcpPlatformConnections() {
     y: githubFileTarget.y - dy * trimRatio,
   };
   const normal = { x: -dy / length, y: dx / length };
-  const radius = Math.min(150, Math.max(112, length * 0.31));
+  const radius = Math.min(124, Math.max(112, length * 0.26));
   const endSeparation = 24;
   const controlInset = length * 0.1;
   const makeSemicircle = (side, reverse = false) => {
