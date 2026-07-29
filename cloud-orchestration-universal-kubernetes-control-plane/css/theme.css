@@ -3836,11 +3836,36 @@ body {
   transform: translateY(-40%);
 }
 
-.kcp-platform-github-file-row img {
+.kcp-platform-github-file {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 4.8rem;
+  height: 5.7rem;
+}
+
+.kcp-platform-github-file img {
   width: 4.8rem;
   height: 5.7rem;
   object-fit: contain;
   filter: invert(1) brightness(1.35) drop-shadow(0 8px 14px rgba(0, 0, 0, 0.34));
+}
+
+.kcp-platform-github-file-label {
+  position: absolute;
+  left: 50%;
+  top: 54%;
+  z-index: 1;
+  color: var(--capgemini-white);
+  font-family: var(--font-display);
+  font-size: 0.31em;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 0.045em;
+  text-shadow: 0 2px 5px rgba(4, 13, 34, 0.96);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
 }
 
 .kcp-platform-layout-ucp-title {

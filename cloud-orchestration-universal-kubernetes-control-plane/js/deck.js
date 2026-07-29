@@ -2251,7 +2251,10 @@ function renderKcpPlatformConnections() {
   const backstageTop = pt(backstageRect.left + backstageRect.width * 0.5, backstageRect.top);
   const backstageLeft = pt(backstageRect.left, backstageRect.top + backstageRect.height * 0.5);
   const githubRight = pt(githubRect.right, githubRect.top + githubRect.height * 0.5);
-  const githubFileTarget = pt(githubFileRowRect.left + githubFileRowRect.width * 0.5, githubFileRowRect.top + githubFileRowRect.height * 0.52);
+  const githubFileTarget = pt(
+    githubFileRowRect.left + githubFileRowRect.width * 0.68,
+    githubFileRowRect.top - Math.max(20, githubRect.height * 0.07)
+  );
   const ucpBottom = pt(ucpRect.left + ucpRect.width * 0.5, ucpRect.bottom);
   const ucpRight = pt(ucpRect.right, ucpRect.top + ucpRect.height * 0.5);
   const awsBadgeLeft = pt(awsBadgeRect.left, awsBadgeRect.top + awsBadgeRect.height * 0.5);
@@ -2260,24 +2263,50 @@ function renderKcpPlatformConnections() {
   const staticOffsets = [-34, 0, 34];
   const dashedOffsets = [-32, 0, 32];
   const squareSize = 18;
-  const arrowTipCompensation = 6;
+  const arrowTipCompensation = 11.25;
 
   kcpPlatformConnectionLayer.replaceChildren();
   const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-  const yellowMarker = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
-  yellowMarker.setAttribute('id', 'kcp-platform-arrow2-yellow');
-  yellowMarker.setAttribute('viewBox', '-8 -8 16 16');
-  yellowMarker.setAttribute('refX', '-2');
-  yellowMarker.setAttribute('refY', '0');
-  yellowMarker.setAttribute('markerWidth', '30');
-  yellowMarker.setAttribute('markerHeight', '30');
-  yellowMarker.setAttribute('orient', 'auto');
-  yellowMarker.setAttribute('markerUnits', 'userSpaceOnUse');
-  const arrowPath = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-  arrowPath.setAttribute('points', '-4,-8 4,0 -4,8 -7,5 -2,0 -7,-5');
-  arrowPath.setAttribute('fill', 'var(--capgemini-yellow)');
-  yellowMarker.appendChild(arrowPath);
-  defs.appendChild(yellowMarker);
+  const addArrow2Marker = (id, fill) => {
+    const marker = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
+    marker.setAttribute('id', id);
+    marker.setAttribute('viewBox', '-8 -8 16 16');
+    marker.setAttribute('refX', '-2');
+    marker.setAttribute('refY', '0');
+    marker.setAttribute('markerWidth', '30');
+    marker.setAttribute('markerHeight', '30');
+    marker.setAttribute('orient', 'auto');
+    marker.setAttribute('markerUnits', 'userSpaceOnUse');
+    const arrowPath = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+    arrowPath.setAttribute('points', '-4,-8 4,0 -4,8 -7,5 -2,0 -7,-5');
+    arrowPath.setAttribute('fill', fill);
+    marker.appendChild(arrowPath);
+    defs.appendChild(marker);
+  };
+  addArrow2Marker('kcp-platform-arrow2-yellow', 'var(--capgemini-yellow)');
+  addArrow2Marker('kcp-platform-arrow2-grey', '#4c525b');
+
+  const betweenBoxesClip = document.createElementNS('http://www.w3.org/2000/svg', 'clipPath');
+  betweenBoxesClip.setAttribute('id', 'kcp-platform-between-boxes-clip');
+  betweenBoxesClip.setAttribute('clipPathUnits', 'userSpaceOnUse');
+  const betweenBoxesMask = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  const relativeRect = (rect) => ({
+    left: rect.left - gridRect.left,
+    top: rect.top - gridRect.top,
+    right: rect.right - gridRect.left,
+    bottom: rect.bottom - gridRect.top,
+  });
+  const ucpBounds = relativeRect(ucpRect);
+  const githubBounds = relativeRect(githubRect);
+  betweenBoxesMask.setAttribute('d', [
+    `M 0 0 H ${gridRect.width.toFixed(2)} V ${gridRect.height.toFixed(2)} H 0 Z`,
+    `M ${ucpBounds.left.toFixed(2)} ${ucpBounds.top.toFixed(2)} H ${ucpBounds.right.toFixed(2)} V ${ucpBounds.bottom.toFixed(2)} H ${ucpBounds.left.toFixed(2)} Z`,
+    `M ${githubBounds.left.toFixed(2)} ${githubBounds.top.toFixed(2)} H ${githubBounds.right.toFixed(2)} V ${githubBounds.bottom.toFixed(2)} H ${githubBounds.left.toFixed(2)} Z`,
+  ].join(' '));
+  betweenBoxesMask.setAttribute('fill-rule', 'evenodd');
+  betweenBoxesMask.setAttribute('clip-rule', 'evenodd');
+  betweenBoxesClip.appendChild(betweenBoxesMask);
+  defs.appendChild(betweenBoxesClip);
   kcpPlatformConnectionLayer.appendChild(defs);
   staticOffsets.forEach((offset, index) => {
     const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
@@ -2337,6 +2366,7 @@ function renderKcpPlatformConnections() {
   const dx = githubFileTarget.x - argoDotPoint.x;
   const dy = githubFileTarget.y - argoDotPoint.y;
   const length = Math.max(1, Math.hypot(dx, dy));
+  const axis = { x: dx / length, y: dy / length };
   const trimRatio = 0.08;
   const ovalStart = {
     x: argoDotPoint.x + dx * trimRatio,
@@ -2348,8 +2378,9 @@ function renderKcpPlatformConnections() {
   };
   const normal = { x: -dy / length, y: dx / length };
   const radius = Math.min(150, Math.max(112, length * 0.31));
-  const endSeparation = 18;
-  const makeSemicircle = (side) => {
+  const endSeparation = 24;
+  const controlInset = length * 0.1;
+  const makeSemicircle = (side, reverse = false) => {
     const sideStart = {
       x: ovalStart.x + normal.x * endSeparation * side,
       y: ovalStart.y + normal.y * endSeparation * side,
@@ -2359,13 +2390,16 @@ function renderKcpPlatformConnections() {
       y: ovalEnd.y + normal.y * endSeparation * side,
     };
     const startControl = {
-      x: sideStart.x + normal.x * radius * side,
-      y: sideStart.y + normal.y * radius * side,
+      x: sideStart.x + axis.x * controlInset + normal.x * radius * side,
+      y: sideStart.y + axis.y * controlInset + normal.y * radius * side,
     };
     const endControl = {
-      x: sideEnd.x + normal.x * radius * side,
-      y: sideEnd.y + normal.y * radius * side,
+      x: sideEnd.x - axis.x * controlInset + normal.x * radius * side,
+      y: sideEnd.y - axis.y * controlInset + normal.y * radius * side,
     };
+    if (reverse) {
+      return `M ${sideEnd.x.toFixed(2)} ${sideEnd.y.toFixed(2)} C ${endControl.x.toFixed(2)} ${endControl.y.toFixed(2)}, ${startControl.x.toFixed(2)} ${startControl.y.toFixed(2)}, ${sideStart.x.toFixed(2)} ${sideStart.y.toFixed(2)}`;
+    }
     return `M ${sideStart.x.toFixed(2)} ${sideStart.y.toFixed(2)} C ${startControl.x.toFixed(2)} ${startControl.y.toFixed(2)}, ${endControl.x.toFixed(2)} ${endControl.y.toFixed(2)}, ${sideEnd.x.toFixed(2)} ${sideEnd.y.toFixed(2)}`;
   };
   [
@@ -2373,22 +2407,32 @@ function renderKcpPlatformConnections() {
       id: 'argo-dot-to-github-oval-clockwise',
       d: makeSemicircle(1),
       delay: '-0.12s',
-      reverse: false,
     },
     {
-      id: 'argo-dot-to-github-oval-counter',
-      d: makeSemicircle(-1),
+      id: 'github-to-argo-dot-oval-counter',
+      d: makeSemicircle(-1, true),
       delay: '-0.58s',
-      reverse: true,
     },
   ].forEach((route) => {
-    const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    line.classList.add('cicd-pipeline-line', 'cicd-pipeline-line-path', 'kcp-platform-dashed-line', 'kcp-platform-oval-route');
-    line.dataset.kcpPlatformRoute = route.id;
-    line.setAttribute('d', route.d);
-    line.style.animationDelay = route.delay;
-    if (route.reverse) line.style.animationDirection = 'reverse';
-    kcpPlatformConnectionLayer.appendChild(line);
+    const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    group.dataset.kcpPlatformRoute = route.id;
+
+    const greyLine = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    greyLine.classList.add('cicd-pipeline-line', 'cicd-pipeline-line-path', 'kcp-platform-grey-line', 'kcp-platform-oval-route');
+    greyLine.dataset.kcpPlatformSegment = 'in-box-grey';
+    greyLine.setAttribute('d', route.d);
+    greyLine.setAttribute('marker-end', 'url(#kcp-platform-arrow2-grey)');
+    greyLine.style.animationDelay = route.delay;
+
+    const yellowLine = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    yellowLine.classList.add('cicd-pipeline-line', 'cicd-pipeline-line-path', 'kcp-platform-dashed-line', 'kcp-platform-oval-route');
+    yellowLine.dataset.kcpPlatformSegment = 'between-boxes-yellow';
+    yellowLine.setAttribute('d', route.d);
+    yellowLine.setAttribute('clip-path', 'url(#kcp-platform-between-boxes-clip)');
+    yellowLine.style.animationDelay = route.delay;
+
+    group.append(greyLine, yellowLine);
+    kcpPlatformConnectionLayer.appendChild(group);
   });
 
   [
