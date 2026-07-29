@@ -3814,11 +3814,6 @@ body {
   stroke: var(--capgemini-yellow);
 }
 
-.kcp-platform-oval-route {
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
 .kcp-platform-grey-line {
   stroke: #4c525b;
 }

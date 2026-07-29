@@ -2348,7 +2348,6 @@ function renderKcpPlatformConnections() {
   };
   const normal = { x: -dy / length, y: dx / length };
   const radius = Math.min(150, Math.max(112, length * 0.31));
-  const controlScale = 0.44;
   const endSeparation = 18;
   const makeSemicircle = (side) => {
     const sideStart = {
@@ -2359,9 +2358,15 @@ function renderKcpPlatformConnections() {
       x: ovalEnd.x + normal.x * endSeparation * side,
       y: ovalEnd.y + normal.y * endSeparation * side,
     };
-    const sideDx = sideEnd.x - sideStart.x;
-    const sideDy = sideEnd.y - sideStart.y;
-    return `M ${sideStart.x.toFixed(2)} ${sideStart.y.toFixed(2)} C ${(sideStart.x + sideDx * controlScale + normal.x * radius * side).toFixed(2)} ${(sideStart.y + sideDy * controlScale + normal.y * radius * side).toFixed(2)}, ${(sideEnd.x - sideDx * controlScale + normal.x * radius * side).toFixed(2)} ${(sideEnd.y - sideDy * controlScale + normal.y * radius * side).toFixed(2)}, ${sideEnd.x.toFixed(2)} ${sideEnd.y.toFixed(2)}`;
+    const startControl = {
+      x: sideStart.x + normal.x * radius * side,
+      y: sideStart.y + normal.y * radius * side,
+    };
+    const endControl = {
+      x: sideEnd.x + normal.x * radius * side,
+      y: sideEnd.y + normal.y * radius * side,
+    };
+    return `M ${sideStart.x.toFixed(2)} ${sideStart.y.toFixed(2)} C ${startControl.x.toFixed(2)} ${startControl.y.toFixed(2)}, ${endControl.x.toFixed(2)} ${endControl.y.toFixed(2)}, ${sideEnd.x.toFixed(2)} ${sideEnd.y.toFixed(2)}`;
   };
   [
     {
