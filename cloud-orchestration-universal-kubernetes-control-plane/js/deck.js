@@ -2212,7 +2212,7 @@ function renderKcpPlatformConnections() {
   const lowerBoxes = Array.from(slide.querySelectorAll('.kcp-platform-lower-box'));
   const githubBox = slide.querySelector('.kcp-platform-lower-box[aria-label="GitHub source control"]');
   const githubFileRow = githubBox?.querySelector('.kcp-platform-github-file-row');
-  const backstageBox = lowerBoxes.find((box) => ['Backstage', 'Port.io'].includes(box.querySelector('.kcp-platform-provider-title')?.textContent.trim()));
+  const backstageBox = slide.querySelector('.kcp-platform-lower-box[aria-label="Port.io developer portal"]');
   const providerBox = (name) => slide.querySelector(`.content-split-target-box--${name}`);
   const awsBadge = providerBox('aws')?.querySelector('.content-split-box-badge');
   const gcpBadge = providerBox('gcp')?.querySelector('.content-split-box-badge');
