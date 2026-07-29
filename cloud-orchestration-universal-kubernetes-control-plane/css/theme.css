@@ -3841,13 +3841,13 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 4.8rem;
-  height: 5.7rem;
+  width: 5.5rem;
+  height: 6.5rem;
 }
 
 .kcp-platform-github-file img {
-  width: 4.8rem;
-  height: 5.7rem;
+  width: 5.5rem;
+  height: 6.5rem;
   object-fit: contain;
   filter: invert(1) brightness(1.35) drop-shadow(0 8px 14px rgba(0, 0, 0, 0.34));
 }
@@ -3859,7 +3859,7 @@ body {
   z-index: 1;
   color: var(--capgemini-white);
   font-family: var(--font-display);
-  font-size: 0.31em;
+  font-size: 0.35em;
   font-weight: 900;
   line-height: 1;
   letter-spacing: 0.045em;
@@ -3950,8 +3950,8 @@ body {
 
 .kcp-platform-port-icon-row {
   position: absolute;
-  left: 2.4rem;
-  right: 2.4rem;
+  left: 0.7rem;
+  right: 0.7rem;
   top: 52%;
   z-index: 2;
   display: flex;
@@ -3961,9 +3961,9 @@ body {
 }
 
 .reveal section.kcp-platform-layout-slide .kcp-platform-port-icon-row img {
-  width: 4.35rem;
-  height: 4.35rem;
-  object-fit: contain;
+  width: auto;
+  height: 5rem;
+  flex: none;
   filter: invert(1) brightness(1.35) drop-shadow(0 8px 14px rgba(0, 0, 0, 0.34));
 }
 
@@ -4018,11 +4018,11 @@ body {
   z-index: 1;
   background: linear-gradient(
     90deg,
-    var(--capgemini-blue) 0%,
-    var(--capgemini-blue) 60%,
-    rgba(0, 88, 171, 0.98) 64%,
-    rgba(0, 88, 171, 0.72) 68%,
-    rgba(0, 88, 171, 0) 74%
+    var(--capgemini-dark-blue) 0%,
+    var(--capgemini-dark-blue) 60%,
+    rgba(18, 26, 56, 0.98) 64%,
+    rgba(18, 26, 56, 0.72) 68%,
+    rgba(18, 26, 56, 0) 74%
   );
   pointer-events: none;
 }
@@ -4046,6 +4046,25 @@ body {
 .capgemini-image-split-visual {
   min-width: 0;
   min-height: 0;
+}
+
+.capgemini-image-split-content {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 3rem 3.5rem;
+}
+
+.reveal section.capgemini-image-split-slide .capgemini-image-split-content h2 {
+  max-width: 90%;
+  color: var(--capgemini-white);
+}
+
+.reveal section.capgemini-image-split-slide .capgemini-image-split-content .slide-subtitle {
+  max-width: 90%;
+  color: var(--capgemini-light-blue) !important;
 }
 
 :root[data-theme="light"] .kcp-platform-provider-title {
