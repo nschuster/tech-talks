@@ -314,7 +314,7 @@ body {
   top: var(--limitless-icon-y);
   left: var(--limitless-icon-x);
   z-index: 1;
-  width: min(15.84rem, calc(var(--limitless-left-column) * 0.528));
+  width: min(19.008rem, calc(var(--limitless-left-column) * 0.6336));
   height: auto;
   filter: drop-shadow(0 24px 48px rgba(18, 26, 56, 0.62));
   transform: translate(-50%, -50%);
