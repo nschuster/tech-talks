@@ -182,13 +182,15 @@ function updateMenuThemeButton(theme) {
 }
 
 function formatEventDetails() {
-  const liveDate = new Intl.DateTimeFormat('de-DE', {
+  return `${EVENT_DETAILS.event} · ${formatEventDate()}`;
+}
+
+function formatEventDate() {
+  return new Intl.DateTimeFormat('de-DE', {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric'
   }).format(new Date());
-
-  return `${EVENT_DETAILS.event} · ${liveDate}`;
 }
 
 function formatAuthorRole() {
@@ -235,6 +237,19 @@ function updateSpeakerInfo() {
     const speakerText = formatSpeakerDetails();
     speakerLine.textContent = speakerText;
     speakerLine.setAttribute('aria-label', speakerText);
+  });
+
+  document.querySelectorAll('.title-author-name').forEach((name) => {
+    name.textContent = AUTHOR_DETAILS.name;
+  });
+  document.querySelectorAll('.title-author-role').forEach((role) => {
+    role.textContent = formatAuthorRole();
+  });
+  document.querySelectorAll('.title-event-name').forEach((eventName) => {
+    eventName.textContent = EVENT_DETAILS.event;
+  });
+  document.querySelectorAll('.title-event-date').forEach((eventDate) => {
+    eventDate.textContent = formatEventDate();
   });
 }
 
