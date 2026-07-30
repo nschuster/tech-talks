@@ -4019,10 +4019,15 @@ body {
   background: linear-gradient(
     90deg,
     var(--capgemini-dark-blue) 0%,
-    var(--capgemini-dark-blue) 60%,
-    rgba(18, 26, 56, 0.98) 64%,
-    rgba(18, 26, 56, 0.72) 68%,
-    rgba(18, 26, 56, 0) 74%
+    var(--capgemini-dark-blue) 52%,
+    rgba(18, 26, 56, 0.98) 57%,
+    rgba(18, 26, 56, 0.91) 62%,
+    rgba(18, 26, 56, 0.78) 67%,
+    rgba(18, 26, 56, 0.59) 72%,
+    rgba(18, 26, 56, 0.39) 77%,
+    rgba(18, 26, 56, 0.21) 81%,
+    rgba(18, 26, 56, 0.08) 85%,
+    rgba(18, 26, 56, 0) 89%
   );
   pointer-events: none;
 }
@@ -4068,6 +4073,7 @@ body {
 }
 
 .capgemini-image-split-copy-grid {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   align-content: start;
@@ -4075,6 +4081,35 @@ body {
   width: 100%;
   margin-top: 2.35rem;
   flex: 1 1 auto;
+  color: var(--timeline-2010s);
+}
+
+.capgemini-image-split-copy-grid::before {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: -1.5rem;
+  z-index: 1;
+  width: 0;
+  content: "";
+  border-left: 10px dotted currentColor;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.capgemini-image-split-copy-grid::after {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  z-index: 2;
+  width: 17px;
+  height: 17px;
+  content: "";
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.12);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
 }
 
 .capgemini-image-split-passage {
