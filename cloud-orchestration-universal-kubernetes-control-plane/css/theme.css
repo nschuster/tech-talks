@@ -258,9 +258,10 @@ body {
   top: 50%;
   left: calc(var(--limitless-left-column) / 2);
   z-index: 0;
-  width: calc(100% + (2 * var(--limitless-bleed)));
-  height: calc(var(--limitless-left-column) + (2 * var(--limitless-bleed)));
-  object-fit: cover;
+  width: calc(56.25% + (2 * var(--limitless-bleed)));
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: contain;
   opacity: 0.92;
   /* The mask is defined before rotation: top-to-bottom becomes right-to-left after rotate(90deg). */
   -webkit-mask-image: linear-gradient(
