@@ -197,8 +197,8 @@ body {
 .reveal section.limitless-potential-slide {
   --limitless-left-column: 30%;
   --limitless-bleed: 12rem;
-  --limitless-icon-x: calc((var(--limitless-left-column) / 2) - 1.4rem);
-  --limitless-icon-y: calc(50% + 0.7rem);
+  --limitless-icon-x: calc((var(--limitless-left-column) / 2) - 1.05rem);
+  --limitless-icon-y: calc(50% + 0.45rem);
 
   padding-left: calc(var(--limitless-left-column) + 3.5rem) !important;
   padding-bottom: 2.25rem !important;
