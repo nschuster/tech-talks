@@ -262,6 +262,33 @@ body {
   height: calc(var(--limitless-left-column) + (2 * var(--limitless-bleed)));
   object-fit: cover;
   opacity: 0.92;
+  /* The mask is defined before rotation: top-to-bottom becomes right-to-left after rotate(90deg). */
+  -webkit-mask-image: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(0, 0, 0, 0.08) 8%,
+    rgba(0, 0, 0, 0.21) 16%,
+    rgba(0, 0, 0, 0.39) 24%,
+    rgba(0, 0, 0, 0.59) 32%,
+    rgba(0, 0, 0, 0.78) 40%,
+    rgba(0, 0, 0, 0.91) 48%,
+    rgba(0, 0, 0, 0.98) 56%,
+    #000000 64%,
+    #000000 100%
+  );
+  mask-image: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(0, 0, 0, 0.08) 8%,
+    rgba(0, 0, 0, 0.21) 16%,
+    rgba(0, 0, 0, 0.39) 24%,
+    rgba(0, 0, 0, 0.59) 32%,
+    rgba(0, 0, 0, 0.78) 40%,
+    rgba(0, 0, 0, 0.91) 48%,
+    rgba(0, 0, 0, 0.98) 56%,
+    #000000 64%,
+    #000000 100%
+  );
   transform: translate(-50%, -50%) rotate(90deg);
   transform-origin: center;
 }
