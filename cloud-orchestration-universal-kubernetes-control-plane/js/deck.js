@@ -130,6 +130,7 @@ let threeColumnLeaderLineTimeout;
 let kcpBootstrapLeaderLineLayer;
 let kcpBootstrapLeaderLineFrame;
 let kcpBootstrapLeaderLineTimeout;
+let kcpBootstrapAutoAnimateFrame;
 let kcpPlatformConnectionLayer;
 let kcpPlatformConnectionFrame;
 let kcpPlatformConnectionSignature;
@@ -2208,6 +2209,34 @@ function requestKcpBootstrapLeaderLineUpdate() {
   }, 420);
 }
 
+function trackKcpBootstrapLeaderLinesDuringAutoAnimate() {
+  if (kcpBootstrapAutoAnimateFrame) window.cancelAnimationFrame(kcpBootstrapAutoAnimateFrame);
+  const slide = deck.getCurrentSlide();
+  if (!slide?.classList.contains('kcp-bootstrap-slide')) return;
+
+  const configuredDuration = Number.parseFloat(slide.dataset.autoAnimateDuration);
+  const duration = (Number.isFinite(configuredDuration)
+    ? configuredDuration
+    : deck.getConfig().autoAnimateDuration || 1) * 1000;
+  const start = window.performance.now();
+
+  const update = (now) => {
+    if (deck.getCurrentSlide() !== slide) {
+      kcpBootstrapAutoAnimateFrame = undefined;
+      return;
+    }
+    renderKcpBootstrapLeaderLines();
+    if (now - start <= duration + 80) {
+      kcpBootstrapAutoAnimateFrame = window.requestAnimationFrame(update);
+    } else {
+      kcpBootstrapAutoAnimateFrame = undefined;
+      requestKcpBootstrapLeaderLineUpdate();
+    }
+  };
+
+  kcpBootstrapAutoAnimateFrame = window.requestAnimationFrame(update);
+}
+
 function clearKcpPlatformConnections() {
   kcpPlatformConnectionLayer?.remove();
   kcpPlatformConnectionLayer = undefined;
@@ -2552,6 +2581,7 @@ deck.on('slidechanged', () => {
   requestKcpPlatformConnectionUpdate();
   requestContentSplitConeUpdate();
 });
+deck.on('autoanimate', trackKcpBootstrapLeaderLinesDuringAutoAnimate);
 deck.on('fragmentshown', () => {
   requestCicdLeaderLineUpdate();
   requestImageColumnLeaderLineUpdate();
