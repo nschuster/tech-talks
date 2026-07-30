@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Quantum Computing Fundamentals — from classical state vectors to the Deutsch–Jozsa algorithm." />
+  <link rel="icon" href="data:," />
+  <title>Quantum Computing Fundamentals</title>
+  <link rel="stylesheet" href="node_modules/reveal.js/dist/reveal.css" />
+  <link rel="stylesheet" href="css/theme.css" />
+</head>
+<body>
+<div class="reveal">
+  <div class="slides">
+
+    <section class="title-slide" data-menu-title="Quantum Computing Fundamentals">
+      <div class="title-orbit" aria-hidden="true"><span></span><span></span><span></span><i></i></div>
+      <p class="eyebrow">TECH TALK · COMPUTATION BEYOND BITS</p>
+      <h1>QUANTUM<br/>COMPUTING<br/><em>FUNDAMENTALS</em></h1>
+      <p class="title-kicker">From state vectors and gates to a first quantum advantage</p>
+      <p class="speaker-line">Niklas Schuster · Quantum Computing Fundamentals</p>
+    </section>
+
+    <section class="agenda-slide">
+      <p class="eyebrow">THE ROUTE</p><h2>One Model. Four Layers.</h2>
+      <div class="agenda-grid">
+        <article><b>01</b><h3>Classical Bedrock</h3><p>States, probabilities, vectors and logic gates.</p></article>
+        <article><b>02</b><h3>The Quantum Shift</h3><p>Amplitudes, superposition, phase and measurement.</p></article>
+        <article><b>03</b><h3>Quantum Gates</h3><p>Reversible transformations on the Bloch sphere.</p></article>
+        <article><b>04</b><h3>First Advantage</h3><p>Deutsch–Jozsa: one query reveals a global property.</p></article>
+      </div>
+    </section>
+
+    <section class="quote-slide">
+      <p class="eyebrow">THE QUANTUM WORLD</p>
+      <blockquote>“If quantum mechanics hasn’t profoundly shocked you, you haven’t understood it yet.”</blockquote>
+      <p class="quote-by">— often attributed to Niels Bohr</p>
+      <div class="big-question">What changes when <strong>possibilities</strong> become part of the computation?</div>
+    </section>
+
+    <section class="section-divider"><p class="section-number">01</p><h2>Classical Bedrock</h2><p class="slide-subtitle">How information becomes vectors — and computation becomes matrices.</p></section>
+
+    <section>
+      <p class="eyebrow">FINITE STATE SYSTEMS</p><h2>Information Lives in Distinct States</h2>
+      <div class="split two-thirds">
+        <div><p class="lead">A system <span class="math">S</span> stores information in a finite set of immutable states <span class="math">Σ</span>.</p>
+          <div class="formula">bit: Σ = {0, 1}</div><div class="formula">die: Σ = {1, 2, 3, 4, 5, 6}</div>
+          <p class="note">Different physics. Same abstract model.</p></div>
+        <div class="state-visual"><div class="bit-switch"><span>0</span><i></i><span>1</span></div><div class="die">⚄</div></div>
+      </div>
+    </section>
+
+    <section>
+      <p class="eyebrow">UNCERTAINTY</p><h2>Not Knowing Is Still a State Description</h2>
+      <div class="split">
+        <div><p class="lead">If a bit is 1 in one out of three cases:</p><div class="prob-bars"><div><span>P(0)</span><i style="--p:66.67%"></i><b>⅔</b></div><div><span>P(1)</span><i style="--p:33.33%"></i><b>⅓</b></div></div></div>
+        <div class="math-panel"><p>Probability vector</p><div class="vector"><span>⅔</span><span>⅓</span></div><small>entries ≥ 0 · entries sum to 1</small></div>
+      </div>
+    </section>
+
+    <section>
+      <p class="eyebrow">BASIS STATES</p><h2>Dirac Notation Gives States a Name</h2>
+      <div class="basis-grid">
+        <article><div class="ket">|0⟩</div><div class="vector"><span>1</span><span>0</span></div><p>100% in state 0</p></article>
+        <article><div class="ket">|1⟩</div><div class="vector"><span>0</span><span>1</span></div><p>100% in state 1</p></article>
+      </div>
+      <div class="formula wide">p = ⅔|0⟩ + ⅓|1⟩ &nbsp;=&nbsp; [⅔, ⅓]ᵀ</div>
+    </section>
+
+    <section>
+      <p class="eyebrow">STATE TRANSITIONS</p><h2>Processing Means Matrix Multiplication</h2>
+      <div class="function-grid">
+        <article><b>SET 0</b><code>0→0<br/>1→0</code><div class="mini-matrix">1&nbsp; 1<br/>0&nbsp; 0</div></article>
+        <article><b>IDENTITY</b><code>0→0<br/>1→1</code><div class="mini-matrix">1&nbsp; 0<br/>0&nbsp; 1</div></article>
+        <article class="accent"><b>NOT</b><code>0→1<br/>1→0</code><div class="mini-matrix">0&nbsp; 1<br/>1&nbsp; 0</div></article>
+        <article><b>SET 1</b><code>0→1<br/>1→1</code><div class="mini-matrix">0&nbsp; 0<br/>1&nbsp; 1</div></article>
+      </div>
+      <div class="formula wide fragment">NOT · |0⟩ = [0 1; 1 0] [1; 0] = [0; 1] = |1⟩</div>
+    </section>
+
+    <section>
+      <p class="eyebrow">CLASSICAL LOGIC</p><h2>Seven Gates Build the Classical World</h2>
+      <div class="logic-grid">
+        <article><div class="logic-symbol not">1</div><b>NOT</b><small>¬A</small></article>
+        <article><div class="logic-symbol and">&amp;</div><b>AND</b><small>A ∧ B</small></article>
+        <article><div class="logic-symbol nand">&amp;</div><b>NAND</b><small>¬(A ∧ B)</small></article>
+        <article><div class="logic-symbol or">≥1</div><b>OR</b><small>A ∨ B</small></article>
+        <article><div class="logic-symbol nor">≥1</div><b>NOR</b><small>¬(A ∨ B)</small></article>
+        <article><div class="logic-symbol xor">=1</div><b>XOR</b><small>A ⊕ B</small></article>
+        <article><div class="logic-symbol xnor">=</div><b>XNOR</b><small>¬(A ⊕ B)</small></article>
+      </div>
+      <p class="bottom-line">NOT is reversible; most two-input/one-output gates erase information while defining classical circuit behavior.</p>
+    </section>
+
+    <section class="comparison-slide">
+      <p class="eyebrow">BRIDGING THE CHASM</p><h2>Same Basis. Different Physics.</h2>
+      <div class="comparison-grid"><article><h3>CLASSICAL BIT</h3><div class="binary-poles"><b>0</b><span>or</span><b>1</b></div><ul><li>Voltage encodes a fixed value</li><li>Uncertainty reflects missing knowledge</li><li>Logic may erase information</li></ul></article>
+      <article class="quantum-card"><h3>QUBIT</h3><div class="binary-poles"><b>|0⟩</b><span>and</span><b>|1⟩</b></div><ul><li>Quantum state carries amplitudes</li><li>Superposition is physically meaningful</li><li>Closed-system gates are reversible</li></ul></article></div>
+    </section>
+
+    <section>
+      <p class="eyebrow">PHYSICAL QUBITS</p><h2>One Abstraction. Many Implementations.</h2>
+      <div class="hardware-grid"><article><i>〰</i><b>Superconducting</b><p>Quantized circuits at millikelvin temperatures.</p></article><article><i>⊙</i><b>Trapped Ion</b><p>Internal ion states controlled by lasers.</p></article><article><i>◉</i><b>Quantum Dot</b><p>Confined electron spin or charge.</p></article><article><i>✦</i><b>Photonic</b><p>Information in paths, polarization or time bins.</p></article></div>
+      <p class="bottom-line">The mathematics ahead is hardware-independent.</p>
+    </section>
+
+    <section class="section-divider"><p class="section-number">02</p><h2>The Quantum Shift</h2><p class="slide-subtitle">Replace probabilities with complex amplitudes — then square to observe.</p></section>
+
+    <section>
+      <p class="eyebrow">QUANTUM STATE</p><h2>Amplitudes Are Not Probabilities</h2>
+      <div class="split"><div><div class="formula hero-formula">|ψ⟩ = α|0⟩ + β|1⟩</div><div class="formula">α, β ∈ ℂ</div><div class="formula">|α|² + |β|² = 1</div></div>
+      <div class="callout"><b>The crucial extension</b><p>Complex amplitudes carry magnitude <em>and phase</em>. Their squared magnitudes produce measurement probabilities.</p><div class="formula">P(0)=|α|² · P(1)=|β|²</div></div></div>
+    </section>
+
+    <section>
+      <p class="eyebrow">SUPERPOSITION</p><h2>A Qubit Can Point Between the Poles</h2>
+      <div class="superposition-layout"><div class="formula hero-formula">|+⟩ = (|0⟩ + |1⟩) / √2</div><div class="wave-stack"><svg viewBox="0 0 800 280" role="img" aria-label="Two amplitudes combine in equal superposition"><path class="wave a" d="M0 80 C80 0 160 160 240 80 S400 0 480 80 S640 160 800 80"/><path class="wave b" d="M0 200 C80 120 160 280 240 200 S400 120 480 200 S640 280 800 200"/><path class="wave result fragment" d="M0 140 C80 -5 160 285 240 140 S400 -5 480 140 S640 285 800 140"/></svg></div></div>
+      <p class="bottom-line">Measurement still returns only 0 or 1 — each with probability ½.</p>
+    </section>
+
+    <section>
+      <p class="eyebrow">MEASUREMENT</p><h2>Observation Converts Amplitudes into Outcomes</h2>
+      <div class="measurement-flow"><div class="state-cloud"><span>|ψ⟩</span><small>α|0⟩ + β|1⟩</small></div><div class="arrow">→</div><div class="meter-symbol">M</div><div class="arrow">→</div><div class="outcomes"><div><b>0</b><span>|α|²</span></div><div><b>1</b><span>|β|²</span></div></div></div>
+      <div class="warning"><b>Measurement is not “peeking.”</b><span>It projects the state onto a basis state; repeating immediately gives the same result.</span></div>
+    </section>
+
+    <section class="bloch-slide" data-bloch="general">
+      <p class="eyebrow">THE BLOCH SPHERE</p><h2>One Qubit. Two Angles.</h2>
+      <div class="bloch-layout"><div class="bloch-wrap" data-bloch-state="general"></div><div class="bloch-copy"><div class="formula">|ψ⟩ = cos(θ/2)|0⟩ + e<sup>iφ</sup>sin(θ/2)|1⟩</div><dl><dt>θ</dt><dd>sets the north–south probability balance</dd><dt>φ</dt><dd>sets relative phase around the equator</dd></dl><p class="note">Global phase is invisible; relative phase changes interference.</p></div></div>
+    </section>
+
+    <section class="bloch-slide hadamard-rotation">
+      <p class="eyebrow">MEANINGFUL MOTION</p><h2>Hadamard Rotates |0⟩ into |+⟩</h2>
+      <div class="bloch-layout"><div class="bloch-wrap" data-bloch-state="hadamard"></div><div class="bloch-copy"><div class="circuit-row"><span>|0⟩</span><i></i><b>H</b><i></i><span>|+⟩</span></div><p>Advance once to visualize the endpoint mapping from the north pole to the +X equator.</p><p class="note">Geometrically, H is a π rotation about the (X+Z)/√2 axis; this motion emphasizes the start and end states.</p><div class="fragment rotation-cue">endpoint: θ: 0 → π/2 · φ: 0</div><div class="formula fragment">P(0)=P(1)=½</div></div></div>
+    </section>
+
+    <section>
+      <p class="eyebrow">PHASE</p><h2>|+⟩ and |−⟩ Look Equal — Until They Interfere</h2>
+      <div class="phase-compare"><article><h3>|+⟩</h3><div class="formula">[1, 1]ᵀ / √2</div><div class="phase-dial plus">+</div><p>relative phase 0</p></article><article><h3>|−⟩</h3><div class="formula">[1, −1]ᵀ / √2</div><div class="phase-dial minus">−</div><p>relative phase π</p></article></div>
+      <div class="formula wide fragment">H|+⟩ = |0⟩ &nbsp;&nbsp; while &nbsp;&nbsp; H|−⟩ = |1⟩</div>
+      <p class="bottom-line">Quantum algorithms shape phase so interference reveals useful structure.</p>
+    </section>
+
+    <section class="section-divider"><p class="section-number">03</p><h2>Quantum Gates</h2><p class="slide-subtitle">Unitary matrices: rotations that preserve information and can always be undone.</p></section>
+
+    <section>
+      <p class="eyebrow">THE RULE</p><h2>Quantum Gates Must Be Reversible</h2>
+      <div class="unitary-layout"><div class="unitary-ring"><b>U</b><span>U†</span></div><div><div class="formula hero-formula">U†U = UU† = I</div><ul class="clean-list"><li>Lengths and inner products are preserved.</li><li>Probabilities remain normalized.</li><li>Every gate has an inverse.</li></ul></div></div>
+      <div class="formula wide fragment">H² = I &nbsp;⇒&nbsp; H(H|0⟩) = |0⟩</div>
+    </section>
+
+    <section>
+      <p class="eyebrow">SINGLE-QUBIT GATES</p><h2>Pauli Gates: Three Fundamental Flips</h2>
+      <div class="gate-grid three"><article><div class="gate-badge">X</div><h3>BIT FLIP</h3><div class="mini-matrix">0&nbsp; 1<br/>1&nbsp; 0</div><p>|0⟩ ↔ |1⟩</p><small>π around X</small></article><article><div class="gate-badge">Y</div><h3>BIT + PHASE FLIP</h3><div class="mini-matrix">0&nbsp; −i<br/>i&nbsp;&nbsp; 0</div><p>|0⟩ → i|1⟩</p><small>π around Y</small></article><article><div class="gate-badge">Z</div><h3>PHASE FLIP</h3><div class="mini-matrix">1&nbsp;&nbsp; 0<br/>0&nbsp; −1</div><p>|+⟩ ↔ |−⟩</p><small>π around Z</small></article></div>
+    </section>
+
+    <section>
+      <p class="eyebrow">SINGLE-QUBIT GATES</p><h2>Hadamard Creates — and Recombines — Paths</h2>
+      <div class="split"><div><div class="gate-hero"><div class="gate-badge big">H</div><div class="mini-matrix large">1/√2 [ 1&nbsp;&nbsp; 1<br/>1&nbsp; −1 ]</div></div><div class="formula">H|0⟩ = |+⟩</div><div class="formula">H|1⟩ = |−⟩</div></div><div class="interference-box"><h3>NOT A RANDOMIZER</h3><p>H changes basis. Applied again, amplitudes interfere and recover a deterministic result.</p><div class="circuit-row"><span>|0⟩</span><i></i><b>H</b><i></i><b>H</b><i></i><span>|0⟩</span></div></div></div>
+    </section>
+
+    <section>
+      <p class="eyebrow">PHASE GATES</p><h2>S, T and P(φ) Turn Around Z</h2>
+      <div class="gate-grid three"><article><div class="gate-badge">S</div><h3>QUARTER TURN</h3><div class="mini-matrix">1&nbsp; 0<br/>0&nbsp; i</div><p>P(π/2)</p></article><article><div class="gate-badge">T</div><h3>EIGHTH TURN</h3><div class="mini-matrix">1&nbsp;&nbsp; 0<br/>0&nbsp; e<sup>iπ/4</sup></div><p>P(π/4)</p></article><article><div class="gate-badge">P</div><h3>GENERAL PHASE</h3><div class="mini-matrix">1&nbsp;&nbsp; 0<br/>0&nbsp; e<sup>iφ</sup></div><p>P(φ)</p></article></div>
+      <p class="bottom-line">Measurement probabilities in the Z basis stay unchanged; interference behavior does not.</p>
+    </section>
+
+    <section>
+      <p class="eyebrow">GENERAL ROTATIONS</p><h2>R<sub>x</sub>, R<sub>y</sub>, R<sub>z</sub> Are the Bloch-Sphere Controls</h2>
+      <div class="rotation-grid"><article><div class="axis x">X</div><div class="formula">Rₓ(θ)=e<sup>−iθX/2</sup></div><p>mixes |0⟩ and |1⟩ with phase</p></article><article><div class="axis y">Y</div><div class="formula">Rᵧ(θ)=e<sup>−iθY/2</sup></div><p>changes probability balance directly</p></article><article><div class="axis z">Z</div><div class="formula">R<sub>z</sub>(θ)=e<sup>−iθZ/2</sup></div><p>changes relative phase</p></article></div>
+      <p class="bottom-line">Any single-qubit unitary can be decomposed into rotations around these axes.</p>
+    </section>
+
+    <section>
+      <p class="eyebrow">TWO QUBITS</p><h2>Tensor Products Expand the State Space</h2>
+      <div class="tensor-layout"><div><div class="formula hero-formula">|q₁q₂⟩ = |q₁⟩ ⊗ |q₂⟩</div><p class="lead">Two qubits have four computational basis states:</p><div class="ket-row"><b>|00⟩</b><b>|01⟩</b><b>|10⟩</b><b>|11⟩</b></div></div><div class="vector four"><span>a₀₀</span><span>a₀₁</span><span>a₁₀</span><span>a₁₁</span></div></div>
+      <div class="scale-strip"><span>n qubits</span><strong>→</strong><b>2ⁿ complex amplitudes</b></div>
+    </section>
+
+    <section>
+      <p class="eyebrow">CONTROLLED-NOT</p><h2>CNOT Couples a Control to a Target</h2>
+      <div class="split"><div class="circuit-diagram"><div class="wire"><span>control</span><i></i><b class="control-dot"></b><i></i></div><div class="wire"><span>target</span><i></i><b class="target-plus">⊕</b><i></i></div><em></em></div><div><div class="truth-table"><span>|00⟩→|00⟩</span><span>|01⟩→|01⟩</span><span>|10⟩→|11⟩</span><span>|11⟩→|10⟩</span></div><p class="lead">Flip the target only when control = 1.</p><p class="note">Quantum analogue of controlled XOR — and a key entangling gate.</p></div></div>
+    </section>
+
+    <section>
+      <p class="eyebrow">TWO-QUBIT TOOLKIT</p><h2>SWAP, Controlled Phase and Measurement</h2>
+      <div class="gate-grid three circuit-cards"><article><h3>SWAP</h3><div class="mini-circuit swap"><i></i><b>×</b><em></em><b>×</b><i></i></div><p>|ab⟩ → |ba⟩</p><small>three CNOTs in disguise</small></article><article><h3>CONTROLLED-Z</h3><div class="mini-circuit cz"><i></i><b>●</b><em></em><b>Z</b><i></i></div><p>|11⟩ gains a minus sign</p><small>phase conditional on both qubits</small></article><article><h3>MEASUREMENT</h3><div class="mini-circuit measure"><i></i><b>⌁</b><i></i></div><p>quantum → classical bit</p><small>projection, not a unitary gate</small></article></div>
+    </section>
+
+    <section>
+      <p class="eyebrow">ENTANGLEMENT</p><h2>Some Two-Qubit States Cannot Be Separated</h2>
+      <div class="entangle-flow"><div class="circuit-stack"><div class="wire"><span>|0⟩</span><i></i><b class="gate-square">H</b><i></i><b class="control-dot"></b><i></i></div><div class="wire"><span>|0⟩</span><i></i><b class="target-plus">⊕</b><i></i></div><em></em></div><div class="arrow">→</div><div class="bell-state"><div class="formula hero-formula">|Φ⁺⟩ = (|00⟩ + |11⟩)/√2</div><p>Neither qubit has an independent pure state. Their outcomes are correlated as one joint system.</p></div></div>
+      <p class="bottom-line">Superposition is about alternatives. Entanglement is about inseparable relationships.</p>
+    </section>
+
+    <section>
+      <p class="eyebrow">QUANTUM CIRCUITS</p><h2>Read Left to Right: Prepare → Transform → Measure</h2>
+      <div class="circuit-timeline"><div><b>1</b><span>INITIALIZE</span></div><i></i><div><b>2</b><span>SINGLE-QUBIT GATES</span></div><i></i><div><b>3</b><span>ENTANGLE / ORACLE</span></div><i></i><div><b>4</b><span>MEASURE</span></div></div>
+      <div class="full-circuit"><div class="wire"><span>q₀: |0⟩</span><i></i><b class="gate-square">H</b><i></i><b class="control-dot"></b><i></i><b class="meter">M</b><i></i></div><div class="wire"><span>q₁: |0⟩</span><i></i><b class="target-plus">⊕</b><i></i><b class="meter">M</b><i></i></div><em></em></div>
+    </section>
+
+    <section class="section-divider"><p class="section-number">04</p><h2>A First Quantum Advantage</h2><p class="slide-subtitle">Deutsch–Jozsa asks one global question of a hidden function.</p></section>
+
+    <section>
+      <p class="eyebrow">THE PROMISE PROBLEM</p><h2>Constant or Balanced?</h2>
+      <div class="oracle-layout"><div class="oracle-box">f(x)<small>BLACK BOX</small></div><div class="oracle-classes"><article><h3>CONSTANT</h3><div class="mapping"><span>0→0</span><span>1→0</span><em>or</em><span>0→1</span><span>1→1</span></div></article><article><h3>BALANCED</h3><div class="mapping"><span>0→0</span><span>1→1</span><em>or</em><span>0→1</span><span>1→0</span></div></article></div></div>
+      <p class="bottom-line">Promise: the hidden function is exactly one of these two classes.</p>
+    </section>
+
+    <section>
+      <p class="eyebrow">CLASSICAL QUERY COMPLEXITY</p><h2>One Answer Is Ambiguous</h2>
+      <div class="query-story"><div><span>query 1</span><div class="formula">f(0)=0</div><p>Could be constant-0 <em>or</em> identity.</p></div><div class="fragment"><span>query 2</span><div class="formula">f(1)=?</div><p>Only now can we distinguish the class with certainty.</p></div></div>
+      <div class="scale-strip"><span>n-bit generalization</span><strong>→</strong><b>worst case: 2<sup>n−1</sup> + 1 classical queries</b></div>
+    </section>
+
+    <section>
+      <p class="eyebrow">REVERSIBLE ORACLE</p><h2>Keep the Input. XOR the Output.</h2>
+      <div class="oracle-unitary"><div class="formula hero-formula">U<sub>f</sub>|x,y⟩ = |x, y ⊕ f(x)⟩</div><div class="oracle-circuit reversible-oracle" aria-label="Two-register reversible oracle acting on x and y"><div class="oracle-wire oracle-input"><span>|x⟩</span><i></i><i></i><span>|x⟩</span></div><div class="oracle-wire oracle-target"><span>|y⟩</span><i></i><i></i><span>|y⊕f(x)⟩</span></div><b class="oracle-gate"><span>U<sub>f</sub></span></b></div></div>
+      <p class="bottom-line">An ancilla stores the result, making even a constant function reversible.</p>
+    </section>
+
+    <section>
+      <p class="eyebrow">FOUR ONE-BIT ORACLES</p><h2>Functions Become Reversible Circuits</h2>
+      <div class="oracle-grid"><article><b>constant 0</b><div class="oracle-mini empty"><span>x ───── x</span><span>y ───── y</span></div><p>do nothing</p></article><article><b>constant 1</b><div class="oracle-mini"><span>x ───── x</span><span>y ──X── y⊕1</span></div><p>X on target</p></article><article><b>identity</b><div class="oracle-mini"><span>x ──●── x</span><span>y ──⊕── y⊕x</span></div><p>CNOT</p></article><article><b>negation</b><div class="oracle-mini"><span>x ──●──── x</span><span>y ──⊕─X── y⊕¬x</span></div><p>CNOT + X</p></article></div>
+    </section>
+
+    <section>
+      <p class="eyebrow">PHASE KICKBACK</p><h2>The Ancilla Turns Function Values into Phase</h2>
+      <div class="kickback-layout"><div><div class="formula hero-formula">|−⟩ = (|0⟩ − |1⟩)/√2</div><p class="lead">Prepare the target in |−⟩. The oracle action becomes:</p><div class="formula">U<sub>f</sub>|x⟩|−⟩ = (−1)<sup>f(x)</sup>|x⟩|−⟩</div></div><div class="phase-tags"><span>f(x)=0 <b>+1</b></span><span>f(x)=1 <b>−1</b></span></div></div>
+      <p class="bottom-line">The target returns unchanged; the answer is encoded as relative phase on the input register.</p>
+    </section>
+
+    <section class="algorithm-slide">
+      <p class="eyebrow">DEUTSCH–JOZSA</p><h2>The Complete Quantum Circuit</h2>
+      <div class="dj-circuit" aria-label="Deutsch–Jozsa circuit with a two-register oracle">
+        <div class="dj-wire dj-input"><span>|0⟩<sup>⊗n</sup></span><i></i><b class="gate-square">H<sup>⊗n</sup></b><i></i><b class="oracle-gate"><span>U<sub>f</sub></span></b><i></i><b class="gate-square">H<sup>⊗n</sup></b><i></i><b class="meter">M</b></div>
+        <div class="dj-wire dj-ancilla"><span>|1⟩</span><i></i><b class="gate-square">H</b><i></i><i></i></div>
+      </div>
+      <div class="algorithm-steps"><span class="fragment"><b>1</b>prepare superposition</span><span class="fragment"><b>2</b>query once</span><span class="fragment"><b>3</b>interfere phases</span><span class="fragment"><b>4</b>measure input</span></div>
+    </section>
+
+    <section>
+      <p class="eyebrow">READ THE RESULT</p><h2>Interference Converts a Global Property into One Bit Pattern</h2>
+      <div class="result-grid"><article class="constant-result"><h3>CONSTANT</h3><div class="bit-result">00…0</div><p>all input amplitudes recombine constructively at zero</p></article><article class="balanced-result"><h3>BALANCED</h3><div class="bit-result">≠ 00…0</div><p>the zero outcome cancels exactly</p></article></div>
+      <div class="formula wide">P(0ⁿ)=1 for constant &nbsp;·&nbsp; P(0ⁿ)=0 for balanced</div>
+    </section>
+
+    <section>
+      <p class="eyebrow">QUERY ADVANTAGE</p><h2>One Quantum Query vs Exponentially Many Classical Queries</h2>
+      <div class="advantage-chart"><div class="chart-axis"><span>queries</span></div><div class="chart-bars"><div class="bar classical"><b>2<sup>n−1</sup> + 1</b><span>deterministic classical</span></div><div class="bar quantum"><b>1</b><span>Deutsch–Jozsa</span></div></div></div>
+      <div class="warning subtle"><b>Important nuance</b><span>This is an oracle/query-complexity separation for a promised problem — not a claim that every quantum computation is exponentially faster.</span></div>
+    </section>
+
+    <section>
+      <p class="eyebrow">WHAT THE ALGORITHM TEACHES</p><h2>The Reusable Quantum Pattern</h2>
+      <div class="pattern-grid"><article><b>1</b><h3>SUPERPOSE</h3><p>Represent many inputs in amplitudes.</p></article><article><b>2</b><h3>ENCODE PHASE</h3><p>Use a reversible oracle and phase kickback.</p></article><article><b>3</b><h3>INTERFERE</h3><p>Amplify the property; cancel the alternatives.</p></article><article><b>4</b><h3>MEASURE</h3><p>Extract a compact classical answer.</p></article></div>
+    </section>
+
+    <section>
+      <p class="eyebrow">MYTH, DISPELLED</p><h2>A Quantum Computer Is Not Simply a Faster Computer</h2>
+      <div class="myth-layout"><div class="myth-word">FASTER?</div><div><p class="lead">It is a different computational model with an expanded set of operations.</p><ul class="clean-list"><li>amplitudes carry phase</li><li>gates are reversible</li><li>entanglement creates joint states</li><li>interference exposes structure</li></ul></div></div>
+    </section>
+
+    <section class="summary-slide">
+      <p class="eyebrow">THE MODEL IN ONE VIEW</p><h2>Prepare. Transform. Interfere. Measure.</h2>
+      <div class="summary-ribbon"><div><b>|0…0⟩</b><span>PREPARE</span></div><i>→</i><div><b>U</b><span>TRANSFORM</span></div><i>→</i><div><b>±</b><span>INTERFERE</span></div><i>→</i><div><b>0 / 1</b><span>MEASURE</span></div></div>
+      <p class="closing-thought">The power is not “trying every answer at once.”<br/><strong>It is arranging amplitudes so the wrong answers cancel.</strong></p>
+    </section>
+
+    <section class="end-slide"><div class="end-orbit" aria-hidden="true"></div><p class="eyebrow">QUANTUM COMPUTING FUNDAMENTALS</p><h2>Questions?</h2><p class="slide-subtitle">The strange part is real. The useful part is interference.</p></section>
+
+  </div>
+</div>
+<script type="module" src="js/deck.js"></script>
+</body>
+</html>
