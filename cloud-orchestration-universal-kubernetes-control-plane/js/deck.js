@@ -70,6 +70,16 @@ function getThemeMenuContent() {
     '</div>';
 }
 
+function deckAutoAnimateMatcher(fromSlide, toSlide) {
+  const isKcpControlPlaneTransition = fromSlide.classList.contains('kcp-bootstrap-slide--step3-deprovision')
+    && toSlide.classList.contains('kcp-bootstrap-slide--step3-deprovision');
+  if (!isKcpControlPlaneTransition) return this.getAutoAnimatePairs(fromSlide, toSlide);
+
+  const fromColumn = fromSlide.querySelector('[data-id="bootstrap-ucp-column"]');
+  const toColumn = toSlide.querySelector('[data-id="bootstrap-ucp-column"]');
+  return fromColumn && toColumn ? [{ from: fromColumn, to: toColumn }] : [];
+}
+
 const deck = new Reveal({
   hash: true,
   controls: true,
@@ -85,6 +95,7 @@ const deck = new Reveal({
   backgroundTransition: 'fade',
   autoAnimate: true,
   autoAnimateDuration: 0.85,
+  autoAnimateMatcher: deckAutoAnimateMatcher,
   menu: {
     side: 'left',
     width: 'wide',
