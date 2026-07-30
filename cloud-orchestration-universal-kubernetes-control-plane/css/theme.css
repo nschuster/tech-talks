@@ -4076,19 +4076,20 @@ body {
   position: relative;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  align-content: start;
+  align-content: stretch;
   gap: 8rem;
   width: 100%;
   margin-top: 2.35rem;
   flex: 1 1 auto;
   color: var(--timeline-2010s);
+  z-index: 2;
 }
 
 .capgemini-image-split-copy-grid::before {
   position: absolute;
   left: 50%;
   top: 0;
-  bottom: -1.5rem;
+  bottom: -2rem;
   z-index: 1;
   width: 0;
   content: "";
@@ -4148,8 +4149,9 @@ body {
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 10rem;
-  margin-top: 1.65rem;
+  min-height: 10rem;
+  margin-top: 1rem;
+  flex: 1 1 auto;
 }
 
 .reveal section.capgemini-image-split-slide .capgemini-image-split-icon {
@@ -4172,6 +4174,8 @@ body {
 }
 
 .capgemini-image-split-ribbon {
+  position: relative;
+  z-index: 1;
   box-sizing: border-box;
   display: flex;
   align-items: center;
@@ -4199,9 +4203,10 @@ body {
 
 .capgemini-image-split-ribbon-side {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2.15rem;
+  gap: 0.28rem;
   width: 50%;
   min-width: 0;
 }
@@ -4210,8 +4215,15 @@ body {
   white-space: nowrap;
 }
 
+.capgemini-image-split-ribbon-side--left {
+  align-items: flex-start;
+  text-align: left;
+}
+
 .capgemini-image-split-ribbon-side--right {
+  align-items: flex-end;
   color: var(--capgemini-dark-blue);
+  text-align: right;
 }
 
 :root[data-theme="light"] .kcp-platform-provider-title {
