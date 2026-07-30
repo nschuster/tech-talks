@@ -4063,8 +4063,10 @@ body {
 }
 
 .reveal section.capgemini-image-split-slide .capgemini-image-split-content h2 {
-  max-width: 90%;
+  max-width: none;
   color: var(--capgemini-white);
+  font-size: 1.28em;
+  white-space: nowrap;
 }
 
 .reveal section.capgemini-image-split-slide .capgemini-image-split-content .slide-subtitle {
@@ -4089,7 +4091,7 @@ body {
   position: absolute;
   left: 50%;
   top: 0;
-  bottom: -2rem;
+  bottom: -4.95rem;
   z-index: 1;
   width: 0;
   content: "";
@@ -4199,6 +4201,28 @@ body {
   font-weight: 800;
   letter-spacing: 0.045em;
   text-align: center;
+}
+
+.capgemini-image-split-ribbon::before {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 4;
+  width: 4rem;
+  height: 4rem;
+  content: "";
+  background: radial-gradient(
+    circle,
+    var(--capgemini-white) 0 0.43rem,
+    rgba(255, 255, 255, 0.68) 0.43rem 0.58rem,
+    transparent 0.58rem 0.92rem,
+    rgba(255, 255, 255, 0.5) 0.92rem 1.08rem,
+    transparent 1.08rem 1.42rem,
+    rgba(255, 255, 255, 0.3) 1.42rem 1.58rem,
+    transparent 1.58rem
+  );
+  transform: translate(-50%, -50%);
+  pointer-events: none;
 }
 
 .capgemini-image-split-ribbon-side {
