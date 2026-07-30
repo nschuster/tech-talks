@@ -1,0 +1,784 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Upbound Marketplace Providers</title>
+<style>
+:root{--ink:#121a38;--blue:#0070ad;--cyan:#12abdb;--purple:#6e4de6;--line:#d9e1ea;--muted:#64748b;--paper:#f6f8fb}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.4 Inter,Arial,sans-serif}
+header{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:20px;padding:20px 28px;background:rgba(255,255,255,.96);border-bottom:1px solid var(--line);box-shadow:0 8px 24px rgba(18,26,56,.08)}
+.title{min-width:max-content}h1{margin:0;font-size:25px;letter-spacing:-.02em}.eyebrow{display:block;color:var(--purple);font-weight:800;font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+.search{flex:1;position:relative}input{width:100%;padding:13px 16px 13px 44px;border:2px solid var(--line);border-radius:9px;background:#fff;color:var(--ink);font-size:15px;outline:none}input:focus{border-color:var(--cyan);box-shadow:0 0 0 4px rgba(18,171,219,.15)}.search::before{content:'⌕';position:absolute;left:15px;top:4px;font-size:28px;color:var(--blue)}
+.actions{display:flex;align-items:center;gap:12px;white-space:nowrap}#count{font-weight:800;color:var(--blue)}.live{padding:10px 14px;border-radius:7px;background:var(--ink);color:#fff;text-decoration:none;font-weight:700;font-size:13px}
+main{padding:26px 28px 34px}.provider-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.provider-card{display:grid;grid-template-columns:50px minmax(0,1fr);grid-template-rows:auto auto;gap:0 14px;min-height:96px;padding:16px;border:1px solid var(--line);border-left:5px solid var(--purple);border-radius:8px;background:#fff;color:var(--ink);text-decoration:none;box-shadow:0 4px 14px rgba(18,26,56,.06);transition:transform .15s ease,border-color .15s ease,box-shadow .15s ease}
+.provider-card:hover,.provider-card:focus-visible{transform:translateY(-2px);border-color:var(--cyan);box-shadow:0 9px 24px rgba(18,26,56,.14);outline:none}.provider-card img{grid-row:1/3;width:50px;height:50px;align-self:center;object-fit:contain;border-radius:8px;background:#fff}.provider-copy{min-width:0;align-self:end}.provider-copy strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:15px}.provider-copy small{display:block;color:var(--muted);font-size:12px}.provider-version{align-self:start;color:var(--purple);font:700 11px/1.2 ui-monospace,SFMono-Regular,monospace}
+.empty{display:none;padding:60px;text-align:center;color:var(--muted);font-size:18px}footer{padding:0 28px 26px;color:var(--muted);font-size:12px}
+@media(max-width:760px){header{align-items:stretch;flex-direction:column;gap:12px}.actions{justify-content:space-between}}
+</style>
+</head>
+<body>
+<header>
+  <div class="title"><span class="eyebrow">Upbound Marketplace</span><h1>Available providers</h1></div>
+  <label class="search"><input id="filter" type="search" placeholder="Search providers, publishers, or versions" aria-label="Search providers"/></label>
+  <div class="actions"><span><b id="count">150</b> providers</span><a class="live" href="https://marketplace.upbound.io/providers" target="_blank" rel="noopener noreferrer">Open live marketplace ↗</a></div>
+</header>
+<main><div id="grid" class="provider-grid"><a class="provider-card" href="https://marketplace.upbound.io/providers/crossplane-contrib/crossplane-provider-castai/v0.38.0" target="_blank" rel="noopener noreferrer" data-search="crossplane-provider-castai crossplane-contrib v0.38.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/crossplane-contrib/crossplane-provider-castai/v0.38.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>crossplane-provider-castai</strong><small>by crossplane-contrib</small></span>
+      <span class="provider-version">v0.38.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/crossplane-contrib/crossplane-provider-newrelic/v2.0.1" target="_blank" rel="noopener noreferrer" data-search="crossplane-provider-newrelic crossplane-contrib v2.0.1">
+      <img src="https://marketplace.upbound.io/api/packageIcon/crossplane-contrib/crossplane-provider-newrelic/v2.0.1?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>crossplane-provider-newrelic</strong><small>by crossplane-contrib</small></span>
+      <span class="provider-version">v2.0.1</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/spot-by-netapp/crossplane-provider-spot/v0.9.0" target="_blank" rel="noopener noreferrer" data-search="crossplane-provider-spot spot-by-netapp v0.9.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/spot-by-netapp/crossplane-provider-spot/v0.9.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>crossplane-provider-spot</strong><small>by spot-by-netapp</small></span>
+      <span class="provider-version">v0.9.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/yandexcloud/crossplane-provider-yc/v0.14.1" target="_blank" rel="noopener noreferrer" data-search="crossplane-provider-yc yandexcloud v0.14.1">
+      <img src="https://marketplace.upbound.io/api/packageIcon/yandexcloud/crossplane-provider-yc/v0.14.1?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>crossplane-provider-yc</strong><small>by yandexcloud</small></span>
+      <span class="provider-version">v0.14.1</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/multinik/k2cloud/v0.0.14" target="_blank" rel="noopener noreferrer" data-search="k2cloud multinik v0.0.14">
+      <img src="https://marketplace.upbound.io/api/packageIcon/multinik/k2cloud/v0.0.14?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>k2cloud</strong><small>by multinik</small></span>
+      <span class="provider-version">v0.0.14</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/overlock-network/provider-akash/v0.0.17" target="_blank" rel="noopener noreferrer" data-search="provider-akash overlock-network v0.0.17">
+      <img src="https://marketplace.upbound.io/api/packageIcon/overlock-network/provider-akash/v0.0.17?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-akash</strong><small>by overlock-network</small></span>
+      <span class="provider-version">v0.0.17</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/crossplane-contrib/provider-alibaba/v0.6.0" target="_blank" rel="noopener noreferrer" data-search="provider-alibaba crossplane-contrib v0.6.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/crossplane-contrib/provider-alibaba/v0.6.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-alibaba</strong><small>by crossplane-contrib</small></span>
+      <span class="provider-version">v0.6.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/crossplane-contrib/provider-ansible/v0.8.0" target="_blank" rel="noopener noreferrer" data-search="provider-ansible crossplane-contrib v0.8.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/crossplane-contrib/provider-ansible/v0.8.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-ansible</strong><small>by crossplane-contrib</small></span>
+      <span class="provider-version">v0.8.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/jonasz-lasut/provider-anthropic/v1.1.0" target="_blank" rel="noopener noreferrer" data-search="provider-anthropic jonasz-lasut v1.1.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/jonasz-lasut/provider-anthropic/v1.1.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-anthropic</strong><small>by jonasz-lasut</small></span>
+      <span class="provider-version">v1.1.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/crossplane-contrib/provider-argocd/v0.14.3" target="_blank" rel="noopener noreferrer" data-search="provider-argocd crossplane-contrib v0.14.3">
+      <img src="https://marketplace.upbound.io/api/packageIcon/crossplane-contrib/provider-argocd/v0.14.3?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-argocd</strong><small>by crossplane-contrib</small></span>
+      <span class="provider-version">v0.14.3</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/guidewire/provider-artifactory/v2.0.0" target="_blank" rel="noopener noreferrer" data-search="provider-artifactory guidewire v2.0.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/guidewire/provider-artifactory/v2.0.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-artifactory</strong><small>by guidewire</small></span>
+      <span class="provider-version">v2.0.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/jwefers/provider-auth0/v0.8.0" target="_blank" rel="noopener noreferrer" data-search="provider-auth0 jwefers v0.8.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/jwefers/provider-auth0/v0.8.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-auth0</strong><small>by jwefers</small></span>
+      <span class="provider-version">v0.8.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/aviatrix/provider-aviatrix/v3.1.0" target="_blank" rel="noopener noreferrer" data-search="provider-aviatrix aviatrix v3.1.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/aviatrix/provider-aviatrix/v3.1.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-aviatrix</strong><small>by aviatrix</small></span>
+      <span class="provider-version">v3.1.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/crossplane-contrib/provider-aws/v0.58.1" target="_blank" rel="noopener noreferrer" data-search="provider-aws crossplane-contrib v0.58.1">
+      <img src="https://marketplace.upbound.io/api/packageIcon/crossplane-contrib/provider-aws/v0.58.1?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-aws</strong><small>by crossplane-contrib</small></span>
+      <span class="provider-version">v0.58.1</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/valkiriaaquaticamendi/provider-awx-denouche/v1.0.0" target="_blank" rel="noopener noreferrer" data-search="provider-awx-denouche valkiriaaquaticamendi v1.0.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/valkiriaaquaticamendi/provider-awx-denouche/v1.0.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-awx-denouche</strong><small>by valkiriaaquaticamendi</small></span>
+      <span class="provider-version">v1.0.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/upbound/provider-azapi/v2.1.1" target="_blank" rel="noopener noreferrer" data-search="provider-azapi upbound v2.1.1">
+      <img src="https://marketplace.upbound.io/api/packageIcon/upbound/provider-azapi/v2.1.1?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-azapi</strong><small>by upbound</small></span>
+      <span class="provider-version">v2.1.1</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/crossplane-contrib/provider-azure/v0.20.1" target="_blank" rel="noopener noreferrer" data-search="provider-azure crossplane-contrib v0.20.1">
+      <img src="https://marketplace.upbound.io/api/packageIcon/crossplane-contrib/provider-azure/v0.20.1?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-azure</strong><small>by crossplane-contrib</small></span>
+      <span class="provider-version">v0.20.1</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/upbound/provider-azuread/v2.3.2" target="_blank" rel="noopener noreferrer" data-search="provider-azuread upbound v2.3.2">
+      <img src="https://marketplace.upbound.io/api/packageIcon/upbound/provider-azuread/v2.3.2?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-azuread</strong><small>by upbound</small></span>
+      <span class="provider-version">v2.3.2</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/markopolo123/provider-backblaze/v0.2.0" target="_blank" rel="noopener noreferrer" data-search="provider-backblaze markopolo123 v0.2.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/markopolo123/provider-backblaze/v0.2.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-backblaze</strong><small>by markopolo123</small></span>
+      <span class="provider-version">v0.2.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/crossplane-contrib/provider-bitbucket-server/v0.4.0" target="_blank" rel="noopener noreferrer" data-search="provider-bitbucket-server crossplane-contrib v0.4.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/crossplane-contrib/provider-bitbucket-server/v0.4.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-bitbucket-server</strong><small>by crossplane-contrib</small></span>
+      <span class="provider-version">v0.4.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/wildbitca/provider-bunnynet/v0.1.3" target="_blank" rel="noopener noreferrer" data-search="provider-bunnynet wildbitca v0.1.3">
+      <img src="https://marketplace.upbound.io/api/packageIcon/wildbitca/provider-bunnynet/v0.1.3?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-bunnynet</strong><small>by wildbitca</small></span>
+      <span class="provider-version">v0.1.3</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/arturkasperek-org/provider-cassandra/v0.1.2" target="_blank" rel="noopener noreferrer" data-search="provider-cassandra arturkasperek-org v0.1.2">
+      <img src="https://marketplace.upbound.io/api/packageIcon/arturkasperek-org/provider-cassandra/v0.1.2?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-cassandra</strong><small>by arturkasperek-org</small></span>
+      <span class="provider-version">v0.1.2</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/linode/provider-ceph/v1.3.4" target="_blank" rel="noopener noreferrer" data-search="provider-ceph linode v1.3.4">
+      <img src="https://marketplace.upbound.io/api/packageIcon/linode/provider-ceph/v1.3.4?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-ceph</strong><small>by linode</small></span>
+      <span class="provider-version">v1.3.4</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/cilium/provider-cilium/v0.0.3" target="_blank" rel="noopener noreferrer" data-search="provider-cilium cilium v0.0.3">
+      <img src="https://marketplace.upbound.io/api/packageIcon/cilium/provider-cilium/v0.0.3?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-cilium</strong><small>by cilium</small></span>
+      <span class="provider-version">v0.0.3</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/civo/provider-civo/v0.1" target="_blank" rel="noopener noreferrer" data-search="provider-civo civo v0.1">
+      <img src="https://marketplace.upbound.io/api/packageIcon/civo/provider-civo/v0.1?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-civo</strong><small>by civo</small></span>
+      <span class="provider-version">v0.1</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/lansweeper/provider-clickhouse/v0.2.1" target="_blank" rel="noopener noreferrer" data-search="provider-clickhouse lansweeper v0.2.1">
+      <img src="https://marketplace.upbound.io/api/packageIcon/lansweeper/provider-clickhouse/v0.2.1?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-clickhouse</strong><small>by lansweeper</small></span>
+      <span class="provider-version">v0.2.1</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/lansweeper/provider-clickhousedbops/v0.3.1" target="_blank" rel="noopener noreferrer" data-search="provider-clickhousedbops lansweeper v0.3.1">
+      <img src="https://marketplace.upbound.io/api/packageIcon/lansweeper/provider-clickhousedbops/v0.3.1?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-clickhousedbops</strong><small>by lansweeper</small></span>
+      <span class="provider-version">v0.3.1</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/evaneos/provider-cloudamqp/v1.0.1" target="_blank" rel="noopener noreferrer" data-search="provider-cloudamqp evaneos v1.0.1">
+      <img src="https://marketplace.upbound.io/api/packageIcon/evaneos/provider-cloudamqp/v1.0.1?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-cloudamqp</strong><small>by evaneos</small></span>
+      <span class="provider-version">v1.0.1</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/wildbitca/provider-cloudflare/v0.1.5" target="_blank" rel="noopener noreferrer" data-search="provider-cloudflare wildbitca v0.1.5">
+      <img src="https://marketplace.upbound.io/api/packageIcon/wildbitca/provider-cloudflare/v0.1.5?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-cloudflare</strong><small>by wildbitca</small></span>
+      <span class="provider-version">v0.1.5</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/onzack-ag/provider-cloudscale/v0.1.5" target="_blank" rel="noopener noreferrer" data-search="provider-cloudscale onzack-ag v0.1.5">
+      <img src="https://marketplace.upbound.io/api/packageIcon/onzack-ag/provider-cloudscale/v0.1.5?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-cloudscale</strong><small>by onzack-ag</small></span>
+      <span class="provider-version">v0.1.5</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/vshn/provider-cloudscale/v0.5.11" target="_blank" rel="noopener noreferrer" data-search="provider-cloudscale vshn v0.5.11">
+      <img src="https://marketplace.upbound.io/api/packageIcon/vshn/provider-cloudscale/v0.5.11?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-cloudscale</strong><small>by vshn</small></span>
+      <span class="provider-version">v0.5.11</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/ankasoftco/provider-cmdb/v0.0.1" target="_blank" rel="noopener noreferrer" data-search="provider-cmdb ankasoftco v0.0.1">
+      <img src="https://marketplace.upbound.io/api/packageIcon/ankasoftco/provider-cmdb/v0.0.1?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-cmdb</strong><small>by ankasoftco</small></span>
+      <span class="provider-version">v0.0.1</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/crossplane-contrib/provider-confluent/v1.0.0" target="_blank" rel="noopener noreferrer" data-search="provider-confluent crossplane-contrib v1.0.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/crossplane-contrib/provider-confluent/v1.0.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-confluent</strong><small>by crossplane-contrib</small></span>
+      <span class="provider-version">v1.0.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/akuity/provider-crossplane-akuity/v0.4.3" target="_blank" rel="noopener noreferrer" data-search="provider-crossplane-akuity akuity v0.4.3">
+      <img src="https://marketplace.upbound.io/api/packageIcon/akuity/provider-crossplane-akuity/v0.4.3?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-crossplane-akuity</strong><small>by akuity</small></span>
+      <span class="provider-version">v0.4.3</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/mgeorge67701/provider-crossplane-terraform/3.3.1" target="_blank" rel="noopener noreferrer" data-search="provider-crossplane-terraform mgeorge67701 3.3.1">
+      <img src="https://marketplace.upbound.io/api/packageIcon/mgeorge67701/provider-crossplane-terraform/3.3.1?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-crossplane-terraform</strong><small>by mgeorge67701</small></span>
+      <span class="provider-version">3.3.1</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/rropen/provider-cscdm/v0.1.0" target="_blank" rel="noopener noreferrer" data-search="provider-cscdm rropen v0.1.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/rropen/provider-cscdm/v0.1.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-cscdm</strong><small>by rropen</small></span>
+      <span class="provider-version">v0.1.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/lalanne/provider-databricks/v2.4.2" target="_blank" rel="noopener noreferrer" data-search="provider-databricks lalanne v2.4.2">
+      <img src="https://marketplace.upbound.io/api/packageIcon/lalanne/provider-databricks/v2.4.2?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-databricks</strong><small>by lalanne</small></span>
+      <span class="provider-version">v2.4.2</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/upbound/provider-databricks/v0.1.9" target="_blank" rel="noopener noreferrer" data-search="provider-databricks upbound v0.1.9">
+      <img src="https://marketplace.upbound.io/api/packageIcon/upbound/provider-databricks/v0.1.9?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-databricks</strong><small>by upbound</small></span>
+      <span class="provider-version">v0.1.9</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/upbound/provider-datadog/v0.3.0" target="_blank" rel="noopener noreferrer" data-search="provider-datadog upbound v0.3.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/upbound/provider-datadog/v0.3.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-datadog</strong><small>by upbound</small></span>
+      <span class="provider-version">v0.3.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/loafoe/provider-dex/v1.13.0" target="_blank" rel="noopener noreferrer" data-search="provider-dex loafoe v1.13.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/loafoe/provider-dex/v1.13.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-dex</strong><small>by loafoe</small></span>
+      <span class="provider-version">v1.13.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/funnelflux/provider-dfcloud/v0.1.3" target="_blank" rel="noopener noreferrer" data-search="provider-dfcloud funnelflux v0.1.3">
+      <img src="https://marketplace.upbound.io/api/packageIcon/funnelflux/provider-dfcloud/v0.1.3?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-dfcloud</strong><small>by funnelflux</small></span>
+      <span class="provider-version">v0.1.3</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/digitalocean/provider-digitalocean/v0.2.0" target="_blank" rel="noopener noreferrer" data-search="provider-digitalocean digitalocean v0.2.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/digitalocean/provider-digitalocean/v0.2.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-digitalocean</strong><small>by digitalocean</small></span>
+      <span class="provider-version">v0.2.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/exoscale/provider-exoscale/v0.1.0" target="_blank" rel="noopener noreferrer" data-search="provider-exoscale exoscale v0.1.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/exoscale/provider-exoscale/v0.1.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-exoscale</strong><small>by exoscale</small></span>
+      <span class="provider-version">v0.1.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/vshn/provider-exoscale/v1.0.3" target="_blank" rel="noopener noreferrer" data-search="provider-exoscale vshn v1.0.3">
+      <img src="https://marketplace.upbound.io/api/packageIcon/vshn/provider-exoscale/v1.0.3?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-exoscale</strong><small>by vshn</small></span>
+      <span class="provider-version">v1.0.3</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/upbound/provider-f5xc/v0.1.3" target="_blank" rel="noopener noreferrer" data-search="provider-f5xc upbound v0.1.3">
+      <img src="https://marketplace.upbound.io/api/packageIcon/upbound/provider-f5xc/v0.1.3?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-f5xc</strong><small>by upbound</small></span>
+      <span class="provider-version">v0.1.3</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/crossplane-contrib/provider-family-alibabacloud/v1.3.0" target="_blank" rel="noopener noreferrer" data-search="provider-family-alibabacloud crossplane-contrib v1.3.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/crossplane-contrib/provider-family-alibabacloud/v1.3.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-family-alibabacloud</strong><small>by crossplane-contrib</small></span>
+      <span class="provider-version">v1.3.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/upbound/provider-family-aws/v2.6.3" target="_blank" rel="noopener noreferrer" data-search="provider-family-aws upbound v2.6.3">
+      <img src="https://marketplace.upbound.io/api/packageIcon/upbound/provider-family-aws/v2.6.3?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-family-aws</strong><small>by upbound</small></span>
+      <span class="provider-version">v2.6.3</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/upbound/provider-family-azure/v2.6.2" target="_blank" rel="noopener noreferrer" data-search="provider-family-azure upbound v2.6.2">
+      <img src="https://marketplace.upbound.io/api/packageIcon/upbound/provider-family-azure/v2.6.2?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-family-azure</strong><small>by upbound</small></span>
+      <span class="provider-version">v2.6.2</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/wildbitca/provider-family-bunnynet/v0.2.4" target="_blank" rel="noopener noreferrer" data-search="provider-family-bunnynet wildbitca v0.2.4">
+      <img src="https://marketplace.upbound.io/api/packageIcon/wildbitca/provider-family-bunnynet/v0.2.4?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-family-bunnynet</strong><small>by wildbitca</small></span>
+      <span class="provider-version">v0.2.4</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/wildbitca/provider-family-cloudflare/v0.2.14" target="_blank" rel="noopener noreferrer" data-search="provider-family-cloudflare wildbitca v0.2.14">
+      <img src="https://marketplace.upbound.io/api/packageIcon/wildbitca/provider-family-cloudflare/v0.2.14?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-family-cloudflare</strong><small>by wildbitca</small></span>
+      <span class="provider-version">v0.2.14</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/upbound/provider-family-gcp/v2.6.2" target="_blank" rel="noopener noreferrer" data-search="provider-family-gcp upbound v2.6.2">
+      <img src="https://marketplace.upbound.io/api/packageIcon/upbound/provider-family-gcp/v2.6.2?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-family-gcp</strong><small>by upbound</small></span>
+      <span class="provider-version">v2.6.2</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/upbound/provider-family-gcp-beta/v1.1.1" target="_blank" rel="noopener noreferrer" data-search="provider-family-gcp-beta upbound v1.1.1">
+      <img src="https://marketplace.upbound.io/api/packageIcon/upbound/provider-family-gcp-beta/v1.1.1?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-family-gcp-beta</strong><small>by upbound</small></span>
+      <span class="provider-version">v1.1.1</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/upbound/provider-family-oci/v0.1.10" target="_blank" rel="noopener noreferrer" data-search="provider-family-oci upbound v0.1.10">
+      <img src="https://marketplace.upbound.io/api/packageIcon/upbound/provider-family-oci/v0.1.10?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-family-oci</strong><small>by upbound</small></span>
+      <span class="provider-version">v0.1.10</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/wildbitca/provider-family-supabase/v0.2.1" target="_blank" rel="noopener noreferrer" data-search="provider-family-supabase wildbitca v0.2.1">
+      <img src="https://marketplace.upbound.io/api/packageIcon/wildbitca/provider-family-supabase/v0.2.1?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-family-supabase</strong><small>by wildbitca</small></span>
+      <span class="provider-version">v0.2.1</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/frangipaneteam/provider-flexibleengine/v0.4.2" target="_blank" rel="noopener noreferrer" data-search="provider-flexibleengine frangipaneteam v0.4.2">
+      <img src="https://marketplace.upbound.io/api/packageIcon/frangipaneteam/provider-flexibleengine/v0.4.2?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-flexibleengine</strong><small>by frangipaneteam</small></span>
+      <span class="provider-version">v0.4.2</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/useful/provider-garage/v1.0.4" target="_blank" rel="noopener noreferrer" data-search="provider-garage useful v1.0.4">
+      <img src="https://marketplace.upbound.io/api/packageIcon/useful/provider-garage/v1.0.4?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-garage</strong><small>by useful</small></span>
+      <span class="provider-version">v1.0.4</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/crossplane-contrib/provider-gcp/v0.22.0" target="_blank" rel="noopener noreferrer" data-search="provider-gcp crossplane-contrib v0.22.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/crossplane-contrib/provider-gcp/v0.22.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-gcp</strong><small>by crossplane-contrib</small></span>
+      <span class="provider-version">v0.22.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/loafoe/provider-gf/v0.10.0" target="_blank" rel="noopener noreferrer" data-search="provider-gf loafoe v0.10.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/loafoe/provider-gf/v0.10.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-gf</strong><small>by loafoe</small></span>
+      <span class="provider-version">v0.10.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/coopnorge/provider-github/v0.13.0" target="_blank" rel="noopener noreferrer" data-search="provider-github coopnorge v0.13.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/coopnorge/provider-github/v0.13.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-github</strong><small>by coopnorge</small></span>
+      <span class="provider-version">v0.13.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/xunholy/provider-github/v0.1.8" target="_blank" rel="noopener noreferrer" data-search="provider-github xunholy v0.1.8">
+      <img src="https://marketplace.upbound.io/api/packageIcon/xunholy/provider-github/v0.1.8?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-github</strong><small>by xunholy</small></span>
+      <span class="provider-version">v0.1.8</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/crossplane-contrib/provider-gitlab/v0.21.0" target="_blank" rel="noopener noreferrer" data-search="provider-gitlab crossplane-contrib v0.21.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/crossplane-contrib/provider-gitlab/v0.21.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-gitlab</strong><small>by crossplane-contrib</small></span>
+      <span class="provider-version">v0.21.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/grafana/provider-grafana/v2.13.0" target="_blank" rel="noopener noreferrer" data-search="provider-grafana grafana v2.13.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/grafana/provider-grafana/v2.13.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-grafana</strong><small>by grafana</small></span>
+      <span class="provider-version">v2.13.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/platformrelay/provider-gridscale/v0.3.0" target="_blank" rel="noopener noreferrer" data-search="provider-gridscale platformrelay v0.3.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/platformrelay/provider-gridscale/v0.3.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-gridscale</strong><small>by platformrelay</small></span>
+      <span class="provider-version">v0.3.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/groundcover-com/provider-groundcover/v0.7.0" target="_blank" rel="noopener noreferrer" data-search="provider-groundcover groundcover-com v0.7.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/groundcover-com/provider-groundcover/v0.7.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-groundcover</strong><small>by groundcover-com</small></span>
+      <span class="provider-version">v0.7.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/globallogicuki/provider-harbor/v3.11.2" target="_blank" rel="noopener noreferrer" data-search="provider-harbor globallogicuki v3.11.2">
+      <img src="https://marketplace.upbound.io/api/packageIcon/globallogicuki/provider-harbor/v3.11.2?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-harbor</strong><small>by globallogicuki</small></span>
+      <span class="provider-version">v3.11.2</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/crossplane-contrib/provider-helm/v1.3.0" target="_blank" rel="noopener noreferrer" data-search="provider-helm crossplane-contrib v1.3.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/crossplane-contrib/provider-helm/v1.3.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-helm</strong><small>by crossplane-contrib</small></span>
+      <span class="provider-version">v1.3.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/upbound/provider-helm/v1.3.1" target="_blank" rel="noopener noreferrer" data-search="provider-helm upbound v1.3.1">
+      <img src="https://marketplace.upbound.io/api/packageIcon/upbound/provider-helm/v1.3.1?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-helm</strong><small>by upbound</small></span>
+      <span class="provider-version">v1.3.1</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/miaits/provider-hetzner/v0.2.0" target="_blank" rel="noopener noreferrer" data-search="provider-hetzner miaits v0.2.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/miaits/provider-hetzner/v0.2.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-hetzner</strong><small>by miaits</small></span>
+      <span class="provider-version">v0.2.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/philips-software/provider-hsdp/v0.71.0" target="_blank" rel="noopener noreferrer" data-search="provider-hsdp philips-software v0.71.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/philips-software/provider-hsdp/v0.71.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-hsdp</strong><small>by philips-software</small></span>
+      <span class="provider-version">v0.71.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/crossplane-contrib/provider-http/v1.0.14" target="_blank" rel="noopener noreferrer" data-search="provider-http crossplane-contrib v1.0.14">
+      <img src="https://marketplace.upbound.io/api/packageIcon/crossplane-contrib/provider-http/v1.0.14?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-http</strong><small>by crossplane-contrib</small></span>
+      <span class="provider-version">v1.0.14</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/infisical-inc/provider-infisical/v0.1.14" target="_blank" rel="noopener noreferrer" data-search="provider-infisical infisical-inc v0.1.14">
+      <img src="https://marketplace.upbound.io/api/packageIcon/infisical-inc/provider-infisical/v0.1.14?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-infisical</strong><small>by infisical-inc</small></span>
+      <span class="provider-version">v0.1.14</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/crossplane-contrib/provider-infoblox-nios/v0.3.0" target="_blank" rel="noopener noreferrer" data-search="provider-infoblox-nios crossplane-contrib v0.3.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/crossplane-contrib/provider-infoblox-nios/v0.3.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-infoblox-nios</strong><small>by crossplane-contrib</small></span>
+      <span class="provider-version">v0.3.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/ionos-cloud/provider-ionoscloud/v1.2.4" target="_blank" rel="noopener noreferrer" data-search="provider-ionoscloud ionos-cloud v1.2.4">
+      <img src="https://marketplace.upbound.io/api/packageIcon/ionos-cloud/provider-ionoscloud/v1.2.4?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-ionoscloud</strong><small>by ionos-cloud</small></span>
+      <span class="provider-version">v1.2.4</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/ankasoftco/provider-jenkins/0.0.2" target="_blank" rel="noopener noreferrer" data-search="provider-jenkins ankasoftco 0.0.2">
+      <img src="https://marketplace.upbound.io/api/packageIcon/ankasoftco/provider-jenkins/0.0.2?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-jenkins</strong><small>by ankasoftco</small></span>
+      <span class="provider-version">0.0.2</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/equinix/provider-jet-equinix/v0.9.0" target="_blank" rel="noopener noreferrer" data-search="provider-jet-equinix equinix v0.9.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/equinix/provider-jet-equinix/v0.9.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-jet-equinix</strong><small>by equinix</small></span>
+      <span class="provider-version">v0.9.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/ankasoftco/provider-jet-vra/v0.1.2" target="_blank" rel="noopener noreferrer" data-search="provider-jet-vra ankasoftco v0.1.2">
+      <img src="https://marketplace.upbound.io/api/packageIcon/ankasoftco/provider-jet-vra/v0.1.2?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-jet-vra</strong><small>by ankasoftco</small></span>
+      <span class="provider-version">v0.1.2</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/hmlkao/provider-jfrog-artifactory/v0.14.0" target="_blank" rel="noopener noreferrer" data-search="provider-jfrog-artifactory hmlkao v0.14.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/hmlkao/provider-jfrog-artifactory/v0.14.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-jfrog-artifactory</strong><small>by hmlkao</small></span>
+      <span class="provider-version">v0.14.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/hmlkao/provider-jfrog-platform/v0.8.0" target="_blank" rel="noopener noreferrer" data-search="provider-jfrog-platform hmlkao v0.8.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/hmlkao/provider-jfrog-platform/v0.8.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-jfrog-platform</strong><small>by hmlkao</small></span>
+      <span class="provider-version">v0.8.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/crossplane-contrib/provider-k3s/v0.1.0" target="_blank" rel="noopener noreferrer" data-search="provider-k3s crossplane-contrib v0.1.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/crossplane-contrib/provider-k3s/v0.1.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-k3s</strong><small>by crossplane-contrib</small></span>
+      <span class="provider-version">v0.1.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/crossplane-contrib/provider-kafka/v1.3.2" target="_blank" rel="noopener noreferrer" data-search="provider-kafka crossplane-contrib v1.3.2">
+      <img src="https://marketplace.upbound.io/api/packageIcon/crossplane-contrib/provider-kafka/v1.3.2?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-kafka</strong><small>by crossplane-contrib</small></span>
+      <span class="provider-version">v1.3.2</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/crossplane-contrib/provider-keycloak/v2.24.0" target="_blank" rel="noopener noreferrer" data-search="provider-keycloak crossplane-contrib v2.24.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/crossplane-contrib/provider-keycloak/v2.24.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-keycloak</strong><small>by crossplane-contrib</small></span>
+      <span class="provider-version">v2.24.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/kingsoftcloud/provider-ksyun/v0.1.0" target="_blank" rel="noopener noreferrer" data-search="provider-ksyun kingsoftcloud v0.1.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/kingsoftcloud/provider-ksyun/v0.1.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-ksyun</strong><small>by kingsoftcloud</small></span>
+      <span class="provider-version">v0.1.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/notone/provider-ksyun/v0.1.7" target="_blank" rel="noopener noreferrer" data-search="provider-ksyun notone v0.1.7">
+      <img src="https://marketplace.upbound.io/api/packageIcon/notone/provider-ksyun/v0.1.7?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-ksyun</strong><small>by notone</small></span>
+      <span class="provider-version">v0.1.7</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/crossplane-contrib/provider-kubernetes/v1.2.1" target="_blank" rel="noopener noreferrer" data-search="provider-kubernetes crossplane-contrib v1.2.1">
+      <img src="https://marketplace.upbound.io/api/packageIcon/crossplane-contrib/provider-kubernetes/v1.2.1?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-kubernetes</strong><small>by crossplane-contrib</small></span>
+      <span class="provider-version">v1.2.1</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/upbound/provider-kubernetes/v1.2.8" target="_blank" rel="noopener noreferrer" data-search="provider-kubernetes upbound v1.2.8">
+      <img src="https://marketplace.upbound.io/api/packageIcon/upbound/provider-kubernetes/v1.2.8?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-kubernetes</strong><small>by upbound</small></span>
+      <span class="provider-version">v1.2.8</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/launchdarkly/provider-launchdarkly/v0.4.0" target="_blank" rel="noopener noreferrer" data-search="provider-launchdarkly launchdarkly v0.4.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/launchdarkly/provider-launchdarkly/v0.4.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-launchdarkly</strong><small>by launchdarkly</small></span>
+      <span class="provider-version">v0.4.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/linode/provider-linode/v0.0.29" target="_blank" rel="noopener noreferrer" data-search="provider-linode linode v0.0.29">
+      <img src="https://marketplace.upbound.io/api/packageIcon/linode/provider-linode/v0.0.29?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-linode</strong><small>by linode</small></span>
+      <span class="provider-version">v0.0.29</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/loafoe/provider-mimir/v0.9.0" target="_blank" rel="noopener noreferrer" data-search="provider-mimir loafoe v0.9.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/loafoe/provider-mimir/v0.9.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-mimir</strong><small>by loafoe</small></span>
+      <span class="provider-version">v0.9.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/alekc/provider-minio/v1.0.1" target="_blank" rel="noopener noreferrer" data-search="provider-minio alekc v1.0.1">
+      <img src="https://marketplace.upbound.io/api/packageIcon/alekc/provider-minio/v1.0.1?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-minio</strong><small>by alekc</small></span>
+      <span class="provider-version">v1.0.1</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/markopolo123/provider-minio/v0.2.1" target="_blank" rel="noopener noreferrer" data-search="provider-minio markopolo123 v0.2.1">
+      <img src="https://marketplace.upbound.io/api/packageIcon/markopolo123/provider-minio/v0.2.1?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-minio</strong><small>by markopolo123</small></span>
+      <span class="provider-version">v0.2.1</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/vshn/provider-minio/v0.4.5" target="_blank" rel="noopener noreferrer" data-search="provider-minio vshn v0.4.5">
+      <img src="https://marketplace.upbound.io/api/packageIcon/vshn/provider-minio/v0.4.5?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-minio</strong><small>by vshn</small></span>
+      <span class="provider-version">v0.4.5</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/crossplane-contrib/provider-mongodbatlas/v1.3.1" target="_blank" rel="noopener noreferrer" data-search="provider-mongodbatlas crossplane-contrib v1.3.1">
+      <img src="https://marketplace.upbound.io/api/packageIcon/crossplane-contrib/provider-mongodbatlas/v1.3.1?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-mongodbatlas</strong><small>by crossplane-contrib</small></span>
+      <span class="provider-version">v1.3.1</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/upbound/provider-nebius/v1.0.1" target="_blank" rel="noopener noreferrer" data-search="provider-nebius upbound v1.0.1">
+      <img src="https://marketplace.upbound.io/api/packageIcon/upbound/provider-nebius/v1.0.1?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-nebius</strong><small>by upbound</small></span>
+      <span class="provider-version">v1.0.1</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/smcavallo/provider-newrelic/v0.1.8" target="_blank" rel="noopener noreferrer" data-search="provider-newrelic smcavallo v0.1.8">
+      <img src="https://marketplace.upbound.io/api/packageIcon/smcavallo/provider-newrelic/v0.1.8?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-newrelic</strong><small>by smcavallo</small></span>
+      <span class="provider-version">v0.1.8</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/crossplane-contrib/provider-nop/v0.5.0" target="_blank" rel="noopener noreferrer" data-search="provider-nop crossplane-contrib v0.5.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/crossplane-contrib/provider-nop/v0.5.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-nop</strong><small>by crossplane-contrib</small></span>
+      <span class="provider-version">v0.5.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/ankasoftco/provider-nsxt/v0.1.0" target="_blank" rel="noopener noreferrer" data-search="provider-nsxt ankasoftco v0.1.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/ankasoftco/provider-nsxt/v0.1.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-nsxt</strong><small>by ankasoftco</small></span>
+      <span class="provider-version">v0.1.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/mgeorge67701/provider-nutanix/v0.2.42" target="_blank" rel="noopener noreferrer" data-search="provider-nutanix mgeorge67701 v0.2.42">
+      <img src="https://marketplace.upbound.io/api/packageIcon/mgeorge67701/provider-nutanix/v0.2.42?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-nutanix</strong><small>by mgeorge67701</small></span>
+      <span class="provider-version">v0.2.42</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/crossplane-contrib/provider-okta/v0.3.0" target="_blank" rel="noopener noreferrer" data-search="provider-okta crossplane-contrib v0.3.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/crossplane-contrib/provider-okta/v0.3.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-okta</strong><small>by crossplane-contrib</small></span>
+      <span class="provider-version">v0.3.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/dkb-bank/provider-opensearch/v0.3.0" target="_blank" rel="noopener noreferrer" data-search="provider-opensearch dkb-bank v0.3.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/dkb-bank/provider-opensearch/v0.3.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-opensearch</strong><small>by dkb-bank</small></span>
+      <span class="provider-version">v0.3.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/tages/provider-opensearch/v1.2.0" target="_blank" rel="noopener noreferrer" data-search="provider-opensearch tages v1.2.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/tages/provider-opensearch/v1.2.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-opensearch</strong><small>by tages</small></span>
+      <span class="provider-version">v1.2.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/crossplane-contrib/provider-openstack/v0.10.0" target="_blank" rel="noopener noreferrer" data-search="provider-openstack crossplane-contrib v0.10.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/crossplane-contrib/provider-openstack/v0.10.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-openstack</strong><small>by crossplane-contrib</small></span>
+      <span class="provider-version">v0.10.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/opentelekomcloud/provider-opentelekomcloud/v0.10.1" target="_blank" rel="noopener noreferrer" data-search="provider-opentelekomcloud opentelekomcloud v0.10.1">
+      <img src="https://marketplace.upbound.io/api/packageIcon/opentelekomcloud/provider-opentelekomcloud/v0.10.1?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-opentelekomcloud</strong><small>by opentelekomcloud</small></span>
+      <span class="provider-version">v0.10.1</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/upbound/provider-opentofu/v1.1.5" target="_blank" rel="noopener noreferrer" data-search="provider-opentofu upbound v1.1.5">
+      <img src="https://marketplace.upbound.io/api/packageIcon/upbound/provider-opentofu/v1.1.5?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-opentofu</strong><small>by upbound</small></span>
+      <span class="provider-version">v1.1.5</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/loafoe/provider-orgmapper/v0.7.0" target="_blank" rel="noopener noreferrer" data-search="provider-orgmapper loafoe v0.7.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/loafoe/provider-orgmapper/v0.7.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-orgmapper</strong><small>by loafoe</small></span>
+      <span class="provider-version">v0.7.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/edixos/provider-ovh/v2.17.0" target="_blank" rel="noopener noreferrer" data-search="provider-ovh edixos v2.17.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/edixos/provider-ovh/v2.17.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-ovh</strong><small>by edixos</small></span>
+      <span class="provider-version">v2.17.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/crossplane-contrib/provider-pagerduty/v1.1.3" target="_blank" rel="noopener noreferrer" data-search="provider-pagerduty crossplane-contrib v1.1.3">
+      <img src="https://marketplace.upbound.io/api/packageIcon/crossplane-contrib/provider-pagerduty/v1.1.3?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-pagerduty</strong><small>by crossplane-contrib</small></span>
+      <span class="provider-version">v1.1.3</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/crossplane-contrib/provider-palette/v0.29.8" target="_blank" rel="noopener noreferrer" data-search="provider-palette crossplane-contrib v0.29.8">
+      <img src="https://marketplace.upbound.io/api/packageIcon/crossplane-contrib/provider-palette/v0.29.8?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-palette</strong><small>by crossplane-contrib</small></span>
+      <span class="provider-version">v0.29.8</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/tages/provider-postgresql/v0.1.0" target="_blank" rel="noopener noreferrer" data-search="provider-postgresql tages v0.1.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/tages/provider-postgresql/v0.1.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-postgresql</strong><small>by tages</small></span>
+      <span class="provider-version">v0.1.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/valkiriaaquaticamendi/provider-proxmox-bpg/v1.18.0" target="_blank" rel="noopener noreferrer" data-search="provider-proxmox-bpg valkiriaaquaticamendi v1.18.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/valkiriaaquaticamendi/provider-proxmox-bpg/v1.18.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-proxmox-bpg</strong><small>by valkiriaaquaticamendi</small></span>
+      <span class="provider-version">v1.18.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/evaneos/provider-rabbitmq/v1.0.1" target="_blank" rel="noopener noreferrer" data-search="provider-rabbitmq evaneos v1.0.1">
+      <img src="https://marketplace.upbound.io/api/packageIcon/evaneos/provider-rabbitmq/v1.0.1?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-rabbitmq</strong><small>by evaneos</small></span>
+      <span class="provider-version">v1.0.1</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/pnowy/provider-rabbitmq/v2.0.1" target="_blank" rel="noopener noreferrer" data-search="provider-rabbitmq pnowy v2.0.1">
+      <img src="https://marketplace.upbound.io/api/packageIcon/pnowy/provider-rabbitmq/v2.0.1?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-rabbitmq</strong><small>by pnowy</small></span>
+      <span class="provider-version">v2.0.1</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/volevanya/provider-rabbitmqtf/v1.10.1" target="_blank" rel="noopener noreferrer" data-search="provider-rabbitmqtf volevanya v1.10.1">
+      <img src="https://marketplace.upbound.io/api/packageIcon/volevanya/provider-rabbitmqtf/v1.10.1?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-rabbitmqtf</strong><small>by volevanya</small></span>
+      <span class="provider-version">v1.10.1</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/disaster37/provider-rancher/v0.1.31" target="_blank" rel="noopener noreferrer" data-search="provider-rancher disaster37 v0.1.31">
+      <img src="https://marketplace.upbound.io/api/packageIcon/disaster37/provider-rancher/v0.1.31?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-rancher</strong><small>by disaster37</small></span>
+      <span class="provider-version">v0.1.31</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/disaster37/provider-rancher2/v2.0.33" target="_blank" rel="noopener noreferrer" data-search="provider-rancher2 disaster37 v2.0.33">
+      <img src="https://marketplace.upbound.io/api/packageIcon/disaster37/provider-rancher2/v2.0.33?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-rancher2</strong><small>by disaster37</small></span>
+      <span class="provider-version">v2.0.33</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/vshn/provider-s3/v0.0.2" target="_blank" rel="noopener noreferrer" data-search="provider-s3 vshn v0.0.2">
+      <img src="https://marketplace.upbound.io/api/packageIcon/vshn/provider-s3/v0.0.2?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-s3</strong><small>by vshn</small></span>
+      <span class="provider-version">v0.0.2</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/scaleway/provider-scaleway/v0.6.0" target="_blank" rel="noopener noreferrer" data-search="provider-scaleway scaleway v0.6.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/scaleway/provider-scaleway/v0.6.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-scaleway</strong><small>by scaleway</small></span>
+      <span class="provider-version">v0.6.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/valkiriaaquaticamendi/provider-snowflake/v1.3.0" target="_blank" rel="noopener noreferrer" data-search="provider-snowflake valkiriaaquaticamendi v1.3.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/valkiriaaquaticamendi/provider-snowflake/v1.3.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-snowflake</strong><small>by valkiriaaquaticamendi</small></span>
+      <span class="provider-version">v1.3.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/crossplane-contrib/provider-sonarqube/v0.13.0" target="_blank" rel="noopener noreferrer" data-search="provider-sonarqube crossplane-contrib v0.13.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/crossplane-contrib/provider-sonarqube/v0.13.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-sonarqube</strong><small>by crossplane-contrib</small></span>
+      <span class="provider-version">v0.13.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/globallogicuki/provider-sonarqube/v0.0.5" target="_blank" rel="noopener noreferrer" data-search="provider-sonarqube globallogicuki v0.0.5">
+      <img src="https://marketplace.upbound.io/api/packageIcon/globallogicuki/provider-sonarqube/v0.0.5?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-sonarqube</strong><small>by globallogicuki</small></span>
+      <span class="provider-version">v0.0.5</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/crossplane-contrib/provider-spotify/v0.2.5" target="_blank" rel="noopener noreferrer" data-search="provider-spotify crossplane-contrib v0.2.5">
+      <img src="https://marketplace.upbound.io/api/packageIcon/crossplane-contrib/provider-spotify/v0.2.5?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-spotify</strong><small>by crossplane-contrib</small></span>
+      <span class="provider-version">v0.2.5</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/denniskniep/provider-springclouddataflow/v0.0.5" target="_blank" rel="noopener noreferrer" data-search="provider-springclouddataflow denniskniep v0.0.5">
+      <img src="https://marketplace.upbound.io/api/packageIcon/denniskniep/provider-springclouddataflow/v0.0.5?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-springclouddataflow</strong><small>by denniskniep</small></span>
+      <span class="provider-version">v0.0.5</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/crossplane-contrib/provider-sql/v0.16.0" target="_blank" rel="noopener noreferrer" data-search="provider-sql crossplane-contrib v0.16.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/crossplane-contrib/provider-sql/v0.16.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-sql</strong><small>by crossplane-contrib</small></span>
+      <span class="provider-version">v0.16.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/intive/provider-stackit/v0.0.1" target="_blank" rel="noopener noreferrer" data-search="provider-stackit intive v0.0.1">
+      <img src="https://marketplace.upbound.io/api/packageIcon/intive/provider-stackit/v0.0.1?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-stackit</strong><small>by intive</small></span>
+      <span class="provider-version">v0.0.1</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/web7/provider-strapi/v0.0.7" target="_blank" rel="noopener noreferrer" data-search="provider-strapi web7 v0.0.7">
+      <img src="https://marketplace.upbound.io/api/packageIcon/web7/provider-strapi/v0.0.7?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-strapi</strong><small>by web7</small></span>
+      <span class="provider-version">v0.0.7</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/valkiriaaquaticamendi/provider-stripe/v1.0.0" target="_blank" rel="noopener noreferrer" data-search="provider-stripe valkiriaaquaticamendi v1.0.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/valkiriaaquaticamendi/provider-stripe/v1.0.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-stripe</strong><small>by valkiriaaquaticamendi</small></span>
+      <span class="provider-version">v1.0.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/crossplane-contrib/provider-styra/v0.3.0" target="_blank" rel="noopener noreferrer" data-search="provider-styra crossplane-contrib v0.3.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/crossplane-contrib/provider-styra/v0.3.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-styra</strong><small>by crossplane-contrib</small></span>
+      <span class="provider-version">v0.3.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/denniskniep/provider-temporal/v1.5.0" target="_blank" rel="noopener noreferrer" data-search="provider-temporal denniskniep v1.5.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/denniskniep/provider-temporal/v1.5.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-temporal</strong><small>by denniskniep</small></span>
+      <span class="provider-version">v1.5.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/arindraaribudi/provider-tencentcloud/v1.82.9" target="_blank" rel="noopener noreferrer" data-search="provider-tencentcloud arindraaribudi v1.82.9">
+      <img src="https://marketplace.upbound.io/api/packageIcon/arindraaribudi/provider-tencentcloud/v1.82.9?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-tencentcloud</strong><small>by arindraaribudi</small></span>
+      <span class="provider-version">v1.82.9</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/crossplane-contrib/provider-tencentcloud/v0.8.6" target="_blank" rel="noopener noreferrer" data-search="provider-tencentcloud crossplane-contrib v0.8.6">
+      <img src="https://marketplace.upbound.io/api/packageIcon/crossplane-contrib/provider-tencentcloud/v0.8.6?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-tencentcloud</strong><small>by crossplane-contrib</small></span>
+      <span class="provider-version">v0.8.6</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/upbound/provider-terraform/v1.1.6" target="_blank" rel="noopener noreferrer" data-search="provider-terraform upbound v1.1.6">
+      <img src="https://marketplace.upbound.io/api/packageIcon/upbound/provider-terraform/v1.1.6?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-terraform</strong><small>by upbound</small></span>
+      <span class="provider-version">v1.1.6</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/upbound/provider-upbound/v1.0.0" target="_blank" rel="noopener noreferrer" data-search="provider-upbound upbound v1.0.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/upbound/provider-upbound/v1.0.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-upbound</strong><small>by upbound</small></span>
+      <span class="provider-version">v1.0.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/upcloud/provider-upcloud/v0.1.1" target="_blank" rel="noopener noreferrer" data-search="provider-upcloud upcloud v0.1.1">
+      <img src="https://marketplace.upbound.io/api/packageIcon/upcloud/provider-upcloud/v0.1.1?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-upcloud</strong><small>by upcloud</small></span>
+      <span class="provider-version">v0.1.1</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/crossplane-contrib/provider-upjet-alibabacloud/v0.6.0" target="_blank" rel="noopener noreferrer" data-search="provider-upjet-alibabacloud crossplane-contrib v0.6.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/crossplane-contrib/provider-upjet-alibabacloud/v0.6.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-upjet-alibabacloud</strong><small>by crossplane-contrib</small></span>
+      <span class="provider-version">v0.6.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/crossplane-contrib/provider-upjet-digitalocean/v1.0.2" target="_blank" rel="noopener noreferrer" data-search="provider-upjet-digitalocean crossplane-contrib v1.0.2">
+      <img src="https://marketplace.upbound.io/api/packageIcon/crossplane-contrib/provider-upjet-digitalocean/v1.0.2?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-upjet-digitalocean</strong><small>by crossplane-contrib</small></span>
+      <span class="provider-version">v1.0.2</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/crossplane-contrib/provider-upjet-ec/v0.3.0" target="_blank" rel="noopener noreferrer" data-search="provider-upjet-ec crossplane-contrib v0.3.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/crossplane-contrib/provider-upjet-ec/v0.3.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-upjet-ec</strong><small>by crossplane-contrib</small></span>
+      <span class="provider-version">v0.3.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/crossplane-contrib/provider-upjet-github/v0.19.1" target="_blank" rel="noopener noreferrer" data-search="provider-upjet-github crossplane-contrib v0.19.1">
+      <img src="https://marketplace.upbound.io/api/packageIcon/crossplane-contrib/provider-upjet-github/v0.19.1?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-upjet-github</strong><small>by crossplane-contrib</small></span>
+      <span class="provider-version">v0.19.1</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/jonasz-lasut/provider-upjet-harbor/v1.0.2" target="_blank" rel="noopener noreferrer" data-search="provider-upjet-harbor jonasz-lasut v1.0.2">
+      <img src="https://marketplace.upbound.io/api/packageIcon/jonasz-lasut/provider-upjet-harbor/v1.0.2?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-upjet-harbor</strong><small>by jonasz-lasut</small></span>
+      <span class="provider-version">v1.0.2</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/ibrahimwithi/provider-upjet-hcloud/v0.1.3" target="_blank" rel="noopener noreferrer" data-search="provider-upjet-hcloud ibrahimwithi v0.1.3">
+      <img src="https://marketplace.upbound.io/api/packageIcon/ibrahimwithi/provider-upjet-hcloud/v0.1.3?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-upjet-hcloud</strong><small>by ibrahimwithi</small></span>
+      <span class="provider-version">v0.1.3</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/ionos-cloud/provider-upjet-ionoscloud/v0.5.6" target="_blank" rel="noopener noreferrer" data-search="provider-upjet-ionoscloud ionos-cloud v0.5.6">
+      <img src="https://marketplace.upbound.io/api/packageIcon/ionos-cloud/provider-upjet-ionoscloud/v0.5.6?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-upjet-ionoscloud</strong><small>by ionos-cloud</small></span>
+      <span class="provider-version">v0.5.6</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/crossplane-contrib/provider-upjet-mysql/v0.4.0" target="_blank" rel="noopener noreferrer" data-search="provider-upjet-mysql crossplane-contrib v0.4.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/crossplane-contrib/provider-upjet-mysql/v0.4.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-upjet-mysql</strong><small>by crossplane-contrib</small></span>
+      <span class="provider-version">v0.4.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/tages/provider-upjet-yc/v2.2.0" target="_blank" rel="noopener noreferrer" data-search="provider-upjet-yc tages v2.2.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/tages/provider-upjet-yc/v2.2.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-upjet-yc</strong><small>by tages</small></span>
+      <span class="provider-version">v2.2.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/crossplane-contrib/provider-upjet-zitadel/v0.1.1" target="_blank" rel="noopener noreferrer" data-search="provider-upjet-zitadel crossplane-contrib v0.1.1">
+      <img src="https://marketplace.upbound.io/api/packageIcon/crossplane-contrib/provider-upjet-zitadel/v0.1.1?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-upjet-zitadel</strong><small>by crossplane-contrib</small></span>
+      <span class="provider-version">v0.1.1</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/upbound/provider-vault/v4.0.2" target="_blank" rel="noopener noreferrer" data-search="provider-vault upbound v4.0.2">
+      <img src="https://marketplace.upbound.io/api/packageIcon/upbound/provider-vault/v4.0.2?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-vault</strong><small>by upbound</small></span>
+      <span class="provider-version">v4.0.2</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/ankasoftco/provider-vcd/v0.1.0" target="_blank" rel="noopener noreferrer" data-search="provider-vcd ankasoftco v0.1.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/ankasoftco/provider-vcd/v0.1.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-vcd</strong><small>by ankasoftco</small></span>
+      <span class="provider-version">v0.1.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/arkilasystems/provider-vcd/v0.3.0" target="_blank" rel="noopener noreferrer" data-search="provider-vcd arkilasystems v0.3.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/arkilasystems/provider-vcd/v0.3.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-vcd</strong><small>by arkilasystems</small></span>
+      <span class="provider-version">v0.3.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/ankasoftco/provider-vsphere/v0.1.0" target="_blank" rel="noopener noreferrer" data-search="provider-vsphere ankasoftco v0.1.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/ankasoftco/provider-vsphere/v0.1.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-vsphere</strong><small>by ankasoftco</small></span>
+      <span class="provider-version">v0.1.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/crossplane-contrib/provider-vultr/v0.2.0" target="_blank" rel="noopener noreferrer" data-search="provider-vultr crossplane-contrib v0.2.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/crossplane-contrib/provider-vultr/v0.2.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-vultr</strong><small>by crossplane-contrib</small></span>
+      <span class="provider-version">v0.2.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/upbound/provider-vultr/v0.2.0" target="_blank" rel="noopener noreferrer" data-search="provider-vultr upbound v0.2.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/upbound/provider-vultr/v0.2.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-vultr</strong><small>by upbound</small></span>
+      <span class="provider-version">v0.2.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/banhcanh/provider-zitadel/v0.9.0" target="_blank" rel="noopener noreferrer" data-search="provider-zitadel banhcanh v0.9.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/banhcanh/provider-zitadel/v0.9.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-zitadel</strong><small>by banhcanh</small></span>
+      <span class="provider-version">v0.9.0</span>
+    </a>
+<a class="provider-card" href="https://marketplace.upbound.io/providers/crossplane-contrib/provider-zpa/v0.4.0" target="_blank" rel="noopener noreferrer" data-search="provider-zpa crossplane-contrib v0.4.0">
+      <img src="https://marketplace.upbound.io/api/packageIcon/crossplane-contrib/provider-zpa/v0.4.0?type=provider" alt="" loading="lazy"/>
+      <span class="provider-copy"><strong>provider-zpa</strong><small>by crossplane-contrib</small></span>
+      <span class="provider-version">v0.4.0</span>
+    </a></div><div id="empty" class="empty">No providers match your search.</div></main>
+<footer>Provider index captured from the Upbound Marketplace on 30 July 2026. Select any provider to open its live Marketplace page.</footer>
+<script>
+const input=document.getElementById('filter');const cards=[...document.querySelectorAll('.provider-card')];const count=document.getElementById('count');const empty=document.getElementById('empty');
+input.addEventListener('input',()=>{const q=input.value.trim().toLowerCase();let visible=0;cards.forEach(card=>{const show=!q||card.dataset.search.includes(q);card.hidden=!show;if(show)visible+=1});count.textContent=visible;empty.style.display=visible?'none':'block'});
+</script>
+</body>
+</html>
