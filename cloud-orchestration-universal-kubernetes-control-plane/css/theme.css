@@ -197,7 +197,8 @@ body {
 .reveal section.limitless-potential-slide {
   --limitless-left-column: 30%;
   --limitless-bleed: 12rem;
-  --limitless-icon-y: 50%;
+  --limitless-icon-x: calc((var(--limitless-left-column) / 2) - 1.4rem);
+  --limitless-icon-y: calc(50% + 0.7rem);
 
   padding-left: calc(var(--limitless-left-column) + 3.5rem) !important;
   padding-bottom: 2.25rem !important;
@@ -297,7 +298,7 @@ body {
 .reveal section.limitless-potential-slide .limitless-potential-video-matte {
   position: absolute;
   top: var(--limitless-icon-y);
-  left: calc(var(--limitless-left-column) / 2);
+  left: var(--limitless-icon-x);
   z-index: 0;
   width: min(14rem, calc(var(--limitless-left-column) * 0.48));
   aspect-ratio: 1;
@@ -311,7 +312,7 @@ body {
 .reveal section.limitless-potential-slide .limitless-potential-kubernetes-icon {
   position: absolute;
   top: var(--limitless-icon-y);
-  left: calc(var(--limitless-left-column) / 2);
+  left: var(--limitless-icon-x);
   z-index: 1;
   width: min(12rem, calc(var(--limitless-left-column) * 0.4));
   height: auto;
