@@ -1908,29 +1908,40 @@ function renderKcpBootstrapLeaderLines() {
     group.dataset.cicdDrawArrowId && document.getElementById(group.dataset.cicdDrawArrowId)?.remove();
     line.removeAttribute('marker-end');
 
-    const clipId = `kcp-bootstrap-draw-clip-${route.id.replace(/[^a-z0-9_-]/gi, '-')}`;
-    const clipPath = document.createElementNS('http://www.w3.org/2000/svg', 'clipPath');
-    clipPath.id = clipId;
-    clipPath.setAttribute('clipPathUnits', 'userSpaceOnUse');
-    const clipRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-    clipRect.setAttribute('x', '0');
-    clipRect.setAttribute('y', '0');
-    clipRect.setAttribute('width', route.revealAxis === 'y' ? gridRect.width : 0);
-    clipRect.setAttribute('height', route.revealAxis === 'y' ? 0 : gridRect.height);
-    clipPath.appendChild(clipRect);
-    defs.appendChild(clipPath);
+    const maskId = `kcp-bootstrap-draw-mask-${route.id.replace(/[^a-z0-9_-]/gi, '-')}`;
+    const drawMask = document.createElementNS('http://www.w3.org/2000/svg', 'mask');
+    drawMask.id = maskId;
+    drawMask.setAttribute('maskUnits', 'userSpaceOnUse');
+    drawMask.setAttribute('x', '0');
+    drawMask.setAttribute('y', '0');
+    drawMask.setAttribute('width', gridRect.width);
+    drawMask.setAttribute('height', gridRect.height);
+    const maskBackground = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    maskBackground.setAttribute('width', gridRect.width);
+    maskBackground.setAttribute('height', gridRect.height);
+    maskBackground.setAttribute('fill', '#000');
+    const maskRoute = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    maskRoute.setAttribute('d', line.getAttribute('d') || '');
+    maskRoute.setAttribute('fill', 'none');
+    maskRoute.setAttribute('stroke', '#fff');
+    maskRoute.setAttribute('stroke-width', '40');
+    maskRoute.setAttribute('stroke-linecap', 'butt');
+    maskRoute.setAttribute('stroke-dasharray', length);
+    maskRoute.setAttribute('stroke-dashoffset', length);
+    drawMask.append(maskBackground, maskRoute);
+    defs.appendChild(drawMask);
 
-    const drawToken = `${clipId}-${window.performance.now().toFixed(3)}`;
-    group.dataset.cicdDrawMaskId = clipId;
+    const drawToken = `${maskId}-${window.performance.now().toFixed(3)}`;
+    group.dataset.cicdDrawMaskId = maskId;
     group.dataset.cicdDrawToken = drawToken;
     group.classList.add('cicd-pipeline-group--drawing');
-    group.setAttribute('clip-path', `url(#${clipId})`);
+    group.setAttribute('mask', `url(#${maskId})`);
 
     const movingArrow = route.marker
       ? document.createElementNS('http://www.w3.org/2000/svg', 'polygon')
       : null;
     if (movingArrow) {
-      const arrowId = `${clipId}-moving-arrow`;
+      const arrowId = `${maskId}-moving-arrow`;
       movingArrow.id = arrowId;
       movingArrow.classList.add('kcp-bootstrap-moving-arrow-head');
       movingArrow.setAttribute('points', '-4,-8 4,0 -4,8 -7,5 -2,0 -7,-5');
@@ -1943,8 +1954,8 @@ function renderKcpBootstrapLeaderLines() {
     const start = window.performance.now();
     const duration = 760;
     const finishDraw = () => {
-      if (group.dataset.cicdDrawMaskId !== clipId || group.dataset.cicdDrawToken !== drawToken) return;
-      group.removeAttribute('clip-path');
+      if (group.dataset.cicdDrawMaskId !== maskId || group.dataset.cicdDrawToken !== drawToken) return;
+      group.removeAttribute('mask');
       group.classList.remove('cicd-pipeline-group--drawing');
       if (route.marker) {
         line.setAttribute('marker-end', route.marker);
@@ -1955,23 +1966,22 @@ function renderKcpBootstrapLeaderLines() {
       delete group.dataset.cicdDrawMaskId;
       delete group.dataset.cicdDrawToken;
       delete group.dataset.cicdDrawArrowId;
-      clipPath.remove();
+      drawMask.remove();
     };
     const drawFrame = (now) => {
-      if (!clipPath.isConnected || group.dataset.cicdDrawMaskId !== clipId || group.dataset.cicdDrawToken !== drawToken) return;
+      if (!drawMask.isConnected || group.dataset.cicdDrawMaskId !== maskId || group.dataset.cicdDrawToken !== drawToken) return;
       const progress = Math.min(1, Math.max(0, (now - start) / duration));
       const eased = easeDraw(progress);
-      if (route.revealAxis === 'y') {
-        clipRect.setAttribute('height', gridRect.height * eased);
-      } else {
-        clipRect.setAttribute('width', gridRect.width * eased);
-      }
+      maskRoute.setAttribute('stroke-dashoffset', length * (1 - eased));
       if (movingArrow && line.getPointAtLength) {
         const distance = Math.min(length, Math.max(0, length * eased));
         const point = line.getPointAtLength(distance);
-        const tangentPoint = line.getPointAtLength(Math.min(length, distance + 1));
-        const angle = Math.atan2(tangentPoint.y - point.y, tangentPoint.x - point.x) * 180 / Math.PI;
+        const tangentInset = Math.max(1, length * 0.002);
+        const tangentStart = line.getPointAtLength(Math.max(0, distance - tangentInset));
+        const tangentEnd = line.getPointAtLength(Math.min(length, distance + tangentInset));
+        const angle = Math.atan2(tangentEnd.y - tangentStart.y, tangentEnd.x - tangentStart.x) * 180 / Math.PI;
         movingArrow.setAttribute('transform', `translate(${point.x.toFixed(2)} ${point.y.toFixed(2)}) rotate(${angle.toFixed(2)}) scale(1.875)`);
+        movingArrow.setAttribute('opacity', progress > 0.01 ? '1' : '0');
       }
       if (progress < 1) {
         window.requestAnimationFrame(drawFrame);
