@@ -1627,6 +1627,7 @@ function renderThreeColumnLeaderLines() {
       index,
       d: makeGridPath(from, to, busX),
       stroke: `url(#${gradientId})`,
+      arrowColor: toColor,
       markerEnd: `url(#three-column-layout-leader-arrow-${index + 1}-${className})`
     };
   };
@@ -1704,9 +1705,62 @@ function renderThreeColumnLeaderLines() {
   } else {
     threeColumnLeaderLineLayer.prepend(defs);
   }
+  const startLeaderArrowDraw = (group, line, spec) => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      line.setAttribute('marker-end', spec.markerEnd);
+      return;
+    }
+    group.dataset.threeColumnDrawArrowId
+      && document.getElementById(group.dataset.threeColumnDrawArrowId)?.remove();
+    line.removeAttribute('marker-end');
+    const drawToken = `${spec.key}-${window.performance.now().toFixed(3)}`;
+    const arrowId = `three-column-layout-moving-arrow-${spec.key}`;
+    const movingArrow = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+    movingArrow.id = arrowId;
+    movingArrow.classList.add('three-column-layout-moving-arrow-head');
+    movingArrow.setAttribute('points', '-4,-8 4,0 -4,8 -7,5 -2,0 -7,-5');
+    movingArrow.setAttribute('fill', spec.arrowColor);
+    movingArrow.setAttribute('opacity', '0');
+    movingArrow.setAttribute('aria-hidden', 'true');
+    group.dataset.threeColumnDrawToken = drawToken;
+    group.dataset.threeColumnDrawArrowId = arrowId;
+    threeColumnLeaderLineLayer.appendChild(movingArrow);
+
+    const totalLength = Math.max(1, line.getTotalLength());
+    const finishDraw = () => {
+      if (group.dataset.threeColumnDrawToken !== drawToken) return;
+      line.setAttribute('marker-end', spec.markerEnd);
+      movingArrow.remove();
+      delete group.dataset.threeColumnDrawToken;
+      delete group.dataset.threeColumnDrawArrowId;
+    };
+    const drawFrame = () => {
+      if (!line.isConnected || group.dataset.threeColumnDrawToken !== drawToken) return;
+      const dashOffset = Number.parseFloat(getComputedStyle(line).strokeDashoffset);
+      const progress = Number.isFinite(dashOffset)
+        ? Math.min(1, Math.max(0, 1 - dashOffset))
+        : 1;
+      const distance = totalLength * progress;
+      const point = line.getPointAtLength(distance);
+      const tangentInset = Math.max(1, totalLength * 0.002);
+      const tangentStart = line.getPointAtLength(Math.max(0, distance - tangentInset));
+      const tangentEnd = line.getPointAtLength(Math.min(totalLength, distance + tangentInset));
+      const angle = Math.atan2(tangentEnd.y - tangentStart.y, tangentEnd.x - tangentStart.x) * 180 / Math.PI;
+      movingArrow.setAttribute('transform', `translate(${point.x.toFixed(2)} ${point.y.toFixed(2)}) rotate(${angle.toFixed(2)}) scale(1.875)`);
+      movingArrow.setAttribute('opacity', progress > 0.01 ? '1' : '0');
+      if (progress >= 0.999) {
+        finishDraw();
+      } else {
+        window.requestAnimationFrame(drawFrame);
+      }
+    };
+    window.requestAnimationFrame(drawFrame);
+    window.setTimeout(finishDraw, 900);
+  };
   activeSpecs.forEach((spec) => {
     let group = threeColumnLeaderLineLayer.querySelector(`[data-three-column-leader-key="${spec.key}"]`);
     let line = group?.querySelector('.three-column-layout-leader-line');
+    const isNew = !group || !line;
     if (!group || !line) {
       group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
       group.classList.add('three-column-layout-leader-group', spec.className);
@@ -1720,10 +1774,18 @@ function renderThreeColumnLeaderLines() {
     }
     line.setAttribute('d', spec.d);
     line.setAttribute('stroke', spec.stroke);
-    line.setAttribute('marker-end', spec.markerEnd);
+    if (isNew) {
+      startLeaderArrowDraw(group, line, spec);
+    } else if (group.dataset.threeColumnDrawToken) {
+      line.removeAttribute('marker-end');
+    } else {
+      line.setAttribute('marker-end', spec.markerEnd);
+    }
   });
   threeColumnLeaderLineLayer.querySelectorAll('.three-column-layout-leader-group').forEach((group) => {
     if (!activeKeys.has(group.getAttribute('data-three-column-leader-key'))) {
+      group.dataset.threeColumnDrawArrowId
+        && document.getElementById(group.dataset.threeColumnDrawArrowId)?.remove();
       group.remove();
     }
   });
