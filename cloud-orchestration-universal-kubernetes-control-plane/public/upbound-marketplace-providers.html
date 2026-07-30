@@ -777,7 +777,12 @@ main{padding:26px 28px 34px}.provider-grid{display:grid;grid-template-columns:re
     </a></div><div id="empty" class="empty">No providers match your search.</div></main>
 <footer>Provider index captured from the Upbound Marketplace on 30 July 2026. Select any provider to open its live Marketplace page.</footer>
 <script>
-const input=document.getElementById('filter');const cards=[...document.querySelectorAll('.provider-card')];const count=document.getElementById('count');const empty=document.getElementById('empty');
+const input=document.getElementById('filter');const grid=document.getElementById('grid');const cards=[...document.querySelectorAll('.provider-card')];const count=document.getElementById('count');const empty=document.getElementById('empty');
+const relevanceGroups=[['provider-aws','provider-family-aws'],['provider-azure','provider-family-azure'],['provider-gcp','provider-family-gcp'],['provider-alibaba','provider-family-alibabacloud','provider-family-alibaba'],['provider-oci','provider-family-oci'],['provider-kubernetes'],['provider-helm'],['provider-github'],['provider-gitlab'],['provider-grafana'],['provider-datadog'],['provider-argocd'],['provider-vault'],['provider-cloudflare'],['provider-snowflake'],['provider-databricks'],['provider-kafka'],['provider-postgresql']];
+const providerName=card=>card.querySelector('strong').textContent.toLowerCase();
+const relevance=card=>{const name=providerName(card);for(let group=0;group<relevanceGroups.length;group+=1){const variants=relevanceGroups[group];for(let variant=0;variant<variants.length;variant+=1){const prefix=variants[variant];if(name===prefix||name.startsWith(`${prefix}-`))return group*100+variant*10}}return 10000};
+const publisherRank=card=>card.dataset.search.split(' ')[1]==='upbound'?0:card.dataset.search.split(' ')[1]==='crossplane-contrib'?1:2;
+cards.sort((a,b)=>relevance(a)-relevance(b)||publisherRank(a)-publisherRank(b)||providerName(a).localeCompare(providerName(b))||a.dataset.search.localeCompare(b.dataset.search));grid.append(...cards);
 input.addEventListener('input',()=>{const q=input.value.trim().toLowerCase();let visible=0;cards.forEach(card=>{const show=!q||card.dataset.search.includes(q);card.hidden=!show;if(show)visible+=1});count.textContent=visible;empty.style.display=visible?'none':'block'});
 </script>
 </body>

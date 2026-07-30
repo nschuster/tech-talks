@@ -1363,21 +1363,21 @@ body {
   height: 3.1rem;
   margin: 0;
   padding: 0;
-  border: 3px solid var(--capgemini-white);
-  border-radius: 50%;
-  overflow: hidden;
-  background: var(--capgemini-white);
-  box-shadow: 0 0.3rem 0.8rem rgba(0, 0, 0, 0.32);
+  border: 0;
+  overflow: visible;
+  background: transparent;
   cursor: pointer;
-  transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+  transition: transform 160ms ease;
 }
 
 .content-split-marketplace-preview:hover,
 .content-split-marketplace-preview:focus-visible {
   transform: scale(1.08);
-  border-color: var(--capgemini-light-blue);
-  box-shadow: 0 0 0 4px rgba(18, 171, 219, 0.2), 0 0.35rem 0.9rem rgba(0, 0, 0, 0.38);
-  outline: none;
+}
+
+.content-split-marketplace-preview:focus-visible {
+  outline: 2px solid var(--capgemini-light-blue);
+  outline-offset: 0.28rem;
 }
 
 .content-split-marketplace-preview img {
@@ -1385,7 +1385,8 @@ body {
   width: 100%;
   height: 100%;
   margin: 0;
-  object-fit: cover;
+  object-fit: contain;
+  filter: drop-shadow(0 0.18rem 0.2rem rgba(0, 0, 0, 0.4));
 }
 
 .content-split-box-badge {
