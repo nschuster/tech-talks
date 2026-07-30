@@ -1905,6 +1905,7 @@ function renderKcpBootstrapLeaderLines() {
     const defs = kcpBootstrapLeaderLineLayer.querySelector('defs');
     if (!defs) return;
     group.dataset.cicdDrawMaskId && document.getElementById(group.dataset.cicdDrawMaskId)?.remove();
+    group.dataset.cicdDrawArrowId && document.getElementById(group.dataset.cicdDrawArrowId)?.remove();
     line.removeAttribute('marker-end');
 
     const clipId = `kcp-bootstrap-draw-clip-${route.id.replace(/[^a-z0-9_-]/gi, '-')}`;
@@ -1925,6 +1926,20 @@ function renderKcpBootstrapLeaderLines() {
     group.classList.add('cicd-pipeline-group--drawing');
     group.setAttribute('clip-path', `url(#${clipId})`);
 
+    const movingArrow = route.marker
+      ? document.createElementNS('http://www.w3.org/2000/svg', 'polygon')
+      : null;
+    if (movingArrow) {
+      const arrowId = `${clipId}-moving-arrow`;
+      movingArrow.id = arrowId;
+      movingArrow.classList.add('kcp-bootstrap-moving-arrow-head');
+      movingArrow.setAttribute('points', '-4,-8 4,0 -4,8 -7,5 -2,0 -7,-5');
+      movingArrow.setAttribute('fill', route.stroke);
+      movingArrow.setAttribute('aria-hidden', 'true');
+      group.dataset.cicdDrawArrowId = arrowId;
+      kcpBootstrapLeaderLineLayer.appendChild(movingArrow);
+    }
+
     const start = window.performance.now();
     const duration = 760;
     const finishDraw = () => {
@@ -1936,8 +1951,10 @@ function renderKcpBootstrapLeaderLines() {
       } else {
         line.removeAttribute('marker-end');
       }
+      movingArrow?.remove();
       delete group.dataset.cicdDrawMaskId;
       delete group.dataset.cicdDrawToken;
+      delete group.dataset.cicdDrawArrowId;
       clipPath.remove();
     };
     const drawFrame = (now) => {
@@ -1948,6 +1965,13 @@ function renderKcpBootstrapLeaderLines() {
         clipRect.setAttribute('height', gridRect.height * eased);
       } else {
         clipRect.setAttribute('width', gridRect.width * eased);
+      }
+      if (movingArrow && line.getPointAtLength) {
+        const distance = Math.min(length, Math.max(0, length * eased));
+        const point = line.getPointAtLength(distance);
+        const tangentPoint = line.getPointAtLength(Math.min(length, distance + 1));
+        const angle = Math.atan2(tangentPoint.y - point.y, tangentPoint.x - point.x) * 180 / Math.PI;
+        movingArrow.setAttribute('transform', `translate(${point.x.toFixed(2)} ${point.y.toFixed(2)}) rotate(${angle.toFixed(2)}) scale(1.875)`);
       }
       if (progress < 1) {
         window.requestAnimationFrame(drawFrame);
@@ -2199,6 +2223,8 @@ function renderKcpBootstrapLeaderLines() {
       group.dataset.cicdDrawMaskId && document.getElementById(group.dataset.cicdDrawMaskId)?.remove();
       delete group.dataset.cicdDrawMaskId;
       delete group.dataset.cicdDrawToken;
+      group.dataset.cicdDrawArrowId && document.getElementById(group.dataset.cicdDrawArrowId)?.remove();
+      delete group.dataset.cicdDrawArrowId;
       group.remove();
     }
   });
