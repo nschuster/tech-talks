@@ -2487,15 +2487,6 @@ body {
   animation: none;
 }
 
-.cicd-pipeline-line-draw-mask {
-  fill: none;
-  stroke: #ffffff;
-  stroke-width: 33px;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  vector-effect: non-scaling-stroke;
-}
-
 .cicd-pipeline-line-outline {
   stroke-width: 27px;
 }
@@ -2519,7 +2510,6 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .cicd-pipeline-line-outline,
   .cicd-pipeline-line,
-  .cicd-pipeline-line-draw-mask,
   .content-split-xr-leader-draw-mask,
   .content-split-xr-leader-line {
     animation: none;
