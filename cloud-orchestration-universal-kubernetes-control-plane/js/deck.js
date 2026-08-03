@@ -1628,6 +1628,7 @@ function renderThreeColumnLeaderLines() {
       d: makeGridPath(from, to, busX),
       stroke: `url(#${gradientId})`,
       arrowColor: toColor,
+      arrowRevealDistance: Math.abs(busX - from.x) + Math.abs(to.y - from.y),
       markerEnd: `url(#three-column-layout-leader-arrow-${index + 1}-${className})`
     };
   };
@@ -1636,7 +1637,7 @@ function renderThreeColumnLeaderLines() {
     const marker = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
     marker.id = id;
     marker.setAttribute('viewBox', '-8 -8 16 16');
-    marker.setAttribute('refX', '-2');
+    marker.setAttribute('refX', '0');
     marker.setAttribute('refY', '0');
     marker.setAttribute('markerWidth', '30');
     marker.setAttribute('markerHeight', '30');
@@ -1661,7 +1662,8 @@ function renderThreeColumnLeaderLines() {
   const isRevealedFragment = (element) => !element.closest('.fragment:not(.visible)');
   const fromBlue = rightCenter(source);
   const fromYellow = rightCenter(topConfigurationSource);
-  const arrowEndpointInset = 16;
+  const arrowTipExtension = 7.5;
+  const arrowEndpointInset = arrowTipExtension * scaleX;
   const configurationEndpoints = configurationTargets.filter(isRevealedFragment).map((target) => leftCenter(target, arrowEndpointInset));
   const managedEndpoints = managedTargets.filter(isRevealedFragment).map((target) => leftCenter(target, arrowEndpointInset));
   const blueBusX = configurationEndpoints.length
@@ -1699,22 +1701,52 @@ function renderThreeColumnLeaderLines() {
   threeColumnLeaderLineLayer.setAttribute('preserveAspectRatio', 'none');
   const activeSpecs = [...blueLines, ...yellowLines];
   const activeKeys = new Set(activeSpecs.map((spec) => spec.key));
-  const previousDefs = threeColumnLeaderLineLayer.querySelector('defs');
+  defs.classList.add('three-column-layout-static-defs');
+  const previousDefs = threeColumnLeaderLineLayer.querySelector('defs.three-column-layout-static-defs');
   if (previousDefs) {
     previousDefs.replaceWith(defs);
   } else {
     threeColumnLeaderLineLayer.prepend(defs);
   }
+  let drawDefs = threeColumnLeaderLineLayer.querySelector('defs.three-column-layout-draw-defs');
+  if (!drawDefs) {
+    drawDefs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+    drawDefs.classList.add('three-column-layout-draw-defs');
+    threeColumnLeaderLineLayer.prepend(drawDefs);
+  }
+  const easeDraw = (progress) => progress < 0.5
+    ? 2 * progress * progress
+    : 1 - Math.pow(-2 * progress + 2, 2) / 2;
   const startLeaderArrowDraw = (group, line, spec) => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      group.removeAttribute('mask');
       line.setAttribute('marker-end', spec.markerEnd);
       return;
     }
+    group.dataset.threeColumnDrawMaskId
+      && document.getElementById(group.dataset.threeColumnDrawMaskId)?.remove();
     group.dataset.threeColumnDrawArrowId
       && document.getElementById(group.dataset.threeColumnDrawArrowId)?.remove();
     line.removeAttribute('marker-end');
     const drawToken = `${spec.key}-${window.performance.now().toFixed(3)}`;
+    const maskId = `three-column-layout-draw-mask-${spec.key}`;
     const arrowId = `three-column-layout-moving-arrow-${spec.key}`;
+    const drawMask = document.createElementNS('http://www.w3.org/2000/svg', 'mask');
+    drawMask.id = maskId;
+    drawMask.setAttribute('maskUnits', 'userSpaceOnUse');
+    drawMask.setAttribute('x', '0');
+    drawMask.setAttribute('y', '0');
+    drawMask.setAttribute('width', gridWidth);
+    drawMask.setAttribute('height', gridHeight);
+    const maskBackground = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    maskBackground.setAttribute('width', gridWidth);
+    maskBackground.setAttribute('height', gridHeight);
+    maskBackground.setAttribute('fill', '#000');
+    const maskRoute = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    maskRoute.classList.add('three-column-layout-leader-draw-mask');
+    maskRoute.setAttribute('d', spec.d);
+    drawMask.append(maskBackground, maskRoute);
+    drawDefs.appendChild(drawMask);
     const movingArrow = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
     movingArrow.id = arrowId;
     movingArrow.classList.add('three-column-layout-moving-arrow-head');
@@ -1723,58 +1755,72 @@ function renderThreeColumnLeaderLines() {
     movingArrow.setAttribute('opacity', '0');
     movingArrow.setAttribute('aria-hidden', 'true');
     group.dataset.threeColumnDrawToken = drawToken;
+    group.dataset.threeColumnDrawMaskId = maskId;
     group.dataset.threeColumnDrawArrowId = arrowId;
+    group.setAttribute('mask', `url(#${maskId})`);
     threeColumnLeaderLineLayer.appendChild(movingArrow);
 
     const totalLength = Math.max(1, line.getTotalLength());
+    maskRoute.setAttribute('stroke-dasharray', totalLength);
+    maskRoute.setAttribute('stroke-dashoffset', totalLength);
+    const delay = spec.index * 90;
+    const start = window.performance.now() + delay;
+    const duration = 820;
     const finishDraw = () => {
       if (group.dataset.threeColumnDrawToken !== drawToken) return;
+      group.removeAttribute('mask');
       line.setAttribute('marker-end', spec.markerEnd);
       movingArrow.remove();
+      drawMask.remove();
       delete group.dataset.threeColumnDrawToken;
+      delete group.dataset.threeColumnDrawMaskId;
       delete group.dataset.threeColumnDrawArrowId;
     };
-    const drawFrame = () => {
+    const drawFrame = (now) => {
       if (!line.isConnected || group.dataset.threeColumnDrawToken !== drawToken) return;
-      const dashOffset = Number.parseFloat(getComputedStyle(line).strokeDashoffset);
-      const progress = Number.isFinite(dashOffset)
-        ? Math.min(1, Math.max(0, 1 - dashOffset))
-        : 1;
-      const distance = totalLength * progress;
+      const progress = Math.min(1, Math.max(0, (now - start) / duration));
+      const eased = easeDraw(progress);
+      maskRoute.setAttribute('stroke-dashoffset', totalLength * (1 - eased));
+      const distance = totalLength * eased;
       const point = line.getPointAtLength(distance);
       const tangentInset = Math.max(1, totalLength * 0.002);
       const tangentStart = line.getPointAtLength(Math.max(0, distance - tangentInset));
       const tangentEnd = line.getPointAtLength(Math.min(totalLength, distance + tangentInset));
       const angle = Math.atan2(tangentEnd.y - tangentStart.y, tangentEnd.x - tangentStart.x) * 180 / Math.PI;
       movingArrow.setAttribute('transform', `translate(${point.x.toFixed(2)} ${point.y.toFixed(2)}) rotate(${angle.toFixed(2)}) scale(1.875)`);
-      movingArrow.setAttribute('opacity', progress > 0.01 ? '1' : '0');
-      if (progress >= 0.999) {
-        finishDraw();
-      } else {
+      movingArrow.setAttribute('opacity', progress > 0.01 && distance >= spec.arrowRevealDistance ? '1' : '0');
+      if (progress < 1) {
         window.requestAnimationFrame(drawFrame);
+      } else {
+        finishDraw();
       }
     };
     window.requestAnimationFrame(drawFrame);
-    window.setTimeout(finishDraw, 900);
+    window.setTimeout(finishDraw, delay + duration + 80);
   };
   activeSpecs.forEach((spec) => {
     let group = threeColumnLeaderLineLayer.querySelector(`[data-three-column-leader-key="${spec.key}"]`);
-    let line = group?.querySelector('.three-column-layout-leader-line');
-    const isNew = !group || !line;
-    if (!group || !line) {
+    let line = group?.querySelector('.three-column-layout-leader-line:not(.three-column-layout-leader-line--halo)');
+    let outline = group?.querySelector('.three-column-layout-leader-line--halo');
+    const isNew = !group || !line || !outline;
+    if (isNew) {
+      group?.remove();
       group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
       group.classList.add('three-column-layout-leader-group', spec.className);
       group.setAttribute('data-three-column-leader', `${spec.index + 1}`);
       group.setAttribute('data-three-column-leader-key', spec.key);
+      outline = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      outline.classList.add('three-column-layout-leader-line', 'three-column-layout-leader-line--halo');
       line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       line.classList.add('three-column-layout-leader-line');
-      line.setAttribute('pathLength', '1');
-      group.append(line);
+      group.append(outline, line);
       threeColumnLeaderLineLayer.append(group);
     }
+    const geometryChanged = line.getAttribute('d') !== spec.d;
+    outline.setAttribute('d', spec.d);
     line.setAttribute('d', spec.d);
     line.setAttribute('stroke', spec.stroke);
-    if (isNew) {
+    if (isNew || (geometryChanged && group.dataset.threeColumnDrawToken)) {
       startLeaderArrowDraw(group, line, spec);
     } else if (group.dataset.threeColumnDrawToken) {
       line.removeAttribute('marker-end');
@@ -1784,6 +1830,8 @@ function renderThreeColumnLeaderLines() {
   });
   threeColumnLeaderLineLayer.querySelectorAll('.three-column-layout-leader-group').forEach((group) => {
     if (!activeKeys.has(group.getAttribute('data-three-column-leader-key'))) {
+      group.dataset.threeColumnDrawMaskId
+        && document.getElementById(group.dataset.threeColumnDrawMaskId)?.remove();
       group.dataset.threeColumnDrawArrowId
         && document.getElementById(group.dataset.threeColumnDrawArrowId)?.remove();
       group.remove();
