@@ -2490,7 +2490,7 @@ body {
 .cicd-pipeline-line-draw-mask {
   fill: none;
   stroke: #ffffff;
-  stroke-width: 44px;
+  stroke-width: 33px;
   stroke-linecap: round;
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
@@ -2500,11 +2500,11 @@ body {
 }
 
 .cicd-pipeline-line-outline {
-  stroke-width: 36px;
+  stroke-width: 27px;
 }
 
 .cicd-pipeline-line {
-  stroke-width: 26px;
+  stroke-width: 19.5px;
 }
 
 .cicd-control-plane-marker-connector {
