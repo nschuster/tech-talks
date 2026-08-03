@@ -3009,18 +3009,18 @@ body {
 
 .three-column-layout-leader-line--halo {
   stroke: rgba(18, 26, 56, 0.96);
-  stroke-width: 20px;
+  stroke-width: 36px;
   filter: drop-shadow(0 0.12rem 0.2rem rgba(0, 0, 0, 0.38));
 }
 
 .three-column-layout-leader-line:not(.three-column-layout-leader-line--halo) {
-  stroke-width: 12px;
+  stroke-width: 26px;
 }
 
 .three-column-layout-leader-draw-mask {
   fill: none;
   stroke: #ffffff;
-  stroke-width: 28px;
+  stroke-width: 44px;
   stroke-linecap: butt;
   stroke-linejoin: miter;
 }
