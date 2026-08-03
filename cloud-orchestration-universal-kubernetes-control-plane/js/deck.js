@@ -993,15 +993,29 @@ function renderCicdLeaderLines() {
     cicdLeaderLineLayer.insertBefore(connectorGroup, firstPrimaryGroup || null);
   };
 
-  const finishDrawAfterAnimation = (drawElement, finishDraw) => {
+  const animateDrawMask = (drawElement, drawLength, finishDraw, delay = 0, duration = 760) => {
+    const start = window.performance.now() + delay;
+    let timer;
     let finished = false;
     const finishOnce = () => {
       if (finished) return;
       finished = true;
+      if (timer) window.clearInterval(timer);
+      drawElement.setAttribute('stroke-dashoffset', '0');
       finishDraw();
     };
-    drawElement.addEventListener('animationend', finishOnce, { once: true });
-    window.setTimeout(finishOnce, 820);
+    const drawFrame = () => {
+      if (finished) return;
+      const progress = Math.min(1, Math.max(0, (window.performance.now() - start) / duration));
+      const eased = progress < 0.5
+        ? 2 * progress * progress
+        : 1 - ((-2 * progress + 2) ** 2) / 2;
+      drawElement.setAttribute('stroke-dashoffset', `${drawLength * (1 - eased)}`);
+      if (progress >= 1) finishOnce();
+    };
+    drawFrame();
+    timer = window.setInterval(drawFrame, 16);
+    window.setTimeout(finishOnce, delay + duration + 60);
   };
 
   const arrowEndpointInset = 16;
@@ -1044,7 +1058,7 @@ function renderCicdLeaderLines() {
       : shortenLineAttributes(attributes);
   };
 
-  const addDrawMask = (group, tagName, attributes, length) => {
+  const addDrawMask = (group, tagName, attributes, length, delay = 0, duration = 760) => {
     const defs = cicdLeaderLineLayer.querySelector('defs');
     if (!defs) return;
 
@@ -1061,19 +1075,26 @@ function renderCicdLeaderLines() {
     const drawLine = document.createElementNS('http://www.w3.org/2000/svg', tagName);
     drawLine.classList.add('cicd-pipeline-line-draw-mask');
     Object.entries(attributes).forEach(([name, value]) => drawLine.setAttribute(name, value));
-    drawLine.style.setProperty('--cicd-draw-length', Math.max(1, length));
+    const drawLength = Math.max(1, length);
+    drawLine.setAttribute('stroke-dasharray', `${drawLength}`);
+    drawLine.setAttribute('stroke-dashoffset', `${drawLength}`);
     mask.appendChild(drawLine);
     defs.appendChild(mask);
 
     group.dataset.cicdDrawMaskId = maskId;
     group.classList.add('cicd-pipeline-group--drawing');
     group.setAttribute('mask', `url(#${maskId})`);
-    finishDrawAfterAnimation(drawLine, () => {
+    const finishDraw = () => {
       group.removeAttribute('mask');
       group.classList.remove('cicd-pipeline-group--drawing');
       delete group.dataset.cicdDrawMaskId;
       mask.remove();
-    });
+    };
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      finishDraw();
+      return;
+    }
+    animateDrawMask(drawLine, drawLength, finishDraw, delay, duration);
   };
 
   const ensurePipelineGroup = (id) => {
@@ -1099,8 +1120,9 @@ function renderCicdLeaderLines() {
   };
   pipelines.forEach(({ id, points, segmentStrokes = [] }) => {
     const segments = points.slice(0, -1).map((point, index) => [point, points[index + 1], `${id}-${index}`, segmentStrokes[index]]);
+    const segmentDuration = 760 / Math.max(1, segments.length);
 
-    segments.forEach(([start, end, segmentId, segmentStroke]) => {
+    segments.forEach(([start, end, segmentId, segmentStroke], index) => {
       const { group, isNew } = ensurePipelineGroup(segmentId);
       const shouldDash = shouldDashPipelineGroup(segmentId);
       const shouldDraw = shouldDrawPipelineGroup(segmentId);
@@ -1125,12 +1147,22 @@ function renderCicdLeaderLines() {
       });
       outline.setAttribute('stroke', outlineColor);
       setCommonLineAttributes(line, segmentStrokeColor);
-      if (isNew && shouldDraw) addDrawMask(group, 'line', attrs, Math.hypot(attrs.x2 - attrs.x1, attrs.y2 - attrs.y1));
+      if (isNew && shouldDraw) {
+        addDrawMask(
+          group,
+          'line',
+          attrs,
+          Math.hypot(attrs.x2 - attrs.x1, attrs.y2 - attrs.y1),
+          index * segmentDuration,
+          segmentDuration
+        );
+      }
     });
   });
 
   routedPipelines.forEach(({ id, segments }) => {
     const segmentNames = ['start', 'curve', 'end'];
+    const segmentDuration = 760 / Math.max(1, segments.length);
     segments.forEach(({ kind, attributes, length, stroke }, index) => {
       const segmentId = `${id}-${segmentNames[index] || index}`;
       const { group, isNew } = ensurePipelineGroup(segmentId);
@@ -1191,7 +1223,7 @@ function renderCicdLeaderLines() {
       }
       if (isNew && shouldDraw) {
         const segmentLength = length || (line.getTotalLength ? line.getTotalLength() : 1);
-        addDrawMask(group, tagName, attrs, segmentLength);
+        addDrawMask(group, tagName, attrs, segmentLength, index * segmentDuration, segmentDuration);
       }
     });
   });
