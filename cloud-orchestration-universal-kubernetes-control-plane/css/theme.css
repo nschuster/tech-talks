@@ -2490,7 +2490,7 @@ body {
 .cicd-pipeline-line-draw-mask {
   fill: none;
   stroke: #ffffff;
-  stroke-width: 19px;
+  stroke-width: 44px;
   stroke-linecap: round;
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
@@ -2500,11 +2500,11 @@ body {
 }
 
 .cicd-pipeline-line-outline {
-  stroke-width: 17px;
+  stroke-width: 36px;
 }
 
 .cicd-pipeline-line {
-  stroke-width: 9px;
+  stroke-width: 26px;
 }
 
 .cicd-control-plane-marker-connector {
@@ -3009,18 +3009,18 @@ body {
 
 .three-column-layout-leader-line--halo {
   stroke: rgba(18, 26, 56, 0.96);
-  stroke-width: 36px;
+  stroke-width: 20px;
   filter: drop-shadow(0 0.12rem 0.2rem rgba(0, 0, 0, 0.38));
 }
 
 .three-column-layout-leader-line:not(.three-column-layout-leader-line--halo) {
-  stroke-width: 26px;
+  stroke-width: 12px;
 }
 
 .three-column-layout-leader-draw-mask {
   fill: none;
   stroke: #ffffff;
-  stroke-width: 44px;
+  stroke-width: 28px;
   stroke-linecap: butt;
   stroke-linejoin: miter;
 }
