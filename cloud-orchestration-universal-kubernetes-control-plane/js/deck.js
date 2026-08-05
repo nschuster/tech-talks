@@ -1494,6 +1494,7 @@ function renderContentSplitCones() {
   };
   const xrLeaderLines = ({ sourceIcons, targetIcon }) => {
     if (!targetIcon || sourceIcons.length < 8) return { elements: [], startDraws: () => {} };
+    if (!compositeResourceVisible) return { elements: [], startDraws: () => {} };
     const target = rect(targetIcon);
     const targetPoint = (yRatio) => toPane(target.left + target.width * 0.54, target.top + target.height * yRatio);
     const leaderSources = sourceIcons
