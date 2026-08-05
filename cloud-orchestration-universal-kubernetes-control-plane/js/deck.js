@@ -2647,8 +2647,33 @@ function renderKcpPlatformConnections() {
   }
 
   const gridRect = grid.getBoundingClientRect();
-  const argoRect = argoIcon.getBoundingClientRect();
-  const ucpRect = ucpBox.getBoundingClientRect();
+  const getLayoutRect = (element) => {
+    const scaleX = grid.offsetWidth > 0 ? gridRect.width / grid.offsetWidth : 1;
+    const scaleY = grid.offsetHeight > 0 ? gridRect.height / grid.offsetHeight : 1;
+    let left = 0;
+    let top = 0;
+    let current = element;
+    while (current && current !== grid) {
+      left += current.offsetLeft;
+      top += current.offsetTop;
+      current = current.offsetParent;
+    }
+    if (current !== grid) return element.getBoundingClientRect();
+    const width = element.offsetWidth * scaleX;
+    const height = element.offsetHeight * scaleY;
+    const absoluteLeft = gridRect.left + left * scaleX;
+    const absoluteTop = gridRect.top + top * scaleY;
+    return {
+      left: absoluteLeft,
+      top: absoluteTop,
+      right: absoluteLeft + width,
+      bottom: absoluteTop + height,
+      width,
+      height,
+    };
+  };
+  const argoRect = getLayoutRect(argoIcon);
+  const ucpRect = getLayoutRect(ucpBox);
   const githubRect = githubBox.getBoundingClientRect();
   const githubFileRowRect = githubFileRow.getBoundingClientRect();
   const backstageRect = backstageBox.getBoundingClientRect();
@@ -2678,7 +2703,7 @@ function renderKcpPlatformConnections() {
 
   const pt = (x, y) => ({ x: x - gridRect.left, y: y - gridRect.top });
   const ucpIconCenters = ucpIcons.map((icon) => {
-    const rect = icon.getBoundingClientRect();
+    const rect = getLayoutRect(icon);
     return pt(rect.left + rect.width * 0.5, gcpBadgeRect.top + gcpBadgeRect.height * 0.5);
   });
   const argoCenter = pt(argoRect.left + argoRect.width * 0.5, gcpBadgeRect.top + gcpBadgeRect.height * 0.5);
