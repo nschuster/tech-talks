@@ -1249,14 +1249,26 @@ body {
   box-sizing: border-box;
 }
 
-.content-split-cone-layer {
+.content-split-cone-layer,
+.content-split-xr-leader-layer {
   position: absolute;
   inset: 0;
-  z-index: 1;
   width: 100%;
   height: 100%;
   overflow: visible;
   pointer-events: none;
+}
+
+.content-split-cone-layer {
+  z-index: 1;
+}
+
+.content-split-xr-leader-layer {
+  z-index: 1;
+}
+
+.content-split-xr-leader-layer:has(.content-split-xr-leader-group--drawing) {
+  z-index: 4;
 }
 
 .content-split-cone {

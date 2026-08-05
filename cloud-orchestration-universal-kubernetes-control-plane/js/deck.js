@@ -133,6 +133,7 @@ let imageColumnLeaderLineLayer;
 let imageColumnLeaderLineFrame;
 let imageColumnLeaderLineTimeout;
 let contentSplitConeLayer;
+let contentSplitXrLeaderLayer;
 let contentSplitConeUpdateFrame;
 let contentSplitConeUpdateTimeout;
 let threeColumnLeaderLineLayer;
@@ -1316,7 +1317,9 @@ function renderContentSplitCones() {
   const currentSlide = deck.getCurrentSlide();
   if (!currentSlide?.classList.contains('content-split-orientation-slide')) {
     contentSplitConeLayer?.remove();
+    contentSplitXrLeaderLayer?.remove();
     contentSplitConeLayer = undefined;
+    contentSplitXrLeaderLayer = undefined;
     return;
   }
   const pane = currentSlide.querySelector('.content-split-orientation-pane--right');
@@ -1331,7 +1334,7 @@ function renderContentSplitCones() {
   const compositeResourceBlock = currentSlide.querySelector('.content-split-composite-resource-block');
   const compositeResourceVisible = compositeResourceBlock?.classList.contains('visible');
   if (!compositeResourceVisible) contentSplitDrawnXrLeaderIdsBySlide.delete(currentSlide);
-  if (compositeResourceVisible && contentSplitConeLayer?.querySelector('.content-split-xr-leader-group--drawing')) return;
+  if (compositeResourceVisible && contentSplitXrLeaderLayer?.querySelector('.content-split-xr-leader-group--drawing')) return;
 
   if (!contentSplitConeLayer || contentSplitConeLayer.closest('section') !== currentSlide) {
     contentSplitConeLayer?.remove();
@@ -1339,6 +1342,13 @@ function renderContentSplitCones() {
     contentSplitConeLayer.classList.add('content-split-cone-layer');
     contentSplitConeLayer.setAttribute('aria-hidden', 'true');
     pane.prepend(contentSplitConeLayer);
+  }
+  if (!contentSplitXrLeaderLayer || contentSplitXrLeaderLayer.closest('section') !== currentSlide) {
+    contentSplitXrLeaderLayer?.remove();
+    contentSplitXrLeaderLayer = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    contentSplitXrLeaderLayer.classList.add('content-split-xr-leader-layer');
+    contentSplitXrLeaderLayer.setAttribute('aria-hidden', 'true');
+    pane.appendChild(contentSplitXrLeaderLayer);
   }
 
   const paneRect = pane.getBoundingClientRect();
@@ -1368,6 +1378,7 @@ function renderContentSplitCones() {
     ? 2 * t * t
     : 1 - Math.pow(-2 * t + 2, 2) / 2;
   const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+  const xrDefs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
   const xrArrowMarker = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
   xrArrowMarker.id = 'content-split-xr-leader-arrowhead';
   xrArrowMarker.setAttribute('viewBox', '-8 -8 16 16');
@@ -1381,7 +1392,7 @@ function renderContentSplitCones() {
   xrArrowShape.setAttribute('points', '-4,-8 4,0 -4,8 -7,5 -2,0 -7,-5');
   xrArrowShape.setAttribute('fill', getCicdLineColor());
   xrArrowMarker.appendChild(xrArrowShape);
-  defs.appendChild(xrArrowMarker);
+  xrDefs.appendChild(xrArrowMarker);
   const gradient = ({ id, sourceX, targetX, y }) => {
     const gradientElement = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
     gradientElement.id = id;
@@ -1557,7 +1568,7 @@ function renderContentSplitCones() {
       maskRoute.setAttribute('stroke-dasharray', length);
       maskRoute.setAttribute('stroke-dashoffset', length);
       mask.append(maskBackground, maskRoute);
-      defs.appendChild(mask);
+      xrDefs.appendChild(mask);
 
       const marker = line.getAttribute('marker-end');
       line.removeAttribute('marker-end');
@@ -1575,7 +1586,7 @@ function renderContentSplitCones() {
       movingArrow.setAttribute('aria-hidden', 'true');
       movingArrow.setAttribute('opacity', '0');
       group.dataset.contentSplitDrawArrowId = movingArrow.id;
-      contentSplitConeLayer.appendChild(movingArrow);
+      contentSplitXrLeaderLayer.appendChild(movingArrow);
 
       const start = window.performance.now();
       const duration = 760;
@@ -1660,6 +1671,7 @@ function renderContentSplitCones() {
   };
 
   contentSplitConeLayer.setAttribute('viewBox', `0 0 ${pane.offsetWidth} ${pane.offsetHeight}`);
+  contentSplitXrLeaderLayer.setAttribute('viewBox', `0 0 ${pane.offsetWidth} ${pane.offsetHeight}`);
   const cones = [
     cone({ source: rect(k8sIcon), target: rect(boxes[0]), direction: 'left', id: 'content-split-cone-k8s-box' }),
     cone({ source: rect(k8sIcon), target: unionRect(workloadIcons), direction: 'right', id: 'content-split-cone-k8s-resources' }),
@@ -1671,7 +1683,8 @@ function renderContentSplitCones() {
   });
   const entangled = entangledLines({ topIcon: k8sIcon, bottomIcon: crossplaneIcon });
   const xrLeaders = xrLeaderLines({ sourceIcons: resourceIconTargets, targetIcon: compositeCrdIcon });
-  contentSplitConeLayer.replaceChildren(defs, ...cones, ...entangled, ...xrLeaders.elements);
+  contentSplitConeLayer.replaceChildren(defs, ...cones, ...entangled);
+  contentSplitXrLeaderLayer.replaceChildren(xrDefs, ...xrLeaders.elements);
   xrLeaders.startDraws();
 }
 
