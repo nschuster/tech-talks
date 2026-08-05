@@ -1379,6 +1379,8 @@ function renderContentSplitCones() {
     : 1 - Math.pow(-2 * t + 2, 2) / 2;
   const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
   const xrDefs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+  const xrLeaderContent = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  xrLeaderContent.classList.add('content-split-xr-leader-content');
   const xrArrowMarker = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
   xrArrowMarker.id = 'content-split-xr-leader-arrowhead';
   xrArrowMarker.setAttribute('viewBox', '-8 -8 16 16');
@@ -1507,6 +1509,43 @@ function renderContentSplitCones() {
     if (!targetIcon || sourceIcons.length < 8) return { elements: [], startDraws: () => {} };
     if (!compositeResourceVisible) return { elements: [], startDraws: () => {} };
     const target = rect(targetIcon);
+    const targetTopLeft = toPane(target.left, target.top);
+    const targetBottomRight = toPane(target.right, target.bottom);
+    const targetWidth = targetBottomRight.x - targetTopLeft.x;
+    const targetHeight = targetBottomRight.y - targetTopLeft.y;
+    const targetPadding = 3;
+    const xrMaskWidth = Math.max(pane.offsetWidth, targetBottomRight.x + targetPadding);
+    const xrMaskHeight = Math.max(pane.offsetHeight, targetBottomRight.y + targetPadding);
+    const targetOcclusionMask = document.createElementNS('http://www.w3.org/2000/svg', 'mask');
+    targetOcclusionMask.id = 'content-split-xr-target-occlusion-mask';
+    targetOcclusionMask.setAttribute('maskUnits', 'userSpaceOnUse');
+    targetOcclusionMask.setAttribute('x', '0');
+    targetOcclusionMask.setAttribute('y', '0');
+    targetOcclusionMask.setAttribute('width', xrMaskWidth);
+    targetOcclusionMask.setAttribute('height', xrMaskHeight);
+    const targetOcclusionBackground = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    targetOcclusionBackground.setAttribute('width', xrMaskWidth);
+    targetOcclusionBackground.setAttribute('height', xrMaskHeight);
+    targetOcclusionBackground.setAttribute('fill', '#fff');
+    const targetOcclusionHex = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+    const targetLeft = targetTopLeft.x - targetPadding;
+    const targetRight = targetBottomRight.x + targetPadding;
+    const targetTop = targetTopLeft.y - targetPadding;
+    const targetBottom = targetBottomRight.y + targetPadding;
+    const targetMidY = targetTop + (targetBottom - targetTop) * 0.5;
+    const targetShoulder = targetWidth * 0.16;
+    targetOcclusionHex.setAttribute('points', [
+      `${targetLeft + targetShoulder},${targetTop}`,
+      `${targetRight - targetShoulder},${targetTop}`,
+      `${targetRight},${targetMidY}`,
+      `${targetRight - targetShoulder},${targetBottom}`,
+      `${targetLeft + targetShoulder},${targetBottom}`,
+      `${targetLeft},${targetMidY}`
+    ].join(' '));
+    targetOcclusionHex.setAttribute('fill', '#000');
+    targetOcclusionMask.append(targetOcclusionBackground, targetOcclusionHex);
+    xrDefs.appendChild(targetOcclusionMask);
+    xrLeaderContent.setAttribute('mask', `url(#${targetOcclusionMask.id})`);
     const targetPoint = (yRatio) => toPane(target.left + target.width * 0.54, target.top + target.height * yRatio);
     const leaderSources = sourceIcons
       .map((element, index) => ({ element, sourceIndex: index + 1 }))
@@ -1552,11 +1591,11 @@ function renderContentSplitCones() {
       mask.setAttribute('maskUnits', 'userSpaceOnUse');
       mask.setAttribute('x', '0');
       mask.setAttribute('y', '0');
-      mask.setAttribute('width', pane.offsetWidth);
-      mask.setAttribute('height', pane.offsetHeight);
+      mask.setAttribute('width', xrMaskWidth);
+      mask.setAttribute('height', xrMaskHeight);
       const maskBackground = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-      maskBackground.setAttribute('width', pane.offsetWidth);
-      maskBackground.setAttribute('height', pane.offsetHeight);
+      maskBackground.setAttribute('width', xrMaskWidth);
+      maskBackground.setAttribute('height', xrMaskHeight);
       maskBackground.setAttribute('fill', '#000');
       const maskRoute = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       maskRoute.setAttribute('d', line.getAttribute('d') || '');
@@ -1586,7 +1625,7 @@ function renderContentSplitCones() {
       movingArrow.setAttribute('aria-hidden', 'true');
       movingArrow.setAttribute('opacity', '0');
       group.dataset.contentSplitDrawArrowId = movingArrow.id;
-      contentSplitXrLeaderLayer.appendChild(movingArrow);
+      xrLeaderContent.appendChild(movingArrow);
 
       const start = window.performance.now();
       const duration = 760;
@@ -1684,7 +1723,8 @@ function renderContentSplitCones() {
   const entangled = entangledLines({ topIcon: k8sIcon, bottomIcon: crossplaneIcon });
   const xrLeaders = xrLeaderLines({ sourceIcons: resourceIconTargets, targetIcon: compositeCrdIcon });
   contentSplitConeLayer.replaceChildren(defs, ...cones, ...entangled);
-  contentSplitXrLeaderLayer.replaceChildren(xrDefs, ...xrLeaders.elements);
+  xrLeaderContent.prepend(...xrLeaders.elements);
+  contentSplitXrLeaderLayer.replaceChildren(xrDefs, xrLeaderContent);
   xrLeaders.startDraws();
 }
 
