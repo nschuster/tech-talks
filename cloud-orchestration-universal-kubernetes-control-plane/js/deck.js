@@ -1328,7 +1328,10 @@ function renderContentSplitCones() {
   const crdIcons = [...currentSlide.querySelectorAll('.content-split-kubernetes-resource-icon--crd')];
   const compositeCrdIcon = currentSlide.querySelector('.content-split-composite-resource-icon');
   if (!pane || !k8sIcon || !crossplaneIcon || boxes.length < 4 || workloadIcons.length < 2 || !crdIcons.length) return;
-  if (contentSplitConeLayer?.querySelector('.content-split-xr-leader-group--drawing')) return;
+  const compositeResourceBlock = currentSlide.querySelector('.content-split-composite-resource-block');
+  const compositeResourceVisible = compositeResourceBlock?.classList.contains('visible');
+  if (!compositeResourceVisible) contentSplitDrawnXrLeaderIdsBySlide.delete(currentSlide);
+  if (compositeResourceVisible && contentSplitConeLayer?.querySelector('.content-split-xr-leader-group--drawing')) return;
 
   if (!contentSplitConeLayer || contentSplitConeLayer.closest('section') !== currentSlide) {
     contentSplitConeLayer?.remove();
@@ -1361,6 +1364,9 @@ function renderContentSplitCones() {
   const crossplaneYellow = rootStyles.getPropertyValue('--crossplane-yellow').trim() || '#f7cf5a';
   const crossplaneGreen = rootStyles.getPropertyValue('--crossplane-green').trim() || '#69cdbb';
   const kubernetesBlue = '#3f67d5';
+  const easeContentSplitDraw = (t) => t < 0.5
+    ? 2 * t * t
+    : 1 - Math.pow(-2 * t + 2, 2) / 2;
   const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
   const xrArrowMarker = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
   xrArrowMarker.id = 'content-split-xr-leader-arrowhead';
@@ -1487,7 +1493,7 @@ function renderContentSplitCones() {
     return [...halos, ...lines];
   };
   const xrLeaderLines = ({ sourceIcons, targetIcon }) => {
-    if (!targetIcon || sourceIcons.length < 8) return [];
+    if (!targetIcon || sourceIcons.length < 8) return { elements: [], startDraws: () => {} };
     const target = rect(targetIcon);
     const targetPoint = (yRatio) => toPane(target.left + target.width * 0.54, target.top + target.height * yRatio);
     const leaderSources = sourceIcons
@@ -1522,20 +1528,11 @@ function renderContentSplitCones() {
     const smoothPath = (points) => `M ${points[0].x.toFixed(1)} ${points[0].y.toFixed(1)} C ${points[1].x.toFixed(1)} ${points[1].y.toFixed(1)}, ${points[2].x.toFixed(1)} ${points[2].y.toFixed(1)}, ${points[3].x.toFixed(1)} ${points[3].y.toFixed(1)}`;
     const outlineColor = root.dataset.theme === 'light' ? 'rgba(255, 255, 255, 0.92)' : 'rgba(18, 26, 56, 0.98)';
     const lineColor = getCicdLineColor();
-    const shouldDrawNow = targetIcon.closest('.content-split-composite-resource-block')?.classList.contains('visible');
+    const shouldDrawNow = compositeResourceVisible;
     const drawnIds = contentSplitDrawnXrLeaderIdsBySlide.get(currentSlide) || new Set();
     contentSplitDrawnXrLeaderIdsBySlide.set(currentSlide, drawnIds);
-    const finishDrawAfterAnimation = (drawElement, finishDraw) => {
-      let finished = false;
-      const finishOnce = () => {
-        if (finished) return;
-        finished = true;
-        finishDraw();
-      };
-      drawElement.addEventListener('animationend', finishOnce, { once: true });
-      window.setTimeout(finishOnce, 820);
-    };
-    const addDrawAnimation = (group, id, d) => {
+    const pendingDraws = [];
+    const addDrawAnimation = (group, id, line) => {
       if (drawnIds.has(id)) return;
       const maskId = `content-split-xr-leader-draw-mask-${id.replace(/[^a-z0-9_-]/gi, '-')}`;
       const mask = document.createElementNS('http://www.w3.org/2000/svg', 'mask');
@@ -1545,22 +1542,81 @@ function renderContentSplitCones() {
       mask.setAttribute('y', '0');
       mask.setAttribute('width', pane.offsetWidth);
       mask.setAttribute('height', pane.offsetHeight);
-      const drawPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      drawPath.classList.add('content-split-xr-leader-draw-mask');
-      drawPath.setAttribute('d', d);
-      mask.appendChild(drawPath);
-      drawPath.style.setProperty('--cicd-draw-length', Math.max(1, drawPath.getTotalLength ? drawPath.getTotalLength() : 1));
+      const maskBackground = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      maskBackground.setAttribute('width', pane.offsetWidth);
+      maskBackground.setAttribute('height', pane.offsetHeight);
+      maskBackground.setAttribute('fill', '#000');
+      const maskRoute = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      maskRoute.setAttribute('d', line.getAttribute('d') || '');
+      maskRoute.setAttribute('fill', 'none');
+      maskRoute.setAttribute('stroke', '#fff');
+      maskRoute.setAttribute('stroke-width', '24');
+      maskRoute.setAttribute('stroke-linecap', 'butt');
+      const length = Math.max(1, line.getTotalLength ? line.getTotalLength() : 1);
+      maskRoute.setAttribute('stroke-dasharray', length);
+      maskRoute.setAttribute('stroke-dashoffset', length);
+      mask.append(maskBackground, maskRoute);
       defs.appendChild(mask);
+
+      const marker = line.getAttribute('marker-end');
+      line.removeAttribute('marker-end');
+      const drawToken = `${maskId}-${window.performance.now().toFixed(3)}`;
+      group.dataset.contentSplitDrawMaskId = maskId;
+      group.dataset.contentSplitDrawToken = drawToken;
       group.classList.add('content-split-xr-leader-group--drawing');
       group.setAttribute('mask', `url(#${maskId})`);
-      finishDrawAfterAnimation(drawPath, () => {
+
+      const movingArrow = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+      movingArrow.id = `${maskId}-moving-arrow`;
+      movingArrow.classList.add('content-split-xr-leader-moving-arrow');
+      movingArrow.setAttribute('points', '-4,-8 4,0 -4,8 -7,5 -2,0 -7,-5');
+      movingArrow.setAttribute('fill', lineColor);
+      movingArrow.setAttribute('aria-hidden', 'true');
+      movingArrow.setAttribute('opacity', '0');
+      group.dataset.contentSplitDrawArrowId = movingArrow.id;
+      contentSplitConeLayer.appendChild(movingArrow);
+
+      const start = window.performance.now();
+      const duration = 760;
+      const finishDraw = () => {
+        if (group.dataset.contentSplitDrawMaskId !== maskId || group.dataset.contentSplitDrawToken !== drawToken) return;
         group.removeAttribute('mask');
         group.classList.remove('content-split-xr-leader-group--drawing');
+        if (marker) line.setAttribute('marker-end', marker);
+        movingArrow.remove();
+        delete group.dataset.contentSplitDrawMaskId;
+        delete group.dataset.contentSplitDrawToken;
+        delete group.dataset.contentSplitDrawArrowId;
         drawnIds.add(id);
         mask.remove();
-      });
+      };
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        finishDraw();
+        return;
+      }
+      const drawFrame = (now) => {
+        if (!mask.isConnected || group.dataset.contentSplitDrawMaskId !== maskId || group.dataset.contentSplitDrawToken !== drawToken) return;
+        const progress = Math.min(1, Math.max(0, (now - start) / duration));
+        const eased = easeContentSplitDraw(progress);
+        maskRoute.setAttribute('stroke-dashoffset', length * (1 - eased));
+        const distance = Math.min(length, Math.max(0, length * eased));
+        const point = line.getPointAtLength(distance);
+        const tangentInset = Math.max(1, length * 0.002);
+        const tangentStart = line.getPointAtLength(Math.max(0, distance - tangentInset));
+        const tangentEnd = line.getPointAtLength(Math.min(length, distance + tangentInset));
+        const angle = Math.atan2(tangentEnd.y - tangentStart.y, tangentEnd.x - tangentStart.x) * 180 / Math.PI;
+        movingArrow.setAttribute('transform', `translate(${point.x.toFixed(2)} ${point.y.toFixed(2)}) rotate(${angle.toFixed(2)}) scale(1.875)`);
+        movingArrow.setAttribute('opacity', progress > 0.01 ? '1' : '0');
+        if (progress < 1) {
+          window.requestAnimationFrame(drawFrame);
+        } else {
+          finishDraw();
+        }
+      };
+      window.requestAnimationFrame(drawFrame);
+      window.setTimeout(finishDraw, duration + 80);
     };
-    return routes.map((route) => {
+    const elements = routes.map((route) => {
       const d = smoothPath(route.points);
       const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
       group.classList.add('content-split-svg-fragment--3');
@@ -1577,9 +1633,10 @@ function renderContentSplitCones() {
       line.setAttribute('marker-end', 'url(#content-split-xr-leader-arrowhead)');
       line.setAttribute('d', d);
       group.append(outline, line);
-      if (shouldDrawNow) addDrawAnimation(group, `source-${route.sourceIndex}`, d);
+      if (shouldDrawNow) pendingDraws.push(() => addDrawAnimation(group, `source-${route.sourceIndex}`, line));
       return group;
     });
+    return { elements, startDraws: () => pendingDraws.forEach((startDraw) => startDraw()) };
   };
   const cone = ({ source, target, direction, id }) => {
     const centerX = source.left + source.width / 2;
@@ -1613,7 +1670,8 @@ function renderContentSplitCones() {
   });
   const entangled = entangledLines({ topIcon: k8sIcon, bottomIcon: crossplaneIcon });
   const xrLeaders = xrLeaderLines({ sourceIcons: resourceIconTargets, targetIcon: compositeCrdIcon });
-  contentSplitConeLayer.replaceChildren(defs, ...cones, ...entangled, ...xrLeaders);
+  contentSplitConeLayer.replaceChildren(defs, ...cones, ...entangled, ...xrLeaders.elements);
+  xrLeaders.startDraws();
 }
 
 function requestContentSplitConeUpdate() {
