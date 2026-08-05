@@ -1065,7 +1065,7 @@ function renderCicdLeaderLines() {
     maskRoute.setAttribute('d', routePath);
     maskRoute.setAttribute('fill', 'none');
     maskRoute.setAttribute('stroke', '#fff');
-    maskRoute.setAttribute('stroke-width', '40');
+    maskRoute.setAttribute('stroke-width', '20');
     maskRoute.setAttribute('stroke-linecap', 'butt');
     maskRoute.setAttribute('stroke-dasharray', length);
     maskRoute.setAttribute('stroke-dashoffset', length);

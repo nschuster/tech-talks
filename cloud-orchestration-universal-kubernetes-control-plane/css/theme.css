@@ -2488,11 +2488,11 @@ body {
 }
 
 .cicd-pipeline-line-outline {
-  stroke-width: 27px;
+  stroke-width: 13.5px;
 }
 
 .cicd-pipeline-line {
-  stroke-width: 19.5px;
+  stroke-width: 9.75px;
 }
 
 .cicd-control-plane-marker-connector {
