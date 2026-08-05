@@ -71,6 +71,25 @@ function getThemeMenuContent() {
 }
 
 function deckAutoAnimateMatcher(fromSlide, toSlide) {
+  const isKcpPlatformTransition = (
+    fromSlide.classList.contains('kcp-bootstrap-slide--ucp-only')
+      && toSlide.classList.contains('kcp-platform-layout-slide')
+  ) || (
+    fromSlide.classList.contains('kcp-platform-layout-slide')
+      && toSlide.classList.contains('kcp-bootstrap-slide--ucp-only')
+  );
+  if (isKcpPlatformTransition) {
+    const fromBox = fromSlide.querySelector('[data-id="bootstrap-ucp-box"]');
+    const toBox = toSlide.querySelector('[data-id="bootstrap-ucp-box"]');
+    return fromBox && toBox
+      ? [{
+          from: fromBox,
+          to: toBox,
+          options: { measure: (element) => element.getBoundingClientRect() }
+        }]
+      : [];
+  }
+
   const isKcpControlPlaneTransition = fromSlide.classList.contains('kcp-bootstrap-slide--step3-deprovision')
     && toSlide.classList.contains('kcp-bootstrap-slide--step3-deprovision');
   if (!isKcpControlPlaneTransition) return this.getAutoAnimatePairs(fromSlide, toSlide);

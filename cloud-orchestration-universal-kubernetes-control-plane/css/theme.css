@@ -2982,9 +2982,7 @@ body {
 }
 
 .three-column-layout-leader-line--halo {
-  stroke: rgba(18, 26, 56, 0.96);
-  stroke-width: 20px;
-  filter: drop-shadow(0 0.12rem 0.2rem rgba(0, 0, 0, 0.38));
+  display: none;
 }
 
 .three-column-layout-leader-line:not(.three-column-layout-leader-line--halo) {
