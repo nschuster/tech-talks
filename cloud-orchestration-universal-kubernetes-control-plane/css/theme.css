@@ -4830,7 +4830,46 @@ body {
   box-sizing: border-box;
 }
 
-.admission-heading { text-align: left; }
+.admission-heading { position: relative; text-align: left; }
+
+.admission-upgrade-badge {
+  position: absolute;
+  top: 0.22rem;
+  right: 0;
+  padding: 0.38rem 0.7rem;
+  border: 1px solid rgba(126, 215, 247, 0.65);
+  color: var(--capgemini-white);
+  font-size: 0.24em;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  background: linear-gradient(90deg, rgba(0, 112, 173, 0.72), rgba(18, 171, 219, 0.56));
+  box-shadow: 0 0 1.2rem rgba(29, 184, 242, 0.22);
+}
+
+.admission-control-slide--infrastructure .admission-api-server {
+  border-color: rgba(126, 215, 247, 0.72);
+  box-shadow: 0 0 2.2rem rgba(29, 184, 242, 0.16), 0 1rem 2rem rgba(4, 10, 27, 0.24);
+}
+
+.admission-control-slide--infrastructure .admission-request,
+.admission-control-slide--infrastructure .admission-result {
+  border-color: rgba(29, 184, 242, 0.44);
+  background: linear-gradient(180deg, rgba(29, 184, 242, 0.12), rgba(255, 255, 255, 0.03));
+}
+
+.admission-control-slide--infrastructure .admission-server-label {
+  background: linear-gradient(90deg, #0070ad, #12abdb 62%, #7ed7f7);
+}
+
+.admission-control-slide--infrastructure .admission-policy-rail {
+  border-color: rgba(126, 215, 247, 0.68);
+  background: linear-gradient(90deg, rgba(0, 112, 173, 0.24), rgba(29, 184, 242, 0.13));
+}
+
+.admission-control-slide--infrastructure .admission-request-icon {
+  border-color: rgba(126, 215, 247, 0.9);
+  box-shadow: 0 0 1.2rem rgba(29, 184, 242, 0.2);
+}
 
 .admission-heading h2 {
   margin: 0.18rem 0 0;
