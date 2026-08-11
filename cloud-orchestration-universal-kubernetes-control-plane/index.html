@@ -624,6 +624,63 @@ spec:
   <p class="governance-takeaway"><span>THE SHIFT</span> Compliance moves from a periodic pipeline gate to an always-on property of the platform.</p>
 </section>
 
+<section class="admission-control-slide" data-menu-title="Kubernetes Admission Control" data-transition="fade">
+  <div class="governance-background-grid" aria-hidden="true"></div>
+  <header class="admission-heading">
+    <span class="governance-eyebrow">BACKUP · GOVERNANCE ENFORCEMENT</span>
+    <h2>Admission Control: The Policy Checkpoint</h2>
+    <p class="slide-subtitle">Every API change crosses the same governance gates before it can alter the Universal Kubernetes Control Plane.</p>
+  </header>
+
+  <div class="admission-architecture" aria-label="Kubernetes admission control request flow">
+    <article class="admission-endpoint admission-request">
+      <span class="admission-endpoint-kicker">INCOMING</span>
+      <div class="admission-request-icon" aria-hidden="true"><span></span></div>
+      <h3>API CHANGE</h3>
+      <p>Desired state submitted through a governed interface.</p>
+      <div class="admission-source-chips"><span>IDP</span><span>GITOPS</span><span>KUBECTL</span></div>
+    </article>
+
+    <div class="admission-connector" aria-hidden="true"><span></span></div>
+
+    <div class="admission-api-server">
+      <div class="admission-server-label"><img src="assets/icons/kubernetes-light.svg" alt=""/><span>KUBERNETES API SERVER</span></div>
+      <div class="admission-policy-rail">
+        <div class="admission-policy-title"><img src="assets/icons/white/kyverno-white.svg" alt=""/><span><strong>POLICY AS CODE</strong><small>CEL · Kyverno · Gatekeeper</small></span></div>
+        <div class="admission-policy-target"><span>MUTATE</span><span>VALIDATE</span></div>
+      </div>
+      <div class="admission-stages">
+        <article class="admission-stage admission-stage--identity"><span class="admission-stage-number">01</span><h3>AUTHENTICATE</h3><strong>Who is calling?</strong><p>Workload or human identity is verified.</p></article>
+        <article class="admission-stage admission-stage--access"><span class="admission-stage-number">02</span><h3>AUTHORIZE</h3><strong>May they do this?</strong><p>RBAC checks the requested action and scope.</p></article>
+        <article class="admission-stage admission-stage--mutate"><span class="admission-stage-number">03</span><h3>MUTATE</h3><strong>Apply safe defaults</strong><p>Inject labels, ownership and security baselines.</p></article>
+        <article class="admission-stage admission-stage--validate"><span class="admission-stage-number">04</span><h3>VALIDATE</h3><strong>Allow or deny</strong><p>Reject non-compliant configuration with a reason.</p></article>
+      </div>
+      <div class="admission-sequence-note">AUTHENTICATION &amp; AUTHORIZATION <span>BEFORE</span> ADMISSION <span>BEFORE</span> PERSISTENCE</div>
+    </div>
+
+    <div class="admission-connector" aria-hidden="true"><span></span></div>
+
+    <article class="admission-endpoint admission-result">
+      <span class="admission-endpoint-kicker">OUTCOME</span>
+      <div class="admission-result-state admission-result-state--accepted"><span>✓</span><strong>ADMITTED</strong><small>Persist desired state and reconcile</small></div>
+      <div class="admission-result-divider">OR</div>
+      <div class="admission-result-state admission-result-state--denied"><span>×</span><strong>DENIED</strong><small>Return policy violation and remediation</small></div>
+    </article>
+  </div>
+
+  <div class="admission-evidence">
+    <div class="admission-evidence-title"><strong>AUDIT EVIDENCE</strong><small>Every decision is explainable and attributable</small></div>
+    <div class="admission-evidence-fields"><span>IDENTITY</span><span>RESOURCE</span><span>POLICY + VERSION</span><span>DECISION</span><span>REASON</span><span>TIMESTAMP</span></div>
+  </div>
+
+  <div class="admission-outcomes" aria-label="Governance and compliance benefits">
+    <span><strong>PREVENT</strong> unsafe configuration before it exists</span>
+    <span><strong>STANDARDIZE</strong> defaults across teams and clouds</span>
+    <span><strong>PROVE</strong> control effectiveness with decision evidence</span>
+  </div>
+  <p class="admission-takeaway"><span>CONTROL-PLANE ADVANTAGE</span> The same checkpoint governs Kubernetes resources, Composite Resources and cloud Managed Resources.</p>
+</section>
+
 </div>
 </div>
 <script src="js/deck.js" type="module"></script>
