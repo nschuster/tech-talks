@@ -5,9 +5,14 @@ import '../node_modules/reveal.js/dist/plugin/highlight/monokai.css';
 import '../css/menu-overrides.css';
 import RevealMenu from '../node_modules/reveal.js-menu/plugin.js';
 import windows95LaunchVideoUrl from '../assets/videos/windows_95_launch.mp4?url';
+import awsS3LaunchVideoUrl from '../assets/videos/aws_s3_launch.mp4?url';
 
 document.querySelectorAll('.timeline-target-preview').forEach((link) => {
   link.setAttribute('href', windows95LaunchVideoUrl);
+});
+
+document.querySelectorAll('.timeline-s3-target-preview').forEach((link) => {
+  link.setAttribute('href', awsS3LaunchVideoUrl);
 });
 
 // Global confidentiality level for the complete deck.
