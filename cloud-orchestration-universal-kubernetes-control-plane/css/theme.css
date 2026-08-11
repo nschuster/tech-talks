@@ -386,6 +386,42 @@ body {
   pointer-events: none;
 }
 
+.reveal section.limitless-potential-slide .limitless-potential-landscape-preview {
+  position: absolute;
+  top: calc(var(--limitless-icon-y) + 4.55rem);
+  left: calc(var(--limitless-icon-x) + 4.55rem);
+  z-index: 4;
+  display: block;
+  width: 4rem;
+  height: 4rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: visible;
+  background: transparent;
+  cursor: pointer;
+  transition: transform 160ms ease;
+}
+
+.limitless-potential-landscape-preview:hover,
+.limitless-potential-landscape-preview:focus-visible {
+  transform: scale(1.08);
+}
+
+.limitless-potential-landscape-preview:focus-visible {
+  outline: 2px solid var(--capgemini-light-blue);
+  outline-offset: 0.28rem;
+}
+
+.limitless-potential-landscape-preview img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  object-fit: contain;
+  filter: drop-shadow(0 0.18rem 0.2rem rgba(0, 0, 0, 0.4));
+}
+
 .reveal section.limitless-potential-slide h2,
 .reveal section.limitless-potential-slide .slide-subtitle,
 .reveal section.limitless-potential-slide .limitless-potential-copy,
