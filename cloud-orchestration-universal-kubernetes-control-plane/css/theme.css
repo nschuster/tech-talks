@@ -1690,7 +1690,7 @@ body {
 .reveal section.timeline-state--1 .timeline-target-preview {
   position: absolute;
   top: 41px;
-  left: calc(25% + 72px);
+  left: calc(25% - 24px);
   z-index: 8;
   display: block;
   width: 96px;
@@ -1700,8 +1700,8 @@ body {
   overflow: hidden;
   border: 0;
   border-radius: 50%;
-  background: var(--capgemini-white);
-  box-shadow: 0 0.35rem 0.9rem rgba(18, 26, 56, 0.34);
+  background: transparent;
+  box-shadow: none;
   cursor: pointer;
   transform: translate(-50%, -50%);
   transition: transform 160ms ease, box-shadow 160ms ease;
@@ -1709,7 +1709,6 @@ body {
 
 .reveal section.timeline-state--1 .timeline-target-preview:hover,
 .reveal section.timeline-state--1 .timeline-target-preview:focus-visible {
-  box-shadow: 0 0.45rem 1.1rem rgba(18, 26, 56, 0.44);
   transform: translate(-50%, -50%) scale(1.08);
 }
 
@@ -1724,6 +1723,7 @@ body {
   height: 100%;
   margin: 0;
   object-fit: contain;
+  filter: drop-shadow(0 0.22rem 0.32rem rgba(18, 26, 56, 0.42));
 }
 
 .timeline-state--2 .timeline-bar {
