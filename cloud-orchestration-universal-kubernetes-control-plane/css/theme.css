@@ -1687,6 +1687,45 @@ body {
   background: var(--timeline-1990s);
 }
 
+.reveal section.timeline-state--1 .timeline-target-preview {
+  position: absolute;
+  top: 41px;
+  left: calc(25% + 72px);
+  z-index: 8;
+  display: block;
+  width: 96px;
+  height: 96px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: 50%;
+  background: var(--capgemini-white);
+  box-shadow: 0 0.35rem 0.9rem rgba(18, 26, 56, 0.34);
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.reveal section.timeline-state--1 .timeline-target-preview:hover,
+.reveal section.timeline-state--1 .timeline-target-preview:focus-visible {
+  box-shadow: 0 0.45rem 1.1rem rgba(18, 26, 56, 0.44);
+  transform: translate(-50%, -50%) scale(1.08);
+}
+
+.reveal section.timeline-state--1 .timeline-target-preview:focus-visible {
+  outline: 3px solid var(--capgemini-light-blue);
+  outline-offset: 0.22rem;
+}
+
+.reveal section.timeline-state--1 .timeline-target-preview img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  object-fit: contain;
+}
+
 .timeline-state--2 .timeline-bar {
   width: 50%;
   background: linear-gradient(90deg, var(--timeline-1990s) 0%, var(--timeline-1990s) 18%, var(--timeline-2000s) 59%, var(--timeline-2000s) 100%);

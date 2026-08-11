@@ -4,6 +4,11 @@ import '../node_modules/reveal.js-menu/menu.css';
 import '../node_modules/reveal.js/dist/plugin/highlight/monokai.css';
 import '../css/menu-overrides.css';
 import RevealMenu from '../node_modules/reveal.js-menu/plugin.js';
+import windows95LaunchVideoUrl from '../assets/videos/windows_95_launch.mp4?url';
+
+document.querySelectorAll('.timeline-target-preview').forEach((link) => {
+  link.setAttribute('href', windows95LaunchVideoUrl);
+});
 
 // Global confidentiality level for the complete deck.
 // Valid values: SEC0, SEC1, SEC2, SEC2a, SEC3.
